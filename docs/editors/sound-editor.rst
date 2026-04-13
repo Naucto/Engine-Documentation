@@ -2,25 +2,56 @@
 Sound Editor
 ============
 
-The Sound Editor allows you to compose music and sound effects for your game using a built-in
-sequencer powered by Tone.js.
+The Sound Editor allows you to compose music for your game using a built-in sequencer powered by
+Tone.js.
 
-Current status
+Music slots
+===========
+
+Projects include **16 music slots**. The buttons on the side of the Sound Editor switch between
+those slots so you can keep separate tracks for menus, levels, battles, or short jingles.
+
+The editor labels slots as ``1`` through ``16``. Lua uses zero-based indexes, so slot ``1`` is
+played with ``play_music(0)``, slot ``2`` with ``play_music(1)``, and so on.
+
+Sequencer grid
 ==============
 
-.. note::
+The grid has **24 note rows** and **32 columns**. Each column is a beat, and the current music
+plays at ``240`` BPM by default.
 
-   The Sound Editor is available in the Naucto interface and can be used to create music and
-   sound effects. However, the Lua API does **not** currently expose sound playback functions.
+- Click an empty cell to add a one-beat note with the selected instrument.
+- Click an existing note start to remove it.
+- Drag across cells in the same row to create a longer note.
+- Use **Play** and **Stop** to preview the current music.
+- Use **Clear** to reset the current slot.
+- Click the progress bar while playback is stopped to choose where the next preview starts.
 
-   This means you can compose audio in the editor, but there is no way to trigger sounds from
-   your Lua game code yet. Sound playback support will be added in a future update.
+Instruments
+===========
 
-What you can do now
-===================
+The built-in instruments are **Piano**, **Guitar**, **Flute**, **Trumpet**, **Contrabass**, and
+**Harmonica**.
 
-- Open the Sound Editor tab to explore the music composition interface
-- Experiment with creating melodies and rhythms
-- Prepare audio assets for when Lua sound functions become available
+You can also create custom instruments. Custom instruments expose Tone.js synth parameters such as
+volume, detune, portamento, harmonicity, oscillator type, oscillator partials, and envelope
+settings. Custom instruments can be edited or deleted after creation.
 
-See :doc:`/limitations` for a full list of features planned for future updates.
+Using music in Lua
+==================
+
+Use :func:`play_music` and :func:`stop_music` from your game code:
+
+.. code-block:: lua
+
+   function _init()
+     play_music(0)  -- plays Sound Editor slot 1
+   end
+
+   function _update()
+     if key_pressed(" ") then
+       stop_music()
+     end
+   end
+
+See :doc:`/api/audio` for the Lua audio API reference.

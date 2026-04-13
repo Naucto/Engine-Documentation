@@ -57,15 +57,12 @@ geometric shapes.
 
    This draws the entire map at once. The map uses the same 8 x 8 tile size as the sprite sheet.
 
-   .. note::
-
-      The Lua API does **not** currently expose tile reading or collision queries from the map.
-      Gameplay collision must be handled using your own Lua tables. See :doc:`/limitations` for
-      details.
-
    .. code-block:: lua
 
       map(0, 0)  -- draw the map at the world origin
+
+   To read map tiles from Lua, use :func:`mget`. To inspect sprite flags on a tile sprite, use
+   :func:`fget`.
 
 ``camera``
 ==========

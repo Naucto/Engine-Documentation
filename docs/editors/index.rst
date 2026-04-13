@@ -15,7 +15,7 @@ collaborating with others.
 +-------------------+-------------------------------------------------------+
 | Code Editor       | Write Lua scripts that power your game logic          |
 +-------------------+-------------------------------------------------------+
-| Sound Editor      | Compose music and sound effects                       |
+| Sound Editor      | Compose music for your game                           |
 +-------------------+-------------------------------------------------------+
 
 .. toctree::

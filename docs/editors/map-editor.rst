@@ -41,26 +41,28 @@ with :func:`camera`, you can scroll through large levels.
 Map and collision
 =================
 
-.. important::
+The Lua API can read map tiles with :func:`mget`. This lets you ask which sprite index is stored at
+a map cell and combine that value with sprite flags from :func:`fget`.
 
-   The Lua API does **not** currently support reading individual tile values from the map or
-   performing collision queries against it. This means you need to **mirror your collision
-   layout in a Lua table**.
-
-The recommended workflow:
+The recommended tile-flag workflow:
 
 1. **Paint your level visually** in the Map Editor -- platforms, walls, ground
-2. **Create a matching Lua table** with the same positions and dimensions:
+2. **Flag your collision sprites** in the Sprite Editor -- for example, turn on bit ``0`` for
+   solid tiles
+3. **Read map tiles in Lua** and check the tile sprite's flag:
 
    .. code-block:: lua
 
-      platforms = {
-        { x = 0,   y = 168, w = 320, h = 8 },  -- ground
-        { x = 72,  y = 136, w = 40,  h = 8 },  -- floating platform
-        { x = 136, y = 120, w = 32,  h = 8 },  -- another platform
-      }
+      function is_solid_at_pixel(x, y)
+        tile_x = math.floor(x / 8)
+        tile_y = math.floor(y / 8)
+        tile_sprite = mget(tile_x, tile_y)
+        return fget(tile_sprite, 0)
+      end
 
-3. **Use the Lua table for physics** and the ``map()`` call for visuals
+There are still no built-in collision response helpers, so you handle movement and overlap logic
+in Lua. ``mget`` and ``fget`` give you the tile data to build those checks against the map you
+painted.
 
 Since tiles are 8 x 8 pixels, converting tile coordinates to pixel coordinates is straightforward:
 
@@ -71,7 +73,4 @@ Since tiles are 8 x 8 pixels, converting tile coordinates to pixel coordinates i
    -- Equivalent to:
    { x = 72, y = 160, w = 40, h = 8 }
 
-When tile-based collision is added to the Lua API in the future, you will be able to remove the
-Lua collision table and query the map directly.
-
-See the :doc:`/tutorials/platformer` tutorial for a complete example of this workflow.
+See :func:`mget` and :func:`fget` in the API reference for details.

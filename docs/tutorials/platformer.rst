@@ -33,20 +33,25 @@ Open the **Sprite Editor** and draw these sprites:
 +---------------+-----------------------------------------+
 | ``3``         | Player jumping                          |
 +---------------+-----------------------------------------+
+| ``32``        | Solid ground/platform tile              |
++---------------+-----------------------------------------+
 
 The player character is **8 pixels wide and 16 pixels tall** (1 tile wide, 2 tiles tall).
 Draw the top half of the character in the sprite slot and the bottom half in the slot directly
 below it. The engine handles multi-tile drawing with ``sprite(index, x, y, 1, 2)``.
 
+Select your solid ground/platform tile, then set **flag bit 0** in the Sprite Editor. The tutorial
+uses that flag to decide which map tiles the player collides with.
+
 .. tip::
 
    You can use any sprite indexes you want. Just update the constants at the top of the script
-   to match.
+   to match and enable flag bit ``0`` on each tile that should be solid.
 
 Step 2: Paint your level
 ========================
 
-Open the **Map Editor** and paint your level:
+Open the **Map Editor** and paint your level with the solid tile you flagged in Step 1:
 
 - **Ground row** -- a full row of solid tiles across the bottom
 - **Floating platforms** -- smaller groups of tiles at different heights
@@ -61,16 +66,16 @@ Example layout (each cell = 8 pixels):
    Row 17 (y=136): platform at columns 34-37
    Row 21 (y=168): ground spanning columns 0-52
 
-The map is purely visual. Collision data lives in a Lua table that mirrors these positions
-(see Step 3).
+The map now drives collision too. The code in Step 3 uses :func:`mget` to read the tile under the
+player and :func:`fget` to check whether that tile has the solid flag.
 
 Step 3: Write the code
 =======================
 
 Switch to the **Code Editor** and enter the full script below.
 
-Sprite constants
-----------------
+Constants
+---------
 
 .. code-block:: lua
 
@@ -84,26 +89,17 @@ Sprite constants
    PLAYER_W = 8
    PLAYER_H = 16
 
-Platform table
---------------
-
-This table mirrors the solid tiles you painted in the Map Editor. Each entry is a rectangle in
-pixel coordinates.
-
-.. code-block:: lua
-
-   platforms = {
-     { x = -8,  y = 168, w = 424, h = 8 },  -- ground
-     { x = 72,  y = 136, w = 40,  h = 8 },  -- platform 1
-     { x = 136, y = 120, w = 32,  h = 8 },  -- platform 2
-     { x = 200, y = 104, w = 56,  h = 8 },  -- platform 3
-     { x = 272, y = 136, w = 32,  h = 8 },  -- platform 4
-   }
+   -- Tilemap settings
+   TILE_SIZE  = 8
+   MAP_W      = 128
+   MAP_H      = 32
+   FLAG_SOLID = 0
 
 .. note::
 
-   Since tiles are 8 x 8 pixels, a platform at tile column 9, row 17, spanning 5 tiles is:
-   ``{ x = 9*8, y = 17*8, w = 5*8, h = 8 }`` which equals ``{ x = 72, y = 136, w = 40, h = 8 }``.
+   ``MAP_W`` and ``MAP_H`` match the default map size in tiles. ``FLAG_SOLID = 0`` means "check
+   bit 0 on the sprite's flags." The sprite index itself comes from the map with :func:`mget`, so
+   you do not need to list every platform in code.
 
 Helper functions
 ----------------
@@ -116,11 +112,13 @@ Helper functions
      return v
    end
 
-   function overlaps(ax, ay, aw, ah, bx, by, bw, bh)
-     return ax < bx + bw
-        and ax + aw > bx
-        and ay < by + bh
-        and ay + ah > by
+   function is_solid_tile(tx, ty)
+     if tx < 0 or tx >= MAP_W or ty < 0 or ty >= MAP_H then
+       return false
+     end
+
+     local sprite_index = mget(tx, ty)
+     return fget(sprite_index, FLAG_SOLID)
    end
 
 Initialization
@@ -210,16 +208,28 @@ Movement and collision
    function move_x()
      player.x = player.x + player.vx
 
-     for i = 1, #platforms do
-       local p = platforms[i]
-       if overlaps(player.x, player.y, PLAYER_W, PLAYER_H,
-                   p.x, p.y, p.w, p.h) then
-         if player.vx > 0 then
-           player.x = p.x - PLAYER_W
-         elseif player.vx < 0 then
-           player.x = p.x + p.w
+     local top_tile    = math.floor(player.y / TILE_SIZE)
+     local bottom_tile = math.floor((player.y + PLAYER_H - 1) / TILE_SIZE)
+
+     if player.vx > 0 then
+       local right_tile = math.floor((player.x + PLAYER_W - 1) / TILE_SIZE)
+
+       for ty = top_tile, bottom_tile do
+         if is_solid_tile(right_tile, ty) then
+           player.x  = right_tile * TILE_SIZE - PLAYER_W
+           player.vx = 0
+           break
          end
-         player.vx = 0
+       end
+     elseif player.vx < 0 then
+       local left_tile = math.floor(player.x / TILE_SIZE)
+
+       for ty = top_tile, bottom_tile do
+         if is_solid_tile(left_tile, ty) then
+           player.x  = (left_tile + 1) * TILE_SIZE
+           player.vx = 0
+           break
+         end
        end
      end
    end
@@ -230,22 +240,31 @@ Movement and collision
        player.vy = player.max_fall
      end
 
-     local prev_y     = player.y
      player.y         = player.y + player.vy
      player.on_ground = false
 
-     for i = 1, #platforms do
-       local p = platforms[i]
-       if overlaps(player.x, player.y, PLAYER_W, PLAYER_H,
-                   p.x, p.y, p.w, p.h) then
-         local was_above = prev_y + PLAYER_H <= p.y
-         if was_above and player.vy >= 0 then
-           player.y         = p.y - PLAYER_H
+     local left_tile  = math.floor(player.x / TILE_SIZE)
+     local right_tile = math.floor((player.x + PLAYER_W - 1) / TILE_SIZE)
+
+     if player.vy > 0 then
+       local bottom_tile = math.floor((player.y + PLAYER_H - 1) / TILE_SIZE)
+
+       for tx = left_tile, right_tile do
+         if is_solid_tile(tx, bottom_tile) then
+           player.y         = bottom_tile * TILE_SIZE - PLAYER_H
            player.vy        = 0
            player.on_ground = true
-         elseif prev_y >= p.y + p.h then
-           player.y  = p.y + p.h
+           break
+         end
+       end
+     elseif player.vy < 0 then
+       local top_tile = math.floor(player.y / TILE_SIZE)
+
+       for tx = left_tile, right_tile do
+         if is_solid_tile(tx, top_tile) then
+           player.y  = (top_tile + 1) * TILE_SIZE
            player.vy = 0
+           break
          end
        end
      end
@@ -276,7 +295,7 @@ Game loop
    end
 
    function _draw()
-     camera(clamp(player.x - 160, 0, 9999), 0)
+     camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
      clear(12)
      map(0, 0)
      draw_player()
@@ -289,18 +308,18 @@ How it all fits together
 
    Sprite Editor          Map Editor              Lua Script
    ----------------       ----------------        --------------------------
-   Draw tile art at       Paint solid tiles       platforms table mirrors
-   index 0 = idle         at matching             tiles as pixel rectangles
-   index 1 = walk 1       positions               for physics. map(0,0)
-   index 2 = walk 2                               renders the tile art.
-   index 3 = jump                                 sprite() draws the
-                                                  animated character.
+   index 0 = idle         Paint sprite 32         map(0,0) renders the
+   index 1 = walk 1       wherever the player     tilemap.
+   index 2 = walk 2       should collide.
+   index 3 = jump                                 mget() reads tile indexes.
+   index 32 = solid       The painted map is      fget() checks flag bit 0.
+   flag bit 0 = solid     the collision data.     sprite() draws the player.
 
 Extending the example
 =====================
 
-- **Add coins** -- Paint coin tiles on the map; add a ``coins`` table in Lua; check overlap
-  each frame and remove collected entries.
+- **Add coins** -- Paint coin tiles on the map; give them a different sprite flag bit; use
+  ``mget()`` and ``fget()`` to detect them.
 - **Add enemies** -- Add an ``enemies`` table; update positions each frame; use ``sprite()``
   to draw them.
 - **Bigger player** -- Draw a 2x2 sprite and call ``sprite(index, x, y, 2, 2)``.
