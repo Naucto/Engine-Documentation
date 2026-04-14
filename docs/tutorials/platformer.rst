@@ -14,6 +14,8 @@ A side-scrolling platformer where the player can:
 - Jump between platforms
 - Fall with gravity
 - Respawn when falling off the screen
+- Respawn when touching deadly tiles
+- Win when touching the end tile
 
 The camera follows the player horizontally.
 
@@ -35,26 +37,34 @@ Open the **Sprite Editor** and draw these sprites:
 +---------------+-----------------------------------------+
 | ``32``        | Solid ground/platform tile              |
 +---------------+-----------------------------------------+
+| ``33``        | Deadly tile, such as spikes             |
++---------------+-----------------------------------------+
+| ``34``        | End tile, such as a trophy or door      |
++---------------+-----------------------------------------+
 
-The player character is **8 pixels wide and 16 pixels tall** (1 tile wide, 2 tiles tall).
-Draw the top half of the character in the sprite slot and the bottom half in the slot directly
-below it. The engine handles multi-tile drawing with ``sprite(index, x, y, 1, 2)``.
+The player character is **8 pixels wide and 8 pixels tall** (1 tile wide, 1 tile tall). Each player
+animation frame fits in a single sprite slot.
 
-Select your solid ground/platform tile, then set **flag bit 0** in the Sprite Editor. The tutorial
-uses that flag to decide which map tiles the player collides with.
+Set these flags in the Sprite Editor:
+
+- On your solid ground/platform tile, turn on **flag bit 0**
+- On your deadly tile, turn on **flag bit 1**
+- On your end tile, turn on **flag bit 2**
 
 .. tip::
 
    You can use any sprite indexes you want. Just update the constants at the top of the script
-   to match and enable flag bit ``0`` on each tile that should be solid.
+   to match and enable the same flag bits on the matching tile sprites.
 
 Step 2: Paint your level
 ========================
 
-Open the **Map Editor** and paint your level with the solid tile you flagged in Step 1:
+Open the **Map Editor** and paint your level with the tiles you flagged in Step 1:
 
 - **Ground row** -- a full row of solid tiles across the bottom
 - **Floating platforms** -- smaller groups of tiles at different heights
+- **Deadly tiles** -- a few spikes or hazards that send the player back to the start
+- **End tile** -- the tile the player touches to win
 
 Example layout (each cell = 8 pixels):
 
@@ -64,10 +74,12 @@ Example layout (each cell = 8 pixels):
    Row 15 (y=120): platform at columns 17-20
    Row 13 (y=104): platform at columns 25-31
    Row 17 (y=136): platform at columns 34-37
+   Row 20 (y=160): deadly tiles at columns 14-16
+   Row 20 (y=160): end tile at column 50
    Row 21 (y=168): ground spanning columns 0-52
 
 The map now drives collision too. The code in Step 3 uses :func:`mget` to read the tile under the
-player and :func:`fget` to check whether that tile has the solid flag.
+player and :func:`fget` to check whether that tile has the solid, deadly, or end flag.
 
 Step 3: Write the code
 =======================
@@ -85,21 +97,26 @@ Constants
    SPRITE_WALK_2 = 2
    SPRITE_JUMP   = 3
 
-   -- Player dimensions: 1 tile wide, 2 tiles tall (8x16 px)
+   -- Player dimensions: 1 tile wide, 1 tile tall (8x8 px)
    PLAYER_W = 8
-   PLAYER_H = 16
+   PLAYER_H = 8
 
    -- Tilemap settings
    TILE_SIZE  = 8
    MAP_W      = 128
    MAP_H      = 32
+   SPRITE_COUNT = 256
    FLAG_SOLID = 0
+   FLAG_KILL  = 1
+   FLAG_END   = 2
 
 .. note::
 
    ``MAP_W`` and ``MAP_H`` match the default map size in tiles. ``FLAG_SOLID = 0`` means "check
-   bit 0 on the sprite's flags." The sprite index itself comes from the map with :func:`mget`, so
-   you do not need to list every platform in code.
+   bit 0 on the sprite's flags." ``FLAG_KILL`` and ``FLAG_END`` work the same way with bits ``1``
+   and ``2``. The sprite index itself comes from the map with :func:`mget`, so you do not need to
+   list every platform, hazard, or goal in code. ``SPRITE_COUNT`` keeps :func:`fget` calls inside
+   the sprite sheet's valid ``0`` to ``255`` range.
 
 Helper functions
 ----------------
@@ -112,13 +129,42 @@ Helper functions
      return v
    end
 
-   function is_solid_tile(tx, ty)
+   function tile_has_flag(tx, ty, flag)
      if tx < 0 or tx >= MAP_W or ty < 0 or ty >= MAP_H then
        return false
      end
 
      local sprite_index = mget(tx, ty)
-     return fget(sprite_index, FLAG_SOLID)
+     if type(sprite_index) ~= "number" then
+       return false
+     end
+
+     if sprite_index < 0 or sprite_index >= SPRITE_COUNT then
+       return false
+     end
+
+     return fget(sprite_index, flag)
+   end
+
+   function is_solid_tile(tx, ty)
+     return tile_has_flag(tx, ty, FLAG_SOLID)
+   end
+
+   function player_touching_flag(flag)
+     local left_tile   = math.floor(player.x / TILE_SIZE)
+     local right_tile  = math.floor((player.x + PLAYER_W - 1) / TILE_SIZE)
+     local top_tile    = math.floor(player.y / TILE_SIZE)
+     local bottom_tile = math.floor((player.y + PLAYER_H - 1) / TILE_SIZE)
+
+     for ty = top_tile, bottom_tile do
+       for tx = left_tile, right_tile do
+         if tile_has_flag(tx, ty, flag) then
+           return true
+         end
+       end
+     end
+
+     return false
    end
 
 Initialization
@@ -128,6 +174,7 @@ Initialization
 
    player = {}
    anim_timer = 0
+   game_finished = false
 
    function _init()
      player = {
@@ -144,6 +191,7 @@ Initialization
        anim_frame = SPRITE_IDLE,
      }
      anim_timer = 0
+     game_finished = false
    end
 
 Input handling
@@ -247,7 +295,7 @@ Movement and collision
      local right_tile = math.floor((player.x + PLAYER_W - 1) / TILE_SIZE)
 
      if player.vy > 0 then
-       local bottom_tile = math.floor((player.y + PLAYER_H - 1) / TILE_SIZE)
+       local bottom_tile = math.floor((player.y + PLAYER_H) / TILE_SIZE)
 
        for tx = left_tile, right_tile do
          if is_solid_tile(tx, bottom_tile) then
@@ -271,10 +319,45 @@ Movement and collision
 
      -- Fell off the bottom: respawn
      if player.y > 260 then
-       player.x  = 24
-       player.y  = 40
-       player.vx = 0
-       player.vy = 0
+       respawn_player()
+     end
+   end
+
+Special tiles
+-------------
+
+.. code-block:: lua
+
+   function respawn_player()
+     player.x         = 24
+     player.y         = 40
+     player.vx        = 0
+     player.vy        = 0
+     player.on_ground = false
+     player.anim_frame = SPRITE_IDLE
+   end
+
+   function win_game()
+     if game_finished then
+       return
+     end
+
+     game_finished = true
+     player.vx     = 0
+     player.vy     = 0
+
+     -- The current text output is the output panel.
+     print("You Won")
+   end
+
+   function check_special_tiles()
+     if player_touching_flag(FLAG_KILL) then
+       respawn_player()
+       return
+     end
+
+     if player_touching_flag(FLAG_END) then
+       win_game()
      end
    end
 
@@ -284,14 +367,24 @@ Game loop
 .. code-block:: lua
 
    function _update()
+     if game_finished then
+       return
+     end
+
      handle_input()
      move_x()
      move_y()
+     check_special_tiles()
+
+     if game_finished then
+       return
+     end
+
      update_animation()
    end
 
    function draw_player()
-     sprite(player.anim_frame, player.x, player.y, 1, 2)
+     sprite(player.anim_frame, player.x, player.y, 1, 1)
    end
 
    function _draw()
@@ -300,6 +393,11 @@ Game loop
      map(0, 0)
      draw_player()
    end
+
+.. note::
+
+   ``print("You Won")`` writes to the output panel. Once ``game_finished`` is ``true``,
+   ``_update()`` returns immediately, so player input, gravity, and collision stop running.
 
 How it all fits together
 ========================
@@ -312,8 +410,10 @@ How it all fits together
    index 1 = walk 1       wherever the player     tilemap.
    index 2 = walk 2       should collide.
    index 3 = jump                                 mget() reads tile indexes.
-   index 32 = solid       The painted map is      fget() checks flag bit 0.
-   flag bit 0 = solid     the collision data.     sprite() draws the player.
+   index 32 = solid       The painted map is      fget() checks flag bits:
+   index 33 = deadly      the collision data.     0 = solid
+   index 34 = end tile                            1 = deadly
+   flag bits 0, 1, 2                              2 = end tile
 
 Extending the example
 =====================
