@@ -1,0 +1,17 @@
+networks:
+  naucto:
+    name: naucto
+    driver: bridge
+
+services:
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./docs:/docs
+    ports:
+      - "8080:8080"
+    networks:
+      - naucto
