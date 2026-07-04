@@ -68,7 +68,7 @@ Open the **Map Editor** and paint your level with the tiles you flagged in Step 
 
 Example layout (each cell = 8 pixels):
 
-::
+.. code-block:: text
 
    Row 17 (y=136): platform at columns 9-13
    Row 15 (y=120): platform at columns 17-20
@@ -112,7 +112,9 @@ Constants
 
 .. note::
 
-   ``MAP_W`` and ``MAP_H`` match the default map size in tiles. ``FLAG_SOLID = 0`` means "check
+   ``MAP_W`` and ``MAP_H`` must match your project's map size in tiles (``128 x 32`` by
+   default): the bounds guard in ``tile_has_flag`` relies on them to keep :func:`mget` inside
+   the map, where out-of-bounds reads raise an error. ``FLAG_SOLID = 0`` means "check
    bit 0 on the sprite's flags." ``FLAG_KILL`` and ``FLAG_END`` work the same way with bits ``1``
    and ``2``. The sprite index itself comes from the map with :func:`mget`, so you do not need to
    list every platform, hazard, or goal in code. ``SPRITE_COUNT`` keeps :func:`fget` calls inside
@@ -346,7 +348,7 @@ Special tiles
      player.vx     = 0
      player.vy     = 0
 
-     -- The current text output is the output panel.
+     -- Announce the win in the output panel
      print("You Won")
    end
 
@@ -376,6 +378,7 @@ Game loop
      move_y()
      check_special_tiles()
 
+     -- check_special_tiles may have just won the game this frame
      if game_finished then
        return
      end
@@ -402,7 +405,7 @@ Game loop
 How it all fits together
 ========================
 
-::
+.. code-block:: text
 
    Sprite Editor          Map Editor              Lua Script
    ----------------       ----------------        --------------------------

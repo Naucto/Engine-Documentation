@@ -53,10 +53,21 @@ Errors in the output panel
 
 The engine prints Lua runtime errors to the output panel. Common causes:
 
-- **Invalid palette index** in ``clear``, ``set_col``, or drawing functions
+- **Invalid palette index** in ``clear`` or ``set_col`` (the only two that validate it)
+- **Out-of-bounds tile or sprite index** in ``mget`` / ``fget``
 - **Typos in function names** -- Lua is case-sensitive (``Key_Pressed`` is not ``key_pressed``)
 - **Lua syntax errors** -- missing ``end``, unmatched parentheses, etc.
 - **Nil values** -- accessing a table field that does not exist
+
+.. warning::
+
+   With one exception, an uncaught runtime error **stops the game loop**: the screen freezes
+   on the last frame until you fix the error and re-run. The exception is
+   :func:`set_col` / :func:`reset_col`, whose errors are caught and only printed.
+
+Note that :func:`line`, :func:`rect`, and :func:`fill_rect` do **not** validate the color
+index: an out-of-range value silently draws with a garbage color instead of raising an error.
+If a shape shows up in a color you never picked, check the index you passed.
 
 Using print for debugging
 =========================

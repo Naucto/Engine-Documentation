@@ -17,6 +17,9 @@ These functions play music created in the Sound Editor.
    When ``index`` is omitted, the engine plays the default selected slot, which is currently slot
    ``0``.
 
+   If the project has no sound data, the call is a silent no-op -- nothing plays and no error is
+   raised.
+
    .. code-block:: lua
 
       function _init()
