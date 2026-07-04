@@ -6,6 +6,10 @@ This tutorial builds a complete two-player online Pong: one player hosts, a frie
 each controls a paddle on their own machine. It is the best place to start with the ``net``
 API -- read the :doc:`/multiplayer` concepts page first if you have not.
 
+Rather than handing you the finished script, each step explains one idea and shows only the
+lines that carry it; you write the rest. If you get stuck or want to check your work, the
+:doc:`complete code <pong-code>` is one click away.
+
 What you will build
 ===================
 
@@ -18,45 +22,37 @@ What you will build
 No sprites or map are needed -- the whole game is drawn with :func:`fill_rect` and
 :func:`rect`, so you can go straight to the **Code Editor**.
 
-Step 1: Constants and game state
-================================
+Step 1: A game with four states
+===============================
 
-The game is a small state machine around the session: ``"menu"`` until a player chooses a
-role, ``"waiting"`` while the platform dialog is open, ``"playing"`` once connected, and
-``"over"`` when someone wins or the session ends.
+A multiplayer game cannot jump straight into gameplay: the session has to be created first,
+and that involves a platform dialog the player can cancel. So the game is a small state
+machine. Keep the current state in a global and dispatch on it every frame:
 
 .. code-block:: lua
 
-   -- Screen and objects
-   W, H       = 320, 180
-   PAD_W      = 4
-   PAD_H      = 28
-   PAD_SPEED  = 3
-   BALL_SIZE  = 4
-   WIN_SCORE  = 5
+   state = "menu"   -- "menu" | "waiting" | "playing" | "over"
 
-   -- Palette colors
-   COL_BG    = 0    -- black
-   COL_LEFT  = 12   -- blue
-   COL_RIGHT = 8    -- red
-   COL_BALL  = 7    -- white
-
-   state   = "menu"   -- "menu" | "waiting" | "playing" | "over"
-   is_host = false
-   side    = nil      -- "left" (host) or "right" (joiner)
-
-   function _init()
-     state   = "menu"
-     is_host = false
-     side    = nil
-     print("Press H to host a game, J to join one")
+   function _update()
+     if state == "menu" then
+       update_menu()
+     elseif state == "waiting" then
+       update_waiting()
+     elseif state == "playing" then
+       update_playing()
+     elseif state == "over" then
+       update_over()
+     end
    end
 
-   function clamp(v, lo, hi)
-     if v < lo then return lo end
-     if v > hi then return hi end
-     return v
-   end
+Alongside ``state``, declare two more globals you will need throughout: ``is_host`` (are we
+the one who created the session?) and ``side`` (``"left"`` or ``"right"`` -- which paddle is
+ours). Write an ``_init()`` that resets all three and prints the menu instructions.
+
+You will also want the usual ``clamp(v, lo, hi)`` helper, and a handful of constants: the
+screen size (``320 x 180``), paddle dimensions and speed, ball size, and a winning score.
+Pick palette colors for each side -- the examples below use ``12`` (blue) for the left paddle
+and ``8`` (red) for the right.
 
 .. note::
 
@@ -66,10 +62,15 @@ role, ``"waiting"`` while the platform dialog is open, ``"playing"`` once connec
 Step 2: Hosting and joining
 ===========================
 
-``net.host`` and ``net.join`` open a platform dialog and return immediately; the callback
-fires only if the session is actually created or joined. We switch to ``"waiting"`` *before*
-calling them so the call cannot repeat on the next frame -- calling ``net.host`` again while
-the dialog is open raises an error.
+``net.host`` and ``net.join`` open a platform dialog and return immediately; your callback
+fires only if the session is actually created or joined. That asymmetry drives the whole
+menu design. Two rules to encode:
+
+1. **Switch state before calling.** If you call ``net.host`` again on the next frame while
+   the dialog is still open, it raises an error -- and an uncaught error stops the game.
+   Moving to ``"waiting"`` first makes the call impossible to repeat.
+2. **Cancel means nothing fires.** The only signal for "the player cancelled" is the absence
+   of your callback, so give ``"waiting"`` a way back to the menu (a key press).
 
 .. code-block:: lua
 
@@ -85,79 +86,50 @@ the dialog is open raises an error.
      end
    end
 
-   function update_waiting()
-     -- If the player cancelled the dialog, the callback never fires:
-     -- let them return to the menu.
-     if key_pressed("m") then
-       state = "menu"
-       print("Press H to host a game, J to join one")
-     end
-   end
+Write ``update_waiting()`` yourself: when ``m`` is pressed, return to ``"menu"`` and reprint
+the instructions.
 
-Step 3: Setting up the shared state
-===================================
+.. admonition:: Try it
 
-The host owns everything global: it creates the paddles, the score, and the ball in
-``net.state``, and it subscribes to ``peer.joined`` / ``peer.left`` to pause the ball while it
-has no opponent. Both sides subscribe to ``"ended"`` (the session dies when the host leaves)
-and to the ``"point"`` event used in Step 5.
+   Add a placeholder ``on_connected`` that just prints something, plus empty
+   ``update_playing`` / ``update_over``, and run the game. ``H`` should open the host dialog
+   (note how the capacity is fixed at 2 -- the game decided that, not the player). Cancel it,
+   press ``M``, and you are back in the menu.
+
+Step 3: The host sets the table
+===============================
+
+``on_connected`` runs once, on success, for both roles -- use ``is_host`` to split the work.
+Following the ownership convention from :doc:`/multiplayer`, the host creates every piece of
+shared state the game will ever read, so nobody else has to wonder whether a key exists:
 
 .. code-block:: lua
 
-   function on_connected()
-     side = is_host and "left" or "right"
+   if is_host then
+     net.state.pads    = { left = (H - PAD_H) / 2, right = (H - PAD_H) / 2 }
+     net.state.score   = { left = 0, right = 0 }
+     net.state.playing = false
+     reset_ball(1)
 
-     if is_host then
-       net.state.pads    = { left = (H - PAD_H) / 2, right = (H - PAD_H) / 2 }
-       net.state.score   = { left = 0, right = 0 }
-       net.state.playing = false
-       reset_ball(1)
-
-       net.on("peer.joined", function(playerId)
-         net.state.playing = true
-         print("Player " .. playerId .. " joined -- game on!")
-       end)
-
-       net.on("peer.left", function(playerId)
-         net.state.playing = false
-         print("Player " .. playerId .. " left -- waiting for a new opponent")
-       end)
-     end
-
-     net.on("event:point", function(from, scorer)
-       print("Point for the " .. scorer .. " side!")
-     end)
-
-     net.on("ended", function()
-       state = "over"
-       print("The host closed the session. Press M for the menu.")
-     end)
-
-     state = "playing"
-     print("Connected! You are the " .. side .. " paddle (arrow keys).")
+     net.on("peer.joined", function(playerId) net.state.playing = true end)
+     net.on("peer.left",   function(playerId) net.state.playing = false end)
    end
 
-   function reset_ball(direction)
-     net.state.ball = {
-       x  = (W - BALL_SIZE) / 2,
-       y  = (H - BALL_SIZE) / 2,
-       dx = 2 * direction,
-       dy = 1.5,
-     }
-   end
+``net.state.playing`` is the referee's whistle: the ball only moves while an opponent is
+connected, and the host flips it from the ``peer.joined`` / ``peer.left`` events.
 
-.. note::
+Complete the function for both roles: derive ``side`` from ``is_host``, switch ``state`` to
+``"playing"``, and subscribe to ``"ended"`` (the session dies when the host leaves -- go to
+``"over"`` and tell the player). Then write ``reset_ball(direction)``: assign
+``net.state.ball`` a fresh table with a centered ``x, y`` and a ``dx, dy`` velocity moving
+toward ``direction``. Assigning a whole table replaces the subtree in one go -- exactly what
+a reset wants.
 
-   Assigning a whole table (``net.state.ball = { ... }``) replaces that subtree in one go --
-   handy for (re)initialization. For per-frame updates we will write individual fields
-   instead.
+Step 4: Your paddle, their paddle
+=================================
 
-Step 4: Moving your own paddle
-==============================
-
-Ownership convention in action: each player writes **only its own** paddle key and merely
-reads the other one. The joiner may run a frame or two before the host's state has replicated
-to it, so every read is guarded with a ``nil`` check.
+Each player writes **only its own** paddle key and merely reads the other one -- that is the
+entire synchronization model, no messages needed. Two things matter in the code:
 
 .. code-block:: lua
 
@@ -168,25 +140,33 @@ to it, so every read is guarded with a ``nil`` check.
      end
 
      local y = pads[side]
-     if key_pressed("ArrowUp") then
-       y = y - PAD_SPEED
-     end
-     if key_pressed("ArrowDown") then
-       y = y + PAD_SPEED
-     end
-
+     -- move y with ArrowUp / ArrowDown, then:
      pads[side] = clamp(y, 0, H - PAD_H)
    end
+
+The ``nil`` guard is not paranoia: the joiner's first frames can run *before* the host's
+state has replicated to it, and indexing a branch that does not exist yet would crash the
+game. Guard every read of a shared branch this way.
+
+Now make it visible. In ``_draw()``, clear the screen and (in the ``"playing"`` state) draw
+both paddles from ``net.state.pads`` -- same ``nil`` guard -- and the ball from
+``net.state.ball``, but only while ``net.state.playing`` is true and nobody has won. Draw
+*everything* from ``net.state``, never from local variables: that is what guarantees both
+screens show the same game.
+
+.. admonition:: Try it
+
+   Host in one browser window, join from another (invite code). You should see both paddles
+   on both screens, each window controlling its own -- and the ball sitting frozen in the
+   center, because nothing moves it yet.
 
 Step 5: The host simulates the ball
 ===================================
 
-Only the host runs ball physics; the other player just reads the replicated ball. Note that
-``net.state.ball`` returns a *live view*: writing ``ball.x`` goes straight into shared state.
-
-When a point is scored the host updates the score, tells the other player with ``net.emit``
-(remember: the sender does not receive its own event, hence the local :func:`print`), and
-serves toward the player who conceded.
+Only the host runs ball physics; the other player just draws the replicated result. One
+referee means the two screens can never disagree about a bounce. Note what the first line
+gives you -- ``net.state.ball`` is a *live view*, so writing ``ball.x`` goes straight into
+shared state:
 
 .. code-block:: lua
 
@@ -196,32 +176,22 @@ serves toward the player who conceded.
      end
 
      local ball = net.state.ball
-     local pads = net.state.pads
-
      ball.x = ball.x + ball.dx
      ball.y = ball.y + ball.dy
-
-     -- Bounce off the top and bottom
-     if ball.y <= 0 or ball.y >= H - BALL_SIZE then
-       ball.dy = -ball.dy
-     end
-
-     -- Bounce off the paddles
-     if ball.dx < 0 and ball.x <= 8 + PAD_W
-        and ball.y + BALL_SIZE >= pads.left and ball.y <= pads.left + PAD_H then
-       ball.dx = -ball.dx
-     elseif ball.dx > 0 and ball.x + BALL_SIZE >= W - 8 - PAD_W
-        and ball.y + BALL_SIZE >= pads.right and ball.y <= pads.right + PAD_H then
-       ball.dx = -ball.dx
-     end
-
-     -- Out on the left: right scores (and vice versa)
-     if ball.x < -BALL_SIZE then
-       score_point("right", 1)
-     elseif ball.x > W then
-       score_point("left", -1)
-     end
+     -- bounces and scoring go here
    end
+
+Fill in the physics -- it is classic Pong:
+
+- **Walls**: when ``ball.y`` leaves ``0 .. H - BALL_SIZE``, negate ``dy``.
+- **Paddles**: when the ball moves left (``dx < 0``), reaches the left paddle's x-plane, and
+  overlaps it vertically, negate ``dx``; mirror the test for the right side.
+- **Goals**: when the ball fully exits on the left, the right side scores (and vice versa).
+
+Scoring is where the host talks to the other player. The sender of an event never receives
+it, hence the local :func:`print` next to the emit:
+
+.. code-block:: lua
 
    function score_point(scorer, serve_direction)
      net.state.score[scorer] = net.state.score[scorer] + 1
@@ -235,26 +205,19 @@ serves toward the player who conceded.
      end
    end
 
-Step 6: The game loop
-=====================
+On the receiving side, subscribe once in ``on_connected``:
+``net.on("event:point", function(from, scorer) ... end)``. Finally, wire it all into
+``update_playing()``: everyone updates their paddle; **only the host** calls
+``update_ball()``.
 
-``_update`` dispatches on the game state. Both players watch ``net.state.winner`` -- the host
-writes it, everyone reacts to it.
+Step 6: Winning and leaving
+===========================
+
+The host decides the winner by writing ``net.state.winner``; everyone else just watches for
+it. At the end of ``update_playing()``, when ``net.state.winner`` is set, switch to
+``"over"`` and announce the result. In ``update_over()``, let ``m`` clean up and restart:
 
 .. code-block:: lua
-
-   function update_playing()
-     update_paddle()
-
-     if is_host then
-       update_ball()
-     end
-
-     if net.state.winner then
-       state = "over"
-       print("The " .. net.state.winner .. " side wins! Press M for the menu.")
-     end
-   end
 
    function update_over()
      if key_pressed("m") then
@@ -263,90 +226,20 @@ writes it, everyone reacts to it.
      end
    end
 
-   function _update()
-     if state == "menu" then
-       update_menu()
-     elseif state == "waiting" then
-       update_waiting()
-     elseif state == "playing" then
-       update_playing()
-     elseif state == "over" then
-       update_over()
-     end
-   end
+``net.leave()`` is safe here even when the session already ended (after an ``"ended"``
+event it simply does nothing), so one exit path covers both "we won" and "the host left".
 
-.. note::
+To finish the presentation, extend ``_draw()`` for the other states: fill the screen with
+the winner's color in ``"over"``, and draw something for the menu (the complete code shows
+two idle paddles and a dotted center line). A score display needs no text: draw one small
+square per point in each side's color along the top edge.
 
-   ``net.leave()`` is safe to call even when the session already ended -- after an ``"ended"``
-   callback it simply does nothing, so ``update_over`` works for both exits.
+.. admonition:: Try it
 
-Step 7: Drawing
-===============
-
-Everything drawn comes from ``net.state``, so both screens always show the same game. The
-guards matter on the joiner's side: right after connecting, the shared state may not have
-arrived yet.
-
-.. code-block:: lua
-
-   function draw_score()
-     local score = net.state.score
-     if not score then
-       return
-     end
-
-     for i = 1, score.left do
-       fill_rect(COL_LEFT, 8 + (i - 1) * 6, 6, 4, 4)
-     end
-     for i = 1, score.right do
-       fill_rect(COL_RIGHT, W - 8 - (i - 1) * 6 - 4, 6, 4, 4)
-     end
-   end
-
-   function draw_game()
-     local pads = net.state.pads
-     local ball = net.state.ball
-
-     if pads then
-       fill_rect(COL_LEFT, 8, pads.left, PAD_W, PAD_H)
-       fill_rect(COL_RIGHT, W - 8 - PAD_W, pads.right, PAD_W, PAD_H)
-     end
-
-     if ball and net.state.playing and not net.state.winner then
-       fill_rect(COL_BALL, ball.x, ball.y, BALL_SIZE, BALL_SIZE)
-     end
-
-     draw_score()
-   end
-
-   function _draw()
-     clear(COL_BG)
-
-     if state == "playing" then
-       draw_game()
-     elseif state == "over" and net.state.winner then
-       -- Fill the screen with the winner's color
-       local col = net.state.winner == "left" and COL_LEFT or COL_RIGHT
-       fill_rect(col, 0, 0, W, H)
-     else
-       -- Menu / waiting: a centered "net" between two idle paddles
-       fill_rect(COL_LEFT, 8, (H - PAD_H) / 2, PAD_W, PAD_H)
-       fill_rect(COL_RIGHT, W - 8 - PAD_W, (H - PAD_H) / 2, PAD_W, PAD_H)
-       for y = 0, H - 8, 12 do
-         fill_rect(5, W / 2 - 1, y, 2, 8)
-       end
-     end
-   end
-
-Step 8: Play it
-===============
-
-1. **Run the game** and press ``H``. The platform's host dialog opens: pick a title, choose
-   *invite code* visibility, and confirm. Share the code with your opponent.
-2. On another machine (or browser), your opponent runs the same project, presses ``J``, and
-   enters the code -- or finds the session in the public list if you chose *public*.
-3. As soon as they join, the host's ``peer.joined`` fires, ``net.state.playing`` flips to
-   ``true``, and the ball starts moving on both screens.
+   Play a full match to 5. Then close the host's window mid-rally: the joiner should get the
+   "host closed the session" message and land back in the menu via ``M``. That path --
+   session dies, ``"ended"`` fires, player recovers -- is one your game should never leave
+   untested.
 
 How it all fits together
 ========================
@@ -361,6 +254,16 @@ How it all fits together
    simulates the ball          ------>   draws the replicated ball
    net.emit("point", ...)      ------>   net.on("event:point", ...)
    sets net.state.winner       ------>   sees winner, shows "over"
+
+Complete code
+=============
+
+Compare your build against the :doc:`full documented script <pong-code>`.
+
+.. toctree::
+   :hidden:
+
+   pong-code
 
 Extending the example
 =====================

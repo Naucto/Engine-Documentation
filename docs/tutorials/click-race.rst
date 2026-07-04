@@ -5,8 +5,11 @@ Build a Coin Rush
 Up to four players race to collect coins scattered on the screen -- first to ten wins. When
 two players touch the same coin on the same frame, only one may get the point: this tutorial
 is all about :func:`net.lock` (settling races fairly) and :func:`net.queue` (feeding respawn
-work to the host). Do the :doc:`/tutorials/pong` tutorial first; this one moves faster over
-the parts they share.
+work to the host). Do the :doc:`/tutorials/pong` tutorial first -- this one builds on its
+session menu and moves faster over everything the two games share.
+
+As in the Pong tutorial, each step teaches an idea and shows only the lines that carry it;
+the :doc:`complete code <click-race-code>` is there to compare against when you are done.
 
 What you will build
 ===================
@@ -20,143 +23,71 @@ What you will build
 
 Everything is drawn with :func:`fill_rect` and :func:`rect` -- no sprites needed.
 
-Step 1: Constants and the session menu
-======================================
+Step 1: Reuse the session menu
+==============================
+
+Start from the state machine and menu you built in Pong (Steps 1--2 there): the same
+``"menu" | "waiting" | "playing" | "over"`` dispatch, the same ``update_menu`` /
+``update_waiting`` pair. Only the host call changes -- more seats, different title:
 
 .. code-block:: lua
 
-   W, H        = 320, 180
-   PLAYER_SIZE = 8
-   COIN_SIZE   = 4
-   SPEED       = 2
-   COIN_COUNT  = 5
-   WIN_SCORE   = 10
-   RESPAWN_DELAY = 120           -- frames (two seconds at 60 FPS)
+   net.host({ max_players = 4, title = "Coin rush" }, on_connected)
 
-   COL_BG    = 0                 -- black
-   COL_COIN  = 10                -- yellow
-   COLORS    = { 8, 12, 11, 14 } -- red, blue, green, pink
+This game needs three extra locals next to ``state`` and ``is_host``, all explained as they
+come up: ``next_color`` (host only), ``respawn_timer`` (host only), and ``claiming`` (a
+table, one entry per coin we are currently trying to grab). Reset all of them in
+``_init()``.
 
-   state         = "menu"        -- "menu" | "waiting" | "playing" | "over"
-   is_host       = false
-   next_color    = 1             -- host only: next entry of COLORS to hand out
-   respawn_timer = 0             -- host only
-   claiming      = {}            -- coins we already have a pending lock request for
-
-   function _init()
-     state      = "menu"
-     is_host    = false
-     next_color = 1
-     respawn_timer = 0
-     claiming   = {}
-     print("Press H to host a game, J to join one")
-   end
-
-   function clamp(v, lo, hi)
-     if v < lo then return lo end
-     if v > hi then return hi end
-     return v
-   end
-
-   function update_menu()
-     if key_pressed("h") then
-       state   = "waiting"
-       is_host = true
-       net.host({ max_players = 4, title = "Coin rush" }, on_connected)
-     elseif key_pressed("j") then
-       state   = "waiting"
-       is_host = false
-       net.join(on_connected)
-     end
-   end
-
-   function update_waiting()
-     if key_pressed("m") then
-       state = "menu"
-       print("Press H to host a game, J to join one")
-     end
-   end
+Constants worth settling now: ``COIN_COUNT = 5``, ``WIN_SCORE = 10``,
+``RESPAWN_DELAY = 120`` (two seconds at 60 FPS), an 8-pixel player, a 4-pixel coin, and a
+``COLORS`` list with one palette color per possible player -- four entries.
 
 Step 2: The host provisions every player
 ========================================
 
-In Pong each player wrote its own paddle from the start. With four players and host-assigned
-colors it is cleaner to flip the pattern: **the host creates each player's entry** (spawn
-position, color, score) -- for itself at session start and for the others in ``peer.joined``.
-A joiner simply waits until its own entry appears in ``net.state``, then starts moving it.
+In Pong each player wrote its own paddle from the start. With four players and
+host-assigned colors it is cleaner to flip the pattern: **the host creates each player's
+entry** (spawn position, color, score ``0``) -- for itself at session start, and for the
+others from ``peer.joined``. A joiner simply waits until its entry appears, then starts
+moving it. Mid-game joins need no special code at all: the late joiner receives the full
+current state, and the host's ``peer.joined`` gives them a square like everyone else.
 
-This also handles players joining **mid-game**: a late joiner receives the full current state,
-and the host's ``peer.joined`` provisions them a square like everyone else.
+The provisioning function is where the ``net.state`` empty-branch rule bites, so this one is
+worth copying exactly:
 
 .. code-block:: lua
 
-   function provision_player(playerId)
-     local entry = {
-       x     = math.random(8, W - 8 - PLAYER_SIZE),
-       y     = math.random(8, H - 8 - PLAYER_SIZE),
-       col   = COLORS[next_color],
-       score = 0,
-     }
-     next_color = next_color % #COLORS + 1
-
-     -- A net.state branch only exists once it holds a value, so the first
-     -- player entry must create the branch itself
-     if net.state.players then
-       net.state.players[playerId] = entry
-     else
-       net.state.players = { [playerId] = entry }
-     end
+   -- A net.state branch only exists once it holds a value, so the first
+   -- player entry must create the branch itself
+   if net.state.players then
+     net.state.players[playerId] = entry
+   else
+     net.state.players = { [playerId] = entry }
    end
 
-   function new_coin()
-     return {
-       x     = math.random(8, W - 8 - COIN_SIZE),
-       y     = math.random(8, H - 8 - COIN_SIZE),
-       taken = false,
-     }
-   end
+Build ``provision_player(playerId)`` around it: construct ``entry`` with a random position,
+``score = 0``, and ``col = COLORS[next_color]``, advancing ``next_color`` with wrap-around
+(``next_color % #COLORS + 1``).
 
-   function on_connected()
-     if is_host then
-       provision_player(net.id())
-
-       local coins = {}
-       for i = 1, COIN_COUNT do
-         coins[i] = new_coin()
-       end
-       net.state.coins = coins
-
-       net.on("peer.joined", function(playerId)
-         provision_player(playerId)
-         print("Player " .. playerId .. " joined")
-       end)
-
-       net.on("peer.left", function(playerId)
-         net.state.players[playerId] = nil
-         print("Player " .. playerId .. " left")
-       end)
-     end
-
-     net.on("ended", function()
-       state = "over"
-       print("The host closed the session. Press M for the menu.")
-     end)
-
-     state = "playing"
-     print("Connected! Collect " .. WIN_SCORE .. " coins to win (arrow keys).")
-   end
+The host's part of ``on_connected`` then reads like a checklist: provision yourself, create
+the coins, subscribe to ``peer.joined`` (provision them) and ``peer.left`` (delete
+``net.state.players[playerId]``). For the coins, build a plain local table of ``COIN_COUNT``
+entries -- each with a random position and ``taken = false`` -- and assign it to
+``net.state.coins`` in one go. Both roles subscribe to ``"ended"`` and switch to
+``"playing"``, as in Pong.
 
 .. note::
 
-   Collected coins are *marked* ``taken`` rather than deleted. Keeping all ``COIN_COUNT``
-   entries alive means the ``coins`` branch always exists and every index stays valid -- one
-   less ``nil`` case everywhere else in the game.
+   Collected coins will be *marked* ``taken`` rather than deleted. Keeping all
+   ``COIN_COUNT`` entries alive means the ``coins`` branch always exists and every index
+   stays valid -- one less ``nil`` case everywhere else in the game.
 
 Step 3: Moving your square
 ==========================
 
-Each player writes only its own entry -- but here that entry is *created by the host*, so a
-freshly joined player just returns until it appears.
+Movement is Pong's paddle logic on two axes, applied to your own entry. The only new element
+is *finding* that entry -- it belongs to the host until it has been provisioned:
 
 .. code-block:: lua
 
@@ -168,37 +99,41 @@ freshly joined player just returns until it appears.
      return players[net.id()]
    end
 
-   function update_movement()
-     local me = my_player()
-     if not me then
-       return   -- the host has not provisioned us yet
+Write ``update_movement()``: get ``my_player()``, return if it is ``nil`` (not provisioned
+yet -- the multi-player version of Pong's replication-lag guard), then move ``me.x`` /
+``me.y`` with the arrow keys and clamp both to the screen.
+
+For drawing, iterate the players. ``pairs`` over a ``net.state`` branch yields **string**
+keys, so convert before comparing ids:
+
+.. code-block:: lua
+
+   for id, p in pairs(net.state.players or {}) do
+     fill_rect(p.col, p.x, p.y, PLAYER_SIZE, PLAYER_SIZE)
+
+     if tonumber(id) == net.id() then
+       rect(7, p.x - 2, p.y - 2, PLAYER_SIZE + 4, PLAYER_SIZE + 4)   -- highlight yourself
      end
-
-     if key_pressed("ArrowLeft")  then me.x = me.x - SPEED end
-     if key_pressed("ArrowRight") then me.x = me.x + SPEED end
-     if key_pressed("ArrowUp")    then me.y = me.y - SPEED end
-     if key_pressed("ArrowDown")  then me.y = me.y + SPEED end
-
-     me.x = clamp(me.x, 0, W - PLAYER_SIZE)
-     me.y = clamp(me.y, 0, H - PLAYER_SIZE)
    end
+
+Draw the untaken coins the same way (skip entries with ``taken`` set), and later add a score
+display: a row of small squares per player, in that player's color.
+
+.. admonition:: Try it
+
+   Host plus one or two joiners: every window should show every square moving live, each
+   with a white ring around its own. Join a third window *after* moving around a bit -- the
+   newcomer sees everyone in the right place. That is the state snapshot at work.
 
 Step 4: Collecting coins with a lock
 ====================================
 
-Here is the race: two players overlap coin ``3`` on the same frame and both try to take it.
-Without protection, both would see an untaken coin, both would mark it, and both would score.
-
-``net.lock("coin.3")`` settles it. Lock requests are granted one peer at a time, so the code
-inside ``acquire`` runs exclusively: the first player finds the coin untaken, marks it, and
-scores; the second finds ``taken`` already ``true`` and gets nothing.
+Here is the race this game exists for: two players overlap coin ``3`` on the same frame and
+both try to take it. Both read ``taken == false``, both would mark it, both would score.
+``net.lock`` settles it -- requests are granted one peer at a time, so whatever runs inside
+``acquire`` runs exclusively:
 
 .. code-block:: lua
-
-   function overlaps_coin(me, coin)
-     return me.x < coin.x + COIN_SIZE and me.x + PLAYER_SIZE > coin.x
-        and me.y < coin.y + COIN_SIZE and me.y + PLAYER_SIZE > coin.y
-   end
 
    function try_collect(i)
      if claiming[i] then
@@ -214,7 +149,7 @@ scores; the second finds ``taken`` already ``true`` and gets nothing.
          coin.taken = true
          local me = my_player()
          me.score = me.score + 1
-         net.queue("respawns").push(i)    -- ask the host for a replacement (Step 5)
+         net.queue("respawns").push(i)    -- Step 5
 
          if me.score >= WIN_SCORE then
            net.state.winner = net.id()
@@ -225,145 +160,47 @@ scores; the second finds ``taken`` already ``true`` and gets nothing.
      end)
    end
 
-   function update_collect()
-     local me    = my_player()
-     local coins = net.state.coins
-     if not me or not coins then
-       return
-     end
+Every line of ceremony here is the lesson:
 
-     for i = 1, COIN_COUNT do
-       local coin = coins[i]
-       if coin and not coin.taken and overlaps_coin(me, coin) then
-         try_collect(i)
-       end
-     end
-   end
+- The ``claiming`` guard stops ``_update`` from piling up a new lock request every frame
+  while you stand on a coin.
+- The ``taken`` **re-check inside** ``acquire`` is the whole point of the lock: the world
+  may have changed between asking for the lock and being granted it. The loser of the race
+  reaches this line and finds the coin already gone.
+- ``release()`` runs on every path -- a lock that is never released blocks that coin for the
+  rest of the session.
 
-.. note::
-
-   Two details worth copying into your own games. The ``claiming`` table stops ``_update``
-   from piling up a new lock request every frame while you stand on a coin. And the
-   ``taken`` re-check inside ``acquire`` is the whole point of the lock: state may have
-   changed between asking for the lock and receiving it.
+Drive it from an ``update_collect()`` that loops over the coins and calls ``try_collect(i)``
+for any untaken coin overlapping you. For the overlap test, use the AABB helper from
+:doc:`/limitations` with the player and coin sizes.
 
 Step 5: The host respawns coins from a queue
 ============================================
 
-Collectors push the coin's index to the ``"respawns"`` queue; the host pops one every couple
-of seconds and puts a fresh coin on the field. A queue fits perfectly: pushes from all players
-line up in order, each item is delivered to exactly one popper, and ``pop`` on an empty queue
-just hands the callback ``nil``.
+Collectors push the coin's index onto the ``"respawns"`` queue (already done in Step 4); the
+host pops one every couple of seconds and refreshes that coin. A queue fits perfectly:
+pushes from all players line up in order, each index is delivered to exactly one popper, and
+popping an empty queue just hands the callback ``nil``:
 
 .. code-block:: lua
 
-   function update_respawns()
-     respawn_timer = respawn_timer + 1
-     if respawn_timer < RESPAWN_DELAY then
-       return
+   net.queue("respawns").pop(function(i)
+     if i and not net.state.winner then
+       net.state.coins[i] = new_coin()
      end
-     respawn_timer = 0
+   end)
 
-     net.queue("respawns").pop(function(i)
-       if i and not net.state.winner then
-         net.state.coins[i] = new_coin()
-       end
-     end)
-   end
+Wrap this in ``update_respawns()``, gated by ``respawn_timer`` counting up to
+``RESPAWN_DELAY``. Only the host calls it -- add it to ``update_playing()`` inside an
+``is_host`` branch, next to ``update_movement()`` and ``update_collect()`` which everyone
+runs. Close the loop like in Pong: when ``net.state.winner`` appears, announce it and switch
+to ``"over"``, where ``m`` calls ``net.leave()`` and restarts.
 
-Step 6: The game loop and drawing
-=================================
+.. admonition:: Try it -- prove the lock works
 
-.. code-block:: lua
-
-   function update_playing()
-     update_movement()
-     update_collect()
-
-     if is_host then
-       update_respawns()
-     end
-
-     if net.state.winner then
-       state = "over"
-       if net.state.winner == net.id() then
-         print("You win! Press M for the menu.")
-       else
-         print("Player " .. net.state.winner .. " wins. Press M for the menu.")
-       end
-     end
-   end
-
-   function _update()
-     if state == "menu" then
-       update_menu()
-     elseif state == "waiting" then
-       update_waiting()
-     elseif state == "playing" then
-       update_playing()
-     elseif state == "over" and key_pressed("m") then
-       net.leave()
-       _init()
-     end
-   end
-
-Iterating ``net.state.players`` with ``pairs`` yields **string** keys -- convert with
-``tonumber`` before comparing against ``net.id()``. Each player draws its score as a row of
-small squares in its own color.
-
-.. code-block:: lua
-
-   function draw_players()
-     local row = 0
-     for id, p in pairs(net.state.players or {}) do
-       fill_rect(p.col, p.x, p.y, PLAYER_SIZE, PLAYER_SIZE)
-
-       if tonumber(id) == net.id() then
-         rect(7, p.x - 2, p.y - 2, PLAYER_SIZE + 4, PLAYER_SIZE + 4)   -- highlight yourself
-       end
-
-       for i = 1, p.score do
-         fill_rect(p.col, 4 + (i - 1) * 6, 4 + row * 8, 4, 4)
-       end
-       row = row + 1
-     end
-   end
-
-   function draw_coins()
-     local coins = net.state.coins
-     if not coins then
-       return
-     end
-
-     for i = 1, COIN_COUNT do
-       local coin = coins[i]
-       if coin and not coin.taken then
-         fill_rect(COL_COIN, coin.x, coin.y, COIN_SIZE, COIN_SIZE)
-       end
-     end
-   end
-
-   function _draw()
-     clear(COL_BG)
-
-     if state == "playing" or state == "over" then
-       draw_coins()
-       draw_players()
-     else
-       -- Menu / waiting: show one square per possible player
-       for i = 1, #COLORS do
-         fill_rect(COLORS[i], 60 * i + 20, (H - PLAYER_SIZE) / 2, PLAYER_SIZE, PLAYER_SIZE)
-       end
-     end
-   end
-
-Step 7: Prove the lock works
-============================
-
-Host on one machine, join on another, and park both squares on the same coin. Exactly one
-score goes up, every time. Then remove the lock -- run the body of ``try_collect`` directly --
-and repeat: sooner or later both players score off the same coin. That double-collect is the
-race the lock removes.
+   Park two players on the same coin. Exactly one score goes up, every time. Then remove the
+   lock -- call the body of ``try_collect`` directly -- and repeat: sooner or later both
+   players score off the same coin. That double-collect is the race the lock removes.
 
 How it all fits together
 ========================
@@ -382,6 +219,16 @@ How it all fits together
      push i to "respawns" ---->  pops one index every 2 s,
      loser: already taken,          respawns that coin
      does nothing
+
+Complete code
+=============
+
+Compare your build against the :doc:`full documented script <click-race-code>`.
+
+.. toctree::
+   :hidden:
+
+   click-race-code
 
 Extending the example
 =====================
