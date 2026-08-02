@@ -63,9 +63,17 @@ The finished script from the :doc:`tag` tutorial, ready to compare against your 
    end
 
    function update_waiting()
+     -- Cancelling a dialog fires no callback, so the game stays here. Let the
+     -- player re-open host/join directly, or press M to return to the menu.
      if key_pressed("m") then
        state = "menu"
        print("Press H to host a game, J to join one")
+     elseif key_pressed("h") then
+       is_host = true
+       net.host({ max_players = 4, title = "Tag arena" }, on_connected)
+     elseif key_pressed("j") then
+       is_host = false
+       net.join(on_connected)
      end
    end
 
