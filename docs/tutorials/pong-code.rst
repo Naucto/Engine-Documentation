@@ -56,11 +56,17 @@ The finished script from the :doc:`pong` tutorial, ready to compare against your
    end
 
    function update_waiting()
-     -- If the player cancelled the dialog, the callback never fires:
-     -- let them return to the menu
+     -- Cancelling a dialog fires no callback, so the game stays here. Let the
+     -- player re-open host/join directly, or press M to return to the menu.
      if key_pressed("m") then
        state = "menu"
        print("Press H to host a game, J to join one")
+     elseif key_pressed("h") then
+       is_host = true
+       net.host({ max_players = 2, title = "Pong" }, on_connected)
+     elseif key_pressed("j") then
+       is_host = false
+       net.join(on_connected)
      end
    end
 

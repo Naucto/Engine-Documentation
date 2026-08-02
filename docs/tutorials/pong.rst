@@ -70,7 +70,8 @@ menu design. Two rules to encode:
    the dialog is still open, it raises an error -- and an uncaught error stops the game.
    Moving to ``"waiting"`` first makes the call impossible to repeat.
 2. **Cancel means nothing fires.** The only signal for "the player cancelled" is the absence
-   of your callback, so give ``"waiting"`` a way back to the menu (a key press).
+   of your callback, so give ``"waiting"`` its own inputs -- otherwise a cancel strands the
+   player there. Let them re-open host/join, or press a key to return to the menu.
 
 .. code-block:: lua
 
@@ -86,15 +87,17 @@ menu design. Two rules to encode:
      end
    end
 
-Write ``update_waiting()`` yourself: when ``m`` is pressed, return to ``"menu"`` and reprint
-the instructions.
+Write ``update_waiting()`` yourself: ``m`` returns to ``"menu"`` and reprints the instructions,
+while ``h``/``j`` re-open the host/join dialog. Calling ``net.host``/``net.join`` again from
+here is safe -- a cancelled attempt fully resets the net state. Without these inputs, a cancel
+would strand the player in ``"waiting"``.
 
 .. admonition:: Try it
 
    Add a placeholder ``on_connected`` that just prints something, plus empty
    ``update_playing`` / ``update_over``, and run the game. ``H`` should open the host dialog
-   (note how the capacity is fixed at 2 -- the game decided that, not the player). Cancel it,
-   press ``M``, and you are back in the menu.
+   (note how the capacity is fixed at 2 -- the game decided that, not the player). Cancel it --
+   pressing ``H``/``J`` re-opens the dialog, or ``M`` takes you back to the menu.
 
 Step 3: The host sets the table
 ===============================
