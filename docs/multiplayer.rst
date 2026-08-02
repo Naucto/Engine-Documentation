@@ -48,8 +48,8 @@ The API offers three complementary tools; picking the right one keeps your game 
 Who writes what
 ===============
 
-``net.state`` has no access control: any peer can write any key. Multiplayer games stay
-consistent by **ownership convention**:
+``net.state`` is **allow-by-default**: with nothing configured, any peer can read or write
+any key, and games stay consistent by **ownership convention**:
 
 - Each player writes only its own branch, keyed by its player id:
 
@@ -71,6 +71,22 @@ consistent by **ownership convention**:
 - Everyone may *read* everything.
 
 When two peers genuinely must write the same key, protect it with ``net.lock``.
+
+Enforcing it: permissions
+-------------------------
+
+Convention is enough for a cooperative game, but you can make it a rule. The **MULTIPLAYER**
+tab in the editor gives every ``net.state`` path two flags, enforced by the host at runtime:
+
+- **Clients can write** (off = only the host may write it). A client's write to a protected
+  path is rejected and rolled back -- so a player cannot set its own ``score`` or declare
+  itself the ``winner``.
+- **Clients can read** (off = the host keeps it private). The host never sends the path to
+  clients, in snapshots or live updates -- for server-only state like a shuffled deck.
+
+Flags inherit from the nearest configured ancestor, and paths you never configure stay fully
+open, so existing games are unaffected. The host is always the authority (there is no
+"server" role to restrict). See :doc:`tutorials/permissions` for a worked example.
 
 Session lifecycle
 =================

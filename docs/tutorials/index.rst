@@ -11,3 +11,4 @@ Step-by-step guides to help you build complete games with Naucto.
    pong
    click-race
    tag
+   permissions
