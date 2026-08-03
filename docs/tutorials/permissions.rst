@@ -1,6 +1,6 @@
-====================================
+=====================================
 Permissions -- locking down net.state
-====================================
+=====================================
 
 By default ``net.state`` trusts every client: any peer can write any key, and games stay
 honest by :doc:`ownership convention </multiplayer>`. That is fine for a friendly game, but a
@@ -16,7 +16,8 @@ Every ``net.state`` path has two client permissions, set in the **MULTIPLAYER** 
 enforced by the **host** at runtime:
 
 - **Clients can write** -- when off, only the host may write the path. A client's write is
-  rejected and rolled back on that client (``net.on`` change listeners never see it).
+  applied optimistically and then rolled back when the host's rejection arrives, so a
+  ``net.on`` change listener sees the value flip and flip back.
 - **Clients can read** -- when off, the host keeps the path private: it is never sent to
   clients, in the join snapshot or in live updates.
 
@@ -78,14 +79,9 @@ write** off (leave **Clients can read** on -- everyone still needs to see who wo
 host: the game plays exactly as before, because only the host writes ``winner`` now.
 
 To see the rule bite, temporarily add ``net.state.winner = net.id()`` to a client path (say,
-on a key press). Instead of ending the game it is rejected -- the host refuses the write and
-the value snaps back. Handle the rejection if you like:
-
-.. code-block:: lua
-
-   net.on("error", function(path, reason)
-     print(path .. " was rejected: " .. reason)   -- "winner was rejected: forbidden"
-   end)
+on a key press). Instead of ending the game it is rejected -- the write is applied for a moment
+and then the host's rejection snaps the value back, so a ``net.on("winner", ...)`` listener
+sees it flip and flip back.
 
 .. note::
 

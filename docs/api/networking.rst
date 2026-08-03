@@ -46,14 +46,15 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
    dialog, the callback is never called and no session starts -- design your game so it simply
    stays in its menu state in that case.
 
-   Raises ``net: already in a session; call net.leave() first`` if a session is active, and
-   ``net: a host/join request is already in progress`` if a host/join dialog is already open.
+   Raises ``net: already in a session; call net.leave() first`` if a session is active. A
+   second call made while a host/join dialog is still open is silently ignored (a no-op), not
+   an error.
 
    .. warning::
 
-      Because a second call while the dialog is open raises an error, never call ``net.host``
-      unconditionally from ``_update()``. Guard it so it runs once, for example by switching to
-      a ``"waiting"`` state before the call.
+      A second call while the dialog is open is ignored, so an unconditional ``net.host`` from
+      ``_update()`` will not error -- but it still leaves your game with no clear state. Guard
+      it so it runs once, for example by switching to a ``"waiting"`` state before the call.
 
    .. code-block:: lua
 
@@ -74,8 +75,9 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
       has been joined.
 
    As with :func:`net.host`, the callback fires only on success: if the player cancels the
-   dialog, nothing happens. Raises the same two errors as :func:`net.host` when a session is
-   already active or a dialog is already open.
+   dialog, nothing happens. Like :func:`net.host`, it raises ``net: already in a session; call
+   net.leave() first`` when a session is already active, and silently ignores a repeat call
+   made while a dialog is still open.
 
    .. code-block:: lua
 

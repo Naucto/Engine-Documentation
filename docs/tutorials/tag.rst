@@ -28,8 +28,9 @@ Step 1: Assemble the known parts
 Start from the Pong session menu (``max_players = 4``, title ``"Tag arena"``) and Coin
 Rush's host-provisioning: the same ``provision_player`` with its first-writer idiom, minus
 the ``score`` field, and the same ``my_player()`` / ``update_movement()`` pair for
-arrow-key movement clamped to the screen. You will also want Coin Rush's ``overlaps``
-AABB test between two players.
+arrow-key movement clamped to the screen. You will also want an AABB overlap test between two
+players -- Tag defines its own two-player ``overlaps(a, b)`` (shown in :doc:`tag-code`), the
+same rectangle-overlap test explained in :doc:`/limitations`.
 
 New locals for this game: ``tag_cooldown`` (host only) and ``taunt_timer``, plus two
 constants -- ``IT_SPEED`` slightly above ``SPEED`` (the chaser's reward) and

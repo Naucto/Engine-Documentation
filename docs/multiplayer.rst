@@ -111,8 +111,9 @@ A robust multiplayer game is a small state machine around the session:
 
 Points that deserve care:
 
-- ``net.host`` and ``net.join`` raise an error if called while a session is active or while a
-  dialog is already open -- never call them unconditionally every frame; switch state first.
+- ``net.host`` and ``net.join`` raise an error only if called while a session is already
+  active; a repeat call made while a dialog is still open is silently ignored. Either way, don't
+  call them unconditionally every frame -- switch state first so the flow stays clear.
 - The success callback is the only signal: if the player cancels the dialog, your game simply
   stays where it was.
 - Outside a session, every other ``net`` function raises ``net: no active session``. Gate your
