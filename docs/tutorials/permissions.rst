@@ -21,14 +21,14 @@ enforced by the **host** at runtime:
 - **Clients can read** -- when off, the host keeps the path private: it is never sent to
   clients, in the join snapshot or in live updates.
 
-Two things to keep in mind:
+Three things to keep in mind:
 
 - **Allow-by-default.** A path you never configure is fully open. You opt into restrictions;
   you never have to grant permissions just to keep a game working.
 - **Inheritance.** A path inherits the flags of its nearest configured ancestor, so locking
   ``players`` locks ``players.3.x`` too -- configure at the granularity you actually own.
-- **The host is the authority.** There is no separate server to restrict; ``SERVER_*`` is
-  reserved. "Client" always means a joined peer.
+- **The host is the authority.** There is no separate server to restrict. "Client" always
+  means a joined peer.
 
 Make the winner host-authoritative
 ==================================

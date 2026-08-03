@@ -66,9 +66,10 @@ Step 2: Hosting and joining
 fires only if the session is actually created or joined. That asymmetry drives the whole
 menu design. Two rules to encode:
 
-1. **Switch state before calling.** If you call ``net.host`` again on the next frame while
-   the dialog is still open, it raises an error -- and an uncaught error stops the game.
-   Moving to ``"waiting"`` first makes the call impossible to repeat.
+1. **Switch state before calling.** A repeat ``net.host`` on the next frame while the dialog
+   is still open is silently ignored -- a no-op, not an error (an error is raised only if a
+   session is already active). Moving to ``"waiting"`` first keeps the game's state clear
+   instead of firing the call unconditionally every frame.
 2. **Cancel means nothing fires.** The only signal for "the player cancelled" is the absence
    of your callback, so give ``"waiting"`` its own inputs -- otherwise a cancel strands the
    player there. Let them re-open host/join, or press a key to return to the menu.
