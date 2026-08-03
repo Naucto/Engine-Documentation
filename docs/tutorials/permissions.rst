@@ -108,7 +108,12 @@ host reveals what it wants through separate, readable keys.
 What to lock down
 =================
 
-A good rule of thumb: **the host owns anything global or authoritative** -- scores, the
-winner, whose turn it is, spawned pickups -- and clients own only their own id-keyed branch
-(their position, their inputs). Mark the global keys host-only and you have turned the
+A good rule of thumb: **the host owns anything global or authoritative** -- the winner, whose
+turn it is, spawned pickups -- and clients own only their own id-keyed branch (their position,
+their inputs, their own score). Mark the global keys host-only and you have turned the
 ownership convention into something the engine guarantees.
+
+Note the distinction: in click-race each player's score lives inside its own id-keyed branch
+(``net.state.players[net.id()].score``) and is written by that client, so it stays open -- it
+is the *winner* derived from those scores that is global and belongs to the host. Lock the
+authoritative fact, not the per-player data that feeds it.

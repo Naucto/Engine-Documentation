@@ -208,6 +208,10 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
    | ``"event:<name>"``   | ``(from, payload)``      | A peer calls ``net.emit("<name>",     |
    |                      |                          | payload)``; ``from`` is its player id |
    +----------------------+--------------------------+---------------------------------------+
+   | ``"error"``          | ``(path, reason)``       | The host rejects (and rolls           |
+   |                      |                          | back) a client write to a             |
+   |                      |                          | permission-protected path             |
+   +----------------------+--------------------------+---------------------------------------+
    | anything else        | ``(path, newValue)``     | A matching :data:`net.state` key      |
    | (a state path)       |                          | changes                               |
    +----------------------+--------------------------+---------------------------------------+
@@ -215,7 +219,10 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
    State patterns match dotted key paths and support two wildcards: ``*`` matches exactly one
    path segment, ``**`` matches any number of segments. Change callbacks fire only when the
    value actually changes (rewriting an identical value is silent), and they fire for your own
-   writes too.
+   writes too. The names above are reserved: ``net.on("error", ...)`` always registers the
+   rejection listener, so it never observes a :data:`net.state` key literally named ``error``.
+   Listening for ``"error"`` is the intended way to detect a write the host rolled back --
+   see the :doc:`/tutorials/permissions` tutorial.
 
    .. code-block:: lua
 
