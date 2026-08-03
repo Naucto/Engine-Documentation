@@ -222,8 +222,9 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
    value actually changes (rewriting an identical value is silent), and they fire for your own
    writes too. The names above are reserved: ``net.on("error", ...)`` always registers the
    rejection listener, so it never observes a :data:`net.state` key literally named ``error``.
-   Listening for ``"error"`` is the intended way to detect a write the host rolled back --
-   see the :doc:`/tutorials/permissions` tutorial.
+   Listening for ``"error"`` is the intended way to detect a write the host rolled back; the
+   :doc:`/tutorials/permissions` tutorial shows that rejected-write behavior in action, there
+   observed via the protected value flipping back.
 
    .. code-block:: lua
 
