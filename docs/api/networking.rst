@@ -52,9 +52,10 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
 
    .. warning::
 
-      A second call while the dialog is open is ignored, so an unconditional ``net.host`` from
-      ``_update()`` will not error -- but it still leaves your game with no clear state. Guard
-      it so it runs once, for example by switching to a ``"waiting"`` state before the call.
+      While the dialog is open a repeat call is ignored, but once the session is created an
+      unconditional ``net.host`` from ``_update()`` raises ``net: already in a session`` on the
+      very next frame. Guard it so it runs once, for example by switching to a ``"waiting"``
+      state before the call.
 
    .. code-block:: lua
 
