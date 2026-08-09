@@ -102,6 +102,7 @@ build.
        x     = math.random(8, W - 8 - COIN_SIZE),
        y     = math.random(8, H - 8 - COIN_SIZE),
        taken = false,
+       lock  = net.lock(),   -- each coin guards itself; lives in net.state.coins[i]
      }
    end
 
@@ -114,6 +115,8 @@ build.
          coins[i] = new_coin()
        end
        net.state.coins = coins
+
+       net.state.respawns = net.queue()   -- shared work queue, host pops from it
 
        net.on("peer.joined", function(playerId)
          provision_player(playerId)
@@ -177,7 +180,7 @@ build.
      end
      claiming[i] = true
 
-     net.lock("coin." .. i).acquire(function(release)
+     net.state.coins[i].lock.acquire(function(release)
        claiming[i] = false
 
        local coin = net.state.coins[i]
@@ -185,7 +188,7 @@ build.
          coin.taken = true
          local me = my_player()
          me.score = me.score + 1
-         net.queue("respawns").push(i)    -- ask the host for a replacement
+         net.state.respawns.push(i)       -- ask the host for a replacement
 
          if me.score >= WIN_SCORE then
            net.state.winner = net.id()
@@ -222,7 +225,7 @@ build.
      end
      respawn_timer = 0
 
-     net.queue("respawns").pop(function(i)
+     net.state.respawns.pop(function(i)
        if i and not net.state.winner then
          net.state.coins[i] = new_coin()
        end

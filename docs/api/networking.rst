@@ -148,6 +148,10 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
    - **A branch exists only while at least one value lives under it.** Assigning an empty
      table stores nothing, so the branch still reads back as ``nil`` -- create nested data by
      assigning a non-empty table, then update its fields.
+   - A slot may also hold a **lock or queue object** (see :func:`net.lock` and :func:`net.queue`).
+     Its internal state is stored and replicated alongside ``net.state`` but is hidden from plain
+     reads: the slot reads back as the object's handle, not as data, and it does not appear as
+     ordinary keys.
    - ``#net.state.list`` counts consecutive integer keys starting at ``1``, like a regular Lua
      sequence.
    - ``pairs(net.state.players)`` iterates the branch's direct children. **Keys come back as
@@ -256,29 +260,29 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
 ``net.lock``
 ============
 
-.. function:: net.lock(path)
+.. function:: net.lock()
 
-   Create a handle for a named mutual-exclusion lock. Locks let players compete for something
-   safely -- only one peer at a time can hold a given lock, no matter how simultaneously they
-   ask.
+   Create a mutual-exclusion lock. Locks let players compete for something safely -- only one
+   peer at a time can hold a given lock, no matter how simultaneously they ask.
 
-   :param string path: The lock's name. Any string; locks are independent from ``net.state``
-      keys, but naming them after what they protect (``"score"``, ``"coin.3"``) is a good
-      habit.
-   :returns: A handle table with two functions:
+   :returns: A lock handle -- a table with an ``acquire`` and an ``is_locked`` function.
+
+   **Put the lock in** :data:`net.state` **to share it.** A lock becomes shared and
+   host-serialized only once it is assigned into ``net.state``; its net.state path is its
+   identity, and you use it straight from there. Store it right next to what it protects:
 
    .. code-block:: lua
 
-      local lock = net.lock("score")
+      net.state.score_lock = net.lock()   -- create the shared lock (host does this once)
 
-      lock.acquire(function(release)
-        -- exclusive section: no other peer holds "score" right now, so this
+      net.state.score_lock.acquire(function(release)
+        -- exclusive section: no other peer holds this lock right now, so this
         -- read-modify-write cannot lose an increment to a simultaneous one
         net.state.score = (net.state.score or 0) + 1
         release()   -- always release when done
       end)
 
-      if lock.is_locked() then ... end
+      if net.state.score_lock.is_locked() then ... end
 
    - ``acquire(fn)`` requests the lock. When granted, ``fn`` is called with a single argument:
      a ``release`` function that frees the lock. If the lock is busy, the request waits in a
@@ -287,7 +291,15 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
 
    Requests are ordered by the session host, so two peers acquiring "at the same time" are
    serialized -- one runs, then the other. If a peer disconnects while holding locks, its locks
-   are released automatically and its pending requests are dropped.
+   are released automatically and its pending requests are dropped. A lock stored under a
+   host-only path (see :doc:`/tutorials/permissions`) can only be acquired by the host, just
+   like a write to that path.
+
+   .. note::
+
+      A lock you never assign into ``net.state`` is a **local** lock: usable without a session,
+      but private to this player and uncontended (it grants immediately). It exists so the same
+      code runs in single-player and multiplayer.
 
    .. warning::
 
@@ -297,27 +309,28 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
 ``net.queue``
 =============
 
-.. function:: net.queue(path)
+.. function:: net.queue()
 
-   Create a handle for a named shared FIFO queue. All players see the same queue and pops are
-   ordered by the session host, so an item is delivered to exactly one popper.
+   Create a shared FIFO queue. All players see the same queue and pops are ordered by the
+   session host, so an item is delivered to exactly one popper.
 
-   :param string path: The queue's name. Like locks, queues live in their own namespace,
-      separate from ``net.state``.
-   :returns: A handle table with four functions:
+   :returns: A queue handle -- a table with ``push``, ``pop``, ``length`` and ``peek``.
+
+   Like a lock, a queue becomes shared only once it is assigned into :data:`net.state`; its
+   net.state path is its identity, and you use it from there:
 
    .. code-block:: lua
 
-      local q = net.queue("respawns")
+      net.state.respawns = net.queue()      -- create the shared queue (host does this once)
 
-      q.push({ coin = 3 })           -- append a value
-      q.pop(function(value)          -- remove the head; nil when empty
+      net.state.respawns.push({ coin = 3 }) -- append a value
+      net.state.respawns.pop(function(value)  -- remove the head; nil when empty
         if value then
           respawn_coin(value.coin)
         end
       end)
-      local n = q.length()           -- current number of items
-      local head = q.peek()          -- read the head without removing it (nil if empty)
+      local n = net.state.respawns.length()  -- current number of items
+      local head = net.state.respawns.peek() -- read the head without removing it (nil if empty)
 
    - ``push(value)`` appends any serializable value (numbers, strings, booleans, nested
      tables). Pushing a function raises ``net: cannot queue a function``.
@@ -325,6 +338,11 @@ peer-to-peer with an automatic relay fallback; your code never has to care which
      queue the callback receives ``nil``. The callback form exists because the head may live on
      another peer; treat the value as arriving "soon" rather than instantly.
    - ``length()`` and ``peek()`` read the local replica synchronously.
+
+   .. note::
+
+      A queue you never assign into ``net.state`` is a **local** queue: usable without a
+      session, but private to this player.
 
 Host authority
 ==============

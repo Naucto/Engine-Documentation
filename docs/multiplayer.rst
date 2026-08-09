@@ -41,9 +41,12 @@ The API offers three complementary tools; picking the right one keeps your game 
    join belongs in ``net.state`` instead. The sender does not receive its own event.
 
 **Locks and queues --** ``net.lock`` / ``net.queue``
-   Coordination primitives for when players *compete* -- two players grabbing the same coin, or
-   work items that exactly one peer should process. Both are ordered by the host, so
-   "simultaneous" actions are cleanly serialized.
+   Coordination objects for when players *compete* -- two players grabbing the same coin, or
+   work items that exactly one peer should process. You create one with ``net.lock()`` /
+   ``net.queue()`` and place it *in* ``net.state`` (``net.state.respawns = net.queue()``), then
+   use it from there. Both are ordered by the host, so "simultaneous" actions are cleanly
+   serialized, and being in ``net.state`` they obey the same per-path permissions as any other
+   key.
 
 Who writes what
 ===============
@@ -102,7 +105,7 @@ A robust multiplayer game is a small state machine around the session:
      |                 - player cancels: nothing fires -- offer the menu again
      |                 - success: your callback fires
      v
-   "playing"         net.state / net.emit / locks / queues are usable
+   "playing"         net.state (values, locks, queues) / net.emit are usable
      |                 - net.on("peer.joined"): a player arrived (mid-game joins included)
      |                 - net.on("peer.left"):   a player disconnected; clean up its state
      |                 - net.on("ended"):       the host left; the session is gone

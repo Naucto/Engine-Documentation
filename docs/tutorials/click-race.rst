@@ -16,9 +16,9 @@ What you will build
 
 - A host/join menu for up to **four** players
 - One colored square per player, moved with the arrow keys
-- Coins that only **one** player can collect, no matter how simultaneous the grab
-  (``net.lock``)
-- A respawn work queue processed by the host (``net.queue``)
+- Coins that only **one** player can collect, no matter how simultaneous the grab -- each
+  coin carries a lock in ``net.state`` (``net.lock``)
+- A respawn work queue in ``net.state``, processed by the host (``net.queue``)
 - Per-player scores and a first-to-ten win
 
 Everything is drawn with :func:`fill_rect` and :func:`rect` -- no sprites needed.
@@ -71,17 +71,33 @@ Build ``provision_player(playerId)`` around it: construct ``entry`` with a rando
 (``next_color % #COLORS + 1``).
 
 The host's part of ``on_connected`` then reads like a checklist: provision yourself, create
-the coins, subscribe to ``peer.joined`` (provision them) and ``peer.left`` (delete
-``net.state.players[playerId]``). For the coins, build a plain local table of ``COIN_COUNT``
-entries -- each with a random position and ``taken = false`` -- and assign it to
-``net.state.coins`` in one go. Both roles subscribe to ``"ended"`` and switch to
-``"playing"``, as in Pong.
+the coins, create the respawn queue, subscribe to ``peer.joined`` (provision them) and
+``peer.left`` (delete ``net.state.players[playerId]``). For the coins, build a plain local
+table of ``COIN_COUNT`` entries -- each with a random position, ``taken = false``, and its
+own ``lock = net.lock()`` -- and assign it to ``net.state.coins`` in one go. A ``new_coin()``
+helper that returns one such entry keeps this tidy and gets reused on respawn:
+
+.. code-block:: lua
+
+   function new_coin()
+     return {
+       x     = math.random(8, W - 8 - COIN_SIZE),
+       y     = math.random(8, H - 8 - COIN_SIZE),
+       taken = false,
+       lock  = net.lock(),   -- each coin guards itself; see Step 4
+     }
+   end
+
+Create the respawn queue in the same place, with ``net.state.respawns = net.queue()`` -- a
+queue lives in ``net.state`` just like the coins do. Both roles subscribe to ``"ended"`` and
+switch to ``"playing"``, as in Pong.
 
 .. note::
 
    Collected coins will be *marked* ``taken`` rather than deleted. Keeping all
    ``COIN_COUNT`` entries alive means the ``coins`` branch always exists and every index
-   stays valid -- one less ``nil`` case everywhere else in the game.
+   stays valid -- one less ``nil`` case everywhere else in the game. Each coin's ``lock`` sits
+   right beside the ``taken`` flag it protects.
 
 Step 3: Moving your square
 ==========================
@@ -129,9 +145,9 @@ Step 4: Collecting coins with a lock
 ====================================
 
 Here is the race this game exists for: two players overlap coin ``3`` on the same frame and
-both try to take it. Both read ``taken == false``, both would mark it, both would score.
-``net.lock`` settles it -- requests are granted one peer at a time, so whatever runs inside
-``acquire`` runs exclusively:
+both try to take it. Both read ``taken == false``, both would mark it, both would score. The
+coin's own lock -- ``net.state.coins[i].lock``, created in Step 2 -- settles it: requests are
+granted one peer at a time, so whatever runs inside ``acquire`` runs exclusively:
 
 .. code-block:: lua
 
@@ -141,7 +157,7 @@ both try to take it. Both read ``taken == false``, both would mark it, both woul
      end
      claiming[i] = true
 
-     net.lock("coin." .. i).acquire(function(release)
+     net.state.coins[i].lock.acquire(function(release)
        claiming[i] = false
 
        local coin = net.state.coins[i]
@@ -149,7 +165,7 @@ both try to take it. Both read ``taken == false``, both would mark it, both woul
          coin.taken = true
          local me = my_player()
          me.score = me.score + 1
-         net.queue("respawns").push(i)    -- Step 5
+         net.state.respawns.push(i)       -- Step 5
 
          if me.score >= WIN_SCORE then
            net.state.winner = net.id()
@@ -177,16 +193,16 @@ for any untaken coin overlapping you. For the overlap test, use the AABB helper 
 Step 5: The host respawns coins from a queue
 ============================================
 
-Collectors push the coin's index onto the ``"respawns"`` queue (already done in Step 4); the
-host pops one every couple of seconds and refreshes that coin. A queue fits perfectly:
-pushes from all players line up in order, each index is delivered to exactly one popper, and
-popping an empty queue just hands the callback ``nil``:
+Collectors push the coin's index onto the ``net.state.respawns`` queue (already done in
+Step 4); the host pops one every couple of seconds and refreshes that coin. A queue fits
+perfectly: pushes from all players line up in order, each index is delivered to exactly one
+popper, and popping an empty queue just hands the callback ``nil``:
 
 .. code-block:: lua
 
-   net.queue("respawns").pop(function(i)
+   net.state.respawns.pop(function(i)
      if i and not net.state.winner then
-       net.state.coins[i] = new_coin()
+       net.state.coins[i] = new_coin()   -- new_coin() gives it a fresh lock too
      end
    end)
 
@@ -207,17 +223,17 @@ How it all fits together
 
 .. code-block:: text
 
-   Any player                    Host
-   ----------------------        --------------------------------
-   moves own players.<id>        provisions players on peer.joined
-   sees a coin, wants it         cleans them up on peer.left
+   Any player                        Host
+   ------------------------------    --------------------------------
+   moves own players.<id>            provisions players on peer.joined
+   sees a coin, wants it             cleans them up on peer.left
      |
      v
-   net.lock("coin.i")   ---->    grants requests one at a time
+   net.state.coins[i].lock    ---->  grants requests one at a time
      winner: taken = true,
      score + 1,
-     push i to "respawns" ---->  pops one index every 2 s,
-     loser: already taken,          respawns that coin
+     net.state.respawns.push(i) -->  pops one index every 2 s,
+     loser: already taken,              respawns that coin
      does nothing
 
 Complete code
