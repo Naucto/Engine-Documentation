@@ -36,6 +36,7 @@ write Lua scripts, and see your game come to life instantly -- no installation r
 
    game-loop
    coordinates
+   multiplayer
 
 .. toctree::
    :maxdepth: 2

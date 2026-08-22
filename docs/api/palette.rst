@@ -5,6 +5,50 @@ Palette Controls
 The engine uses a color palette for all rendering. These functions let you temporarily remap
 palette colors for visual effects.
 
+The palette
+===========
+
+The palette has **16 colors**, indexes ``0`` to ``15`` (the standard PICO-8 set). Every
+function that takes a color expects one of these indexes:
+
+.. TODO: Revalidate palette assumptions in this page after the frontend rendering refactor.
+
++--------+-------------+-------------+
+| Index  | Color       | Hex         |
++========+=============+=============+
+| ``0``  | black       | ``#000000`` |
++--------+-------------+-------------+
+| ``1``  | dark blue   | ``#1D2B53`` |
++--------+-------------+-------------+
+| ``2``  | dark purple | ``#7E2553`` |
++--------+-------------+-------------+
+| ``3``  | dark green  | ``#008751`` |
++--------+-------------+-------------+
+| ``4``  | brown       | ``#AB5236`` |
++--------+-------------+-------------+
+| ``5``  | dark grey   | ``#5F574F`` |
++--------+-------------+-------------+
+| ``6``  | light grey  | ``#C2C3C7`` |
++--------+-------------+-------------+
+| ``7``  | white       | ``#FFF1E8`` |
++--------+-------------+-------------+
+| ``8``  | red         | ``#FF004D`` |
++--------+-------------+-------------+
+| ``9``  | orange      | ``#FFA300`` |
++--------+-------------+-------------+
+| ``10`` | yellow      | ``#FFEC27`` |
++--------+-------------+-------------+
+| ``11`` | green       | ``#00E436`` |
++--------+-------------+-------------+
+| ``12`` | blue        | ``#29ADFF`` |
++--------+-------------+-------------+
+| ``13`` | lavender    | ``#83769C`` |
++--------+-------------+-------------+
+| ``14`` | pink        | ``#FF77A8`` |
++--------+-------------+-------------+
+| ``15`` | peach       | ``#FFCCAA`` |
++--------+-------------+-------------+
+
 ``set_col``
 ===========
 
@@ -22,7 +66,8 @@ palette colors for visual effects.
    - **Enemy recolors** -- create enemy variants by swapping specific colors
    - **Power-up effects** -- tint the player when powered up
 
-   Invalid palette indexes print an error in the output panel.
+   Invalid palette indexes print an error in the output panel. Unlike :func:`clear`, the error
+   is caught by the engine: the frame keeps running with the palette unchanged.
 
    .. code-block:: lua
 

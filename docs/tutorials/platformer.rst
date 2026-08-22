@@ -5,6 +5,10 @@ Build a Platformer Game
 This tutorial walks you through building a complete platformer with animated sprites, gravity,
 jumping, platform collision, and camera scrolling.
 
+Rather than handing you the finished script, each step explains one idea and shows only the
+lines that carry it; you write the rest. If you get stuck or want to check your work, the
+:doc:`complete code <platformer-code>` is one click away.
+
 What you will build
 ===================
 
@@ -68,7 +72,7 @@ Open the **Map Editor** and paint your level with the tiles you flagged in Step 
 
 Example layout (each cell = 8 pixels):
 
-::
+.. code-block:: text
 
    Row 17 (y=136): platform at columns 9-13
    Row 15 (y=120): platform at columns 17-20
@@ -78,56 +82,22 @@ Example layout (each cell = 8 pixels):
    Row 20 (y=160): end tile at column 50
    Row 21 (y=168): ground spanning columns 0-52
 
-The map now drives collision too. The code in Step 3 uses :func:`mget` to read the tile under the
-player and :func:`fget` to check whether that tile has the solid, deadly, or end flag.
+There is no separate collision data in this game: the painted map *is* the collision data.
+The code reads the tile under the player with :func:`mget` and checks its flags with
+:func:`fget`.
 
-Step 3: Write the code
-=======================
+Step 3: The map is the collision data
+=====================================
 
-Switch to the **Code Editor** and enter the full script below.
+Switch to the **Code Editor**. Start with constants for everything Step 1 and 2 decided:
+the four player sprite indexes, the player size (``8 x 8``), ``TILE_SIZE = 8``, the map size
+(``MAP_W, MAP_H = 128, 32`` -- the default), ``SPRITE_COUNT = 256``, and one constant per
+flag bit (``FLAG_SOLID = 0``, ``FLAG_KILL = 1``, ``FLAG_END = 2``).
 
-Constants
----------
-
-.. code-block:: lua
-
-   -- Change these to match your sprite sheet
-   SPRITE_IDLE   = 0
-   SPRITE_WALK_1 = 1
-   SPRITE_WALK_2 = 2
-   SPRITE_JUMP   = 3
-
-   -- Player dimensions: 1 tile wide, 1 tile tall (8x8 px)
-   PLAYER_W = 8
-   PLAYER_H = 8
-
-   -- Tilemap settings
-   TILE_SIZE  = 8
-   MAP_W      = 128
-   MAP_H      = 32
-   SPRITE_COUNT = 256
-   FLAG_SOLID = 0
-   FLAG_KILL  = 1
-   FLAG_END   = 2
-
-.. note::
-
-   ``MAP_W`` and ``MAP_H`` match the default map size in tiles. ``FLAG_SOLID = 0`` means "check
-   bit 0 on the sprite's flags." ``FLAG_KILL`` and ``FLAG_END`` work the same way with bits ``1``
-   and ``2``. The sprite index itself comes from the map with :func:`mget`, so you do not need to
-   list every platform, hazard, or goal in code. ``SPRITE_COUNT`` keeps :func:`fget` calls inside
-   the sprite sheet's valid ``0`` to ``255`` range.
-
-Helper functions
-----------------
+Then write the one function everything else leans on -- "does the tile at ``(tx, ty)`` carry
+this flag?":
 
 .. code-block:: lua
-
-   function clamp(v, lo, hi)
-     if v < lo then return lo end
-     if v > hi then return hi end
-     return v
-   end
 
    function tile_has_flag(tx, ty, flag)
      if tx < 0 or tx >= MAP_W or ty < 0 or ty >= MAP_H then
@@ -146,110 +116,61 @@ Helper functions
      return fget(sprite_index, flag)
    end
 
-   function is_solid_tile(tx, ty)
-     return tile_has_flag(tx, ty, FLAG_SOLID)
-   end
+The guards are not decoration. :func:`mget` outside the map and :func:`fget` outside
+``0``--``255`` raise fatal errors that stop the game -- and a jumping player *will* poke
+tiles above the map. Treating everything out of bounds as "no flag" makes the world edges
+simply empty. (This is also why ``MAP_W`` / ``MAP_H`` must match your project's real map
+size.)
 
-   function player_touching_flag(flag)
-     local left_tile   = math.floor(player.x / TILE_SIZE)
-     local right_tile  = math.floor((player.x + PLAYER_W - 1) / TILE_SIZE)
-     local top_tile    = math.floor(player.y / TILE_SIZE)
-     local bottom_tile = math.floor((player.y + PLAYER_H - 1) / TILE_SIZE)
+Two thin helpers complete the toolkit -- write them yourself:
 
-     for ty = top_tile, bottom_tile do
-       for tx = left_tile, right_tile do
-         if tile_has_flag(tx, ty, flag) then
-           return true
-         end
-       end
-     end
+- ``is_solid_tile(tx, ty)`` -- shorthand for the ``FLAG_SOLID`` check.
+- ``player_touching_flag(flag)`` -- convert the player's four corners to tile coordinates
+  (divide by ``TILE_SIZE``, ``math.floor``, and use ``x + PLAYER_W - 1`` for the right edge
+  so an 8-pixel body does not overhang into the next tile), then loop the tile rectangle and
+  return ``true`` on the first hit.
 
-     return false
-   end
+Step 4: A player made of numbers
+================================
 
-Initialization
---------------
+The player is one global table created in ``_init()``: position (``x, y`` -- start around
+``24, 40``), velocity (``vx, vy``), and tuning values. Movement is **per frame**, not per
+second (see :doc:`/limitations`), so the numbers are small: ``speed = 1.8``,
+``gravity = 0.30``, ``jump_force = -5.0`` (negative is up), ``max_fall = 5.5``. Add
+``on_ground`` (start ``false``), ``facing``, and ``anim_frame``, plus globals
+``anim_timer = 0`` and ``game_finished = false``.
 
-.. code-block:: lua
-
-   player = {}
-   anim_timer = 0
-   game_finished = false
-
-   function _init()
-     player = {
-       x          = 24,
-       y          = 40,
-       vx         = 0,
-       vy         = 0,
-       speed      = 1.8,
-       gravity    = 0.30,
-       jump_force = -5.0,
-       max_fall   = 5.5,
-       on_ground  = false,
-       facing     = 1,
-       anim_frame = SPRITE_IDLE,
-     }
-     anim_timer = 0
-     game_finished = false
-   end
-
-Input handling
---------------
+Write ``handle_input()``: reset ``vx`` to ``0`` each frame, set it to ``-speed`` /
+``speed`` on ArrowLeft/ArrowRight (accept ``a`` / ``d`` too, and update ``facing``). The
+only subtle line is the jump:
 
 .. code-block:: lua
 
-   function handle_input()
-     player.vx = 0
-
-     if key_pressed("ArrowLeft") or key_pressed("a") then
-       player.vx    = -player.speed
-       player.facing = -1
-     end
-
-     if key_pressed("ArrowRight") or key_pressed("d") then
-       player.vx    = player.speed
-       player.facing = 1
-     end
-
-     local wants_jump = key_pressed("ArrowUp")
-                     or key_pressed("w")
-                     or key_pressed(" ")
-     if wants_jump and player.on_ground then
-       player.vy        = player.jump_force
-       player.on_ground = false
-     end
+   if wants_jump and player.on_ground then
+     player.vy        = player.jump_force
+     player.on_ground = false
    end
 
-Animation
----------
+Gating on ``on_ground`` is what makes it a jump rather than a jetpack -- the flag comes back
+in Step 5.
 
-.. code-block:: lua
+To see something, write the minimal loop now: ``_update()`` calls ``handle_input()`` then
+applies gravity and velocity (``vy = vy + gravity`` capped at ``max_fall``; add ``vx`` to
+``x`` and ``vy`` to ``y``); ``_draw()`` clears with a sky color (``12``), draws ``map(0, 0)``,
+and draws the player: ``sprite(player.anim_frame, player.x, player.y)``.
 
-   function update_animation()
-     if not player.on_ground then
-       player.anim_frame = SPRITE_JUMP
-       return
-     end
+.. admonition:: Try it
 
-     if player.vx ~= 0 then
-       anim_timer = anim_timer + 1
-       if anim_timer >= 8 then
-         anim_timer = 0
-         if player.anim_frame == SPRITE_WALK_1 then
-           player.anim_frame = SPRITE_WALK_2
-         else
-           player.anim_frame = SPRITE_WALK_1
-         end
-       end
-     else
-       player.anim_frame = SPRITE_IDLE
-       anim_timer = 0
-     end
-   end
+   Run the game. You can steer left and right while the player falls straight through your
+   level and off the screen. Collision is the next step.
 
-Movement and collision
-----------------------
+Step 5: Move one axis at a time
+===============================
+
+Resolving X and Y movement separately is the classic trick that keeps tile collision simple:
+after each single-axis move, any overlap can only have come from *that* axis, so you know
+exactly which way to push the player out. Here is the X pass moving right; the shape is the
+lesson:
 
 .. code-block:: lua
 
@@ -270,85 +191,43 @@ Movement and collision
          end
        end
      elseif player.vx < 0 then
-       local left_tile = math.floor(player.x / TILE_SIZE)
-
-       for ty = top_tile, bottom_tile do
-         if is_solid_tile(left_tile, ty) then
-           player.x  = (left_tile + 1) * TILE_SIZE
-           player.vx = 0
-           break
-         end
-       end
+       -- mirror it: check the column at player.x and push out
+       -- to (left_tile + 1) * TILE_SIZE
      end
    end
 
-   function move_y()
-     player.vy = player.vy + player.gravity
-     if player.vy > player.max_fall then
-       player.vy = player.max_fall
-     end
+Move first, test the leading edge, and on a hit snap flush against the tile and zero the
+velocity. Fill in the leftward mirror.
 
-     player.y         = player.y + player.vy
-     player.on_ground = false
+Then write ``move_y()`` on the same pattern -- gravity and the ``max_fall`` cap move in here
+from Step 4 -- with three extra responsibilities:
 
-     local left_tile  = math.floor(player.x / TILE_SIZE)
-     local right_tile = math.floor((player.x + PLAYER_W - 1) / TILE_SIZE)
+- Set ``player.on_ground = false`` right after moving, **before** the tests.
+- Falling (``vy > 0``): test the row under the player's feet (``y + PLAYER_H``, no ``- 1`` --
+  you are probing the tile *below*); on a hit, snap on top, zero ``vy``, and set
+  ``on_ground = true``. That flag is what re-arms the jump.
+- Rising (``vy < 0``): test the row at ``player.y`` and bump your head (snap below, zero
+  ``vy``).
 
-     if player.vy > 0 then
-       local bottom_tile = math.floor((player.y + PLAYER_H) / TILE_SIZE)
+Close the function with the fell-off-the-world check: if ``player.y`` passes below the map
+(``> 260`` -- the map is ``32 x 8 = 256`` pixels tall), call a ``respawn_player()`` that
+resets position, velocity, and ``on_ground``.
 
-       for tx = left_tile, right_tile do
-         if is_solid_tile(tx, bottom_tile) then
-           player.y         = bottom_tile * TILE_SIZE - PLAYER_H
-           player.vy        = 0
-           player.on_ground = true
-           break
-         end
-       end
-     elseif player.vy < 0 then
-       local top_tile = math.floor(player.y / TILE_SIZE)
+``_update()`` becomes: ``handle_input()``, ``move_x()``, ``move_y()``.
 
-       for tx = left_tile, right_tile do
-         if is_solid_tile(tx, top_tile) then
-           player.y  = (top_tile + 1) * TILE_SIZE
-           player.vy = 0
-           break
-         end
-       end
-     end
+.. admonition:: Try it
 
-     -- Fell off the bottom: respawn
-     if player.y > 260 then
-       respawn_player()
-     end
-   end
+   You should be able to land on the ground row, run, jump onto platforms, bump your head,
+   and respawn after walking off a ledge. Tune ``gravity`` / ``jump_force`` until the jump
+   arc feels right -- this is the moment to do it.
 
-Special tiles
--------------
+Step 6: Tiles with meaning
+==========================
+
+The deadly and end tiles reuse the machinery from Step 3 -- ``check_special_tiles()`` is
+just:
 
 .. code-block:: lua
-
-   function respawn_player()
-     player.x         = 24
-     player.y         = 40
-     player.vx        = 0
-     player.vy        = 0
-     player.on_ground = false
-     player.anim_frame = SPRITE_IDLE
-   end
-
-   function win_game()
-     if game_finished then
-       return
-     end
-
-     game_finished = true
-     player.vx     = 0
-     player.vy     = 0
-
-     -- The current text output is the output panel.
-     print("You Won")
-   end
 
    function check_special_tiles()
      if player_touching_flag(FLAG_KILL) then
@@ -361,48 +240,46 @@ Special tiles
      end
    end
 
-Game loop
----------
+``win_game()`` sets ``game_finished = true``, zeroes the velocity, and announces the win --
+with :func:`print`, since text goes to the output panel, not the canvas. Guard it with an
+early return if ``game_finished`` is already set so it fires once.
+
+Wire it into ``_update()`` after ``move_y()``, and make the whole function a no-op when
+``game_finished`` is set (early return at the top). Note that once the game is won,
+``_update()`` stops doing anything but ``_draw()`` keeps running -- the world stays frozen
+on screen rather than going blank.
+
+Step 7: Animation and a camera
+==============================
+
+Both of these are presentation on top of state you already track.
+
+**Animation** is picking ``player.anim_frame`` from what the player is doing: airborne
+(``not on_ground``) shows ``SPRITE_JUMP``; standing still shows ``SPRITE_IDLE``; walking
+alternates the two walk frames by counting ``anim_timer`` up each frame and flipping frames
+every 8 ticks (reset the timer when idle). Call ``update_animation()`` at the end of
+``_update()`` -- after the special-tile check, so a just-won game does not keep animating.
+
+**The camera** is one line at the top of ``_draw()``, and the clamp is the whole art:
 
 .. code-block:: lua
 
-   function _update()
-     if game_finished then
-       return
-     end
+   camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
 
-     handle_input()
-     move_x()
-     move_y()
-     check_special_tiles()
+``player.x - 160`` centers a 320-pixel screen on the player; the clamp stops the view from
+sliding past either end of the map. Everything drawn afterwards -- the map and the player --
+shifts automatically.
 
-     if game_finished then
-       return
-     end
+.. admonition:: Try it
 
-     update_animation()
-   end
-
-   function draw_player()
-     sprite(player.anim_frame, player.x, player.y, 1, 1)
-   end
-
-   function _draw()
-     camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
-     clear(12)
-     map(0, 0)
-     draw_player()
-   end
-
-.. note::
-
-   ``print("You Won")`` writes to the output panel. Once ``game_finished`` is ``true``,
-   ``_update()`` returns immediately, so player input, gravity, and collision stop running.
+   Run to the end tile. Walk frames alternate as you move, the jump sprite shows in the air,
+   the camera follows without ever exposing the void beyond the map edges, and touching the
+   trophy prints "You Won" and freezes the action.
 
 How it all fits together
 ========================
 
-::
+.. code-block:: text
 
    Sprite Editor          Map Editor              Lua Script
    ----------------       ----------------        --------------------------
@@ -415,6 +292,16 @@ How it all fits together
    index 34 = end tile                            1 = deadly
    flag bits 0, 1, 2                              2 = end tile
 
+Complete code
+=============
+
+Compare your build against the :doc:`full documented script <platformer-code>`.
+
+.. toctree::
+   :hidden:
+
+   platformer-code
+
 Extending the example
 =====================
 
@@ -423,5 +310,6 @@ Extending the example
 - **Add enemies** -- Add an ``enemies`` table; update positions each frame; use ``sprite()``
   to draw them.
 - **Bigger player** -- Draw a 2x2 sprite and call ``sprite(index, x, y, 2, 2)``.
-- **Animate tiles** -- Use ``set_col`` to tint selected colors each frame.
+- **Animate tiles** -- Use ``set_col`` to tint selected colors each frame (and
+  ``reset_col()`` after).
 - **Level restart** -- Track a ``lives`` variable; reset player on death.

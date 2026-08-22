@@ -8,3 +8,7 @@ Step-by-step guides to help you build complete games with Naucto.
    :maxdepth: 2
 
    platformer
+   pong
+   click-race
+   tag
+   permissions

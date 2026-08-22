@@ -3,7 +3,8 @@ Game Loop
 =========
 
 Your Lua script is loaded once, then the engine calls three special global functions every frame.
-If any of them is missing, the engine simply skips it.
+The loop targets **60 frames per second**. If any of the functions is missing, the engine simply
+skips it.
 
 Lifecycle overview
 ==================
