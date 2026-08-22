@@ -11,6 +11,8 @@ The palette
 The palette has **16 colors**, indexes ``0`` to ``15`` (the standard PICO-8 set). Every
 function that takes a color expects one of these indexes:
 
+.. TODO: Revalidate palette assumptions in this page after the frontend rendering refactor.
+
 +--------+-------------+-------------+
 | Index  | Color       | Hex         |
 +========+=============+=============+
