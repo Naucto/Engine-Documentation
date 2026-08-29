@@ -1,0 +1,224 @@
+namespace: input
+title: Input
+functions:
+- name: btn
+  signature: input.btn(action[, player])
+  summary: True while an action (left right up down a b x y pause) is held.
+  description: 'True for every step an action is held. Actions are named, not keys: the player decides
+    which key or pad button produces them, and your game never has to care.'
+  params:
+  - name: action
+    type: string
+    required: true
+    description: One of left right up down a b x y pause.
+  - name: player
+    type: number
+    required: false
+    description: Player 1..4; defaults to 1.
+  returns: True while held.
+  examples:
+  - |-
+    function _update()
+      if input.btn("left") then player.x = player.x - 2 end
+      if input.btn("right") then player.x = player.x + 2 end
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - input.btnp
+  - input.btnr
+  - input.declare
+  since: '2.0'
+- name: btnp
+  signature: input.btnp(action[, player])
+  summary: True on the step an action was pressed.
+  description: True only on the step an action went down - what you want for a jump or a menu choice,
+    so holding the button does not repeat it.
+  params:
+  - name: action
+    type: string
+    required: true
+    description: One of left right up down a b x y pause.
+  - name: player
+    type: number
+    required: false
+    description: Player 1..4; defaults to 1.
+  returns: True on the press step.
+  examples:
+  - |-
+    if input.btnp("a") and player.on_ground then
+      player.vy = -6
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - input.btn
+  - input.btnr
+  since: '2.0'
+- name: btnr
+  signature: input.btnr(action[, player])
+  summary: True on the step an action was released.
+  description: True only on the step an action was released. Pair it with input.btnp to measure how long
+    a button was held.
+  params:
+  - name: action
+    type: string
+    required: true
+    description: One of left right up down a b x y pause.
+  - name: player
+    type: number
+    required: false
+    description: Player 1..4; defaults to 1.
+  returns: True on the release step.
+  examples:
+  - |-
+    -- variable jump height: cut the rise when the button is let go
+    if input.btnr("a") and player.vy < 0 then player.vy = player.vy / 2 end
+  notes: []
+  aliases: []
+  seeAlso:
+  - input.btn
+  - input.btnp
+  since: '2.0'
+- name: key_pressed
+  signature: input.key_pressed(key)
+  summary: True while a keyboard key (event.key name) is held.
+  description: 'Check whether a keyboard key is currently being held down.
+
+
+    This function uses the browser''s `event.key` values, so the exact string matters.'
+  params:
+  - name: key
+    type: string
+    description: Key name from the browser keyboard event.
+  returns: '`true` if the key is pressed, `false` otherwise.'
+  examples:
+  - |-
+    if input.key_pressed("Shift") then speed = 4 end
+  notes:
+  - 'Prefer actions over raw keys: they work with a gamepad and can be rebound.'
+  aliases:
+  - key_pressed
+  seeAlso:
+  - input.key_down
+  - input.btn
+  since: '1.0'
+- name: key_down
+  signature: input.key_down(key)
+  summary: True on the step a key went down.
+  description: True on the step a key went down, using the browser's event.key names ("a", "Escape", "ArrowLeft").
+  params:
+  - name: key
+    type: string
+    required: true
+    description: A key name as the browser reports it.
+  returns: True on the press step.
+  examples:
+  - |-
+    if input.key_down("r") then restart() end
+  notes:
+  - 'Prefer actions over raw keys: they work with a gamepad and can be rebound.'
+  aliases: []
+  seeAlso:
+  - input.key_pressed
+  - input.btnp
+  since: '2.0'
+- name: declare
+  signature: input.declare({ action = "label", ... })
+  summary: Name the actions this game uses, e.g. { a = "jump", x = "action" }.
+  description: Tells the console which of the nine engine actions your game uses and what to call them.
+    The controls settings and the "how to play" panel on your game's page show those names instead of
+    raw action ids, in the engine's own order (left, right, up, down, a, b, x, y, pause). Players still
+    rebind whatever they like - this only changes the labels.
+  params:
+  - name: labels
+    type: table
+    required: true
+    description: A table keyed by action id, whose values are the names to display.
+  returns: null
+  examples:
+  - "function _init()\n  input.declare{ left = \"left\", right = \"right\", a = \"jump\", x = \"shoot\"\
+    , pause = \"pause\" }\nend"
+  notes:
+  - Actions you do not declare are hidden from the controls table, but still work if pressed.
+  aliases: []
+  seeAlso:
+  - input.btn
+  - input.players
+  since: '2.0'
+- name: get_mouse_pos
+  signature: input.get_mouse_pos()
+  summary: Mouse x, y in screen pixels (nil when outside).
+  description: Mouse position in screen pixels, or nil when the pointer is outside the screen.
+  params: []
+  returns: x, y in screen pixels, or nil.
+  examples:
+  - |-
+    local mx, my = input.get_mouse_pos()
+    if mx then gfx.draw_sprite(4, mx - 4, my - 4) end
+  notes: []
+  aliases: []
+  seeAlso:
+  - input.mouse_pressed
+  - input.mouse_down
+  since: '2.0'
+- name: mouse_pressed
+  signature: input.mouse_pressed([button])
+  summary: True while a mouse button is held.
+  description: True while a mouse button is held. 0 is the left button, 1 the middle, 2 the right.
+  params:
+  - name: button
+    type: number
+    required: false
+    description: Button 0..2; defaults to 0.
+  returns: True while held.
+  examples:
+  - |-
+    if input.mouse_pressed() then paint() end
+  notes: []
+  aliases: []
+  seeAlso:
+  - input.mouse_down
+  - input.get_mouse_pos
+  since: '2.0'
+- name: mouse_down
+  signature: input.mouse_down([button])
+  summary: True on the step a mouse button was pressed.
+  description: True only on the step a mouse button went down.
+  params:
+  - name: button
+    type: number
+    required: false
+    description: Button 0..2; defaults to 0.
+  returns: True on the press step.
+  examples:
+  - |-
+    if input.mouse_down() then
+      local mx, my = input.get_mouse_pos()
+      place_tile(mx // 8, my // 8)
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - input.mouse_pressed
+  - input.get_mouse_pos
+  since: '2.0'
+- name: players
+  signature: input.players()
+  summary: Number of connected players (keyboard counts as one).
+  description: How many players are connected. The keyboard always counts as player 1; each connected
+    gamepad adds one.
+  params: []
+  returns: Player count, at least 1.
+  examples:
+  - |-
+    for p = 1, input.players() do
+      if input.btn("a", p) then shoot(p) end
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - input.btn
+  - net.id
+  since: '2.0'
+values: []

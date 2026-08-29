@@ -1,0 +1,121 @@
+namespace: sys
+title: System
+functions:
+- name: dt
+  signature: sys.dt()
+  summary: Fixed step length in seconds (1/60).
+  description: Length of one fixed step in seconds - always 1/60. The console runs _update at a fixed
+    rate, so this is a constant; multiply speeds by it to keep them in units per second.
+  params: []
+  returns: 1/60.
+  examples:
+  - |-
+    player.x = player.x + speed * sys.dt()
+  notes: []
+  aliases: []
+  seeAlso:
+  - sys.time
+  - sys.frame
+  since: '2.0'
+- name: frame
+  signature: sys.frame()
+  summary: Frames since _init.
+  description: How many steps have run since _init. Handy for animation timers and for anything that should
+    happen every n frames.
+  params: []
+  returns: Frame count.
+  examples:
+  - |-
+    -- four-frame walk cycle, one frame every 8 steps
+    player.sprite = 4 + (sys.frame() // 8) % 4
+  notes: []
+  aliases: []
+  seeAlso:
+  - sys.time
+  - sys.dt
+  since: '2.0'
+- name: time
+  signature: sys.time()
+  summary: Seconds since _init.
+  description: Seconds elapsed since _init, counted in fixed steps so it never drifts from the game's
+    own clock.
+  params: []
+  returns: Seconds since _init.
+  examples:
+  - |-
+    local bob = math.sin(sys.time() * 3) * 2
+  notes: []
+  aliases: []
+  seeAlso:
+  - sys.frame
+  - sys.dt
+  since: '2.0'
+- name: fps
+  signature: sys.fps()
+  summary: Measured frames per second.
+  description: Frames per second actually being drawn, averaged over the last second. The editor shows
+    the same number beside the screen.
+  params: []
+  returns: Measured frames per second.
+  examples:
+  - |-
+    gfx.print(sys.fps() .. " FPS", 2, 2, 5)
+  notes: []
+  aliases: []
+  seeAlso:
+  - sys.frame
+  since: '2.0'
+- name: log
+  signature: sys.log(...)
+  summary: Write to the console (same as print).
+  description: "Write text to the engine output panel.\n\nparam ...  \nOne or more values to display.\
+    \ Values are converted to strings and joined with tabs.\n\nEach `print()` call adds a new line to\
+    \ the output panel. The panel keeps the most recent lines and trims older ones automatically.\n\n\
+    This is your primary debugging tool. Use it to inspect positions, state, health, score, or any other\
+    \ value while developing your game."
+  params: []
+  returns: null
+  examples:
+  - |-
+    print("player", player.x, player.y)
+    print("health:", player.hp, "score:", score)
+    print("on_ground:", player.on_ground)
+  notes: []
+  aliases:
+  - print
+  seeAlso:
+  - sys.warn
+  - sys.error
+  since: '1.0'
+- name: warn
+  signature: sys.warn(...)
+  summary: Write a warning to the console.
+  description: Writes a warning line to the console, in the warning colour.
+  params: []
+  returns: null
+  examples:
+  - |-
+    if #enemies > 64 then sys.warn("too many enemies: ", #enemies) end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sys.log
+  - sys.error
+  since: '2.0'
+- name: error
+  signature: sys.error(...)
+  summary: Write an error line to the console.
+  description: Writes an error line to the console, in the error colour. It reports a problem; it does
+    not stop the game.
+  params: []
+  returns: null
+  examples:
+  - |-
+    if not level then sys.error("level ", n, " is missing") end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sys.log
+  - sys.warn
+  since: '2.0'
+values: []
