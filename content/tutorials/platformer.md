@@ -221,14 +221,15 @@ gfx.camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
 ```
 Sprite Editor          Map Editor              Lua Script
 ----------------       ----------------        --------------------------
-index 0 = idle         Paint sprite 32         map(0,0) renders the
-index 1 = walk 1       wherever the player     tilemap.
+index 0 = idle         Paint sprite 32         map.draw(0, 0) renders
+index 1 = walk 1       wherever the player     the tilemap.
 index 2 = walk 2       should collide.
-index 3 = jump                                 mget() reads tile indexes.
-index 32 = solid       The painted map is      fget() checks flag bits:
-index 33 = deadly      the collision data.     0 = solid
-index 34 = end tile                            1 = deadly
-flag bits 0, 1, 2                              2 = end tile
+index 3 = jump                                 map.get() reads tile
+index 32 = solid       The painted map is      indexes.
+index 33 = deadly      the collision data.     map.flag() checks bits:
+index 34 = end tile                            0 = solid
+flag bits 0, 1, 2                              1 = deadly
+                                               2 = end tile
 ```
 
 ## Complete code
