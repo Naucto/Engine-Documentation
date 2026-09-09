@@ -36,18 +36,18 @@ namespace: input
 
 ``` lua
 -- Arrow key movement
-if key_pressed("ArrowLeft") then
+if input.key_pressed("ArrowLeft") then
   player.x = player.x - 2
 end
 
 -- WASD movement
-if key_pressed("a") then player.x = player.x - 2 end
-if key_pressed("d") then player.x = player.x + 2 end
-if key_pressed("w") then player.y = player.y - 2 end
-if key_pressed("s") then player.y = player.y + 2 end
+if input.key_pressed("a") then player.x = player.x - 2 end
+if input.key_pressed("d") then player.x = player.x + 2 end
+if input.key_pressed("w") then player.y = player.y - 2 end
+if input.key_pressed("s") then player.y = player.y + 2 end
 
 -- Space bar action
-if key_pressed(" ") then
+if input.key_pressed(" ") then
   jump()
 end
 ```

@@ -33,8 +33,8 @@ To render the map in your game, call [[map.draw]] inside `_draw()`:
 
 ``` lua
 function _draw()
-  clear(12)
-  map(0, 0)         -- draw the map at position (0, 0)
+  gfx.clear(12)
+  map.draw(0, 0)         -- draw the map at position (0, 0)
   draw_player()     -- draw the player on top
 end
 ```
@@ -57,8 +57,8 @@ The recommended tile-flag workflow:
     function is_solid_at_pixel(x, y)
       tile_x = math.floor(x / 8)
       tile_y = math.floor(y / 8)
-      tile_sprite = mget(tile_x, tile_y)
-      return fget(tile_sprite, 0)
+      tile_sprite = map.get(tile_x, tile_y)
+      return map.flag(tile_sprite, 0)
     end
     ```
 

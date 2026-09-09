@@ -33,7 +33,7 @@ functions:
   description: 'Draw one sprite or a rectangular block of sprites from the sprite sheet.
 
 
-    `width` and `height` may be omitted to draw a single 8 x 8 sprite. Larger values draw a block of tiles
+    `w` and `h` may be omitted to draw a single 8 x 8 sprite. Larger values draw a block of tiles
     from the sprite sheet. Positions are floored to whole pixels by the renderer.'
   params:
   - name: n
@@ -52,6 +52,18 @@ functions:
   - name: h
     type: number
     description: Optional height in sprite units (1 unit = 8 pixels). Defaults to `1`.
+    optional: true
+  - name: flip_h
+    type: boolean
+    description: Mirror the sprite horizontally. Defaults to `false`.
+    optional: true
+  - name: flip_v
+    type: boolean
+    description: Mirror the sprite vertically. Defaults to `false`.
+    optional: true
+  - name: scale
+    type: number
+    description: Whole-number magnification of the drawn block. Defaults to `1`.
     optional: true
   returns: null
   examples:
@@ -187,16 +199,16 @@ functions:
   summary: Draw a one-pixel line.
   description: Draw a straight line between two points.
   params:
-  - name: x
+  - name: x0
     type: number
     description: Start x position.
-  - name: y
+  - name: y0
     type: number
     description: Start y position.
-  - name: x
+  - name: x1
     type: number
     description: End x position.
-  - name: y
+  - name: y1
     type: number
     description: End y position.
   - name: colour

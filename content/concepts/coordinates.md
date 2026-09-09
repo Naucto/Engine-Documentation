@@ -67,8 +67,8 @@ index = r * 16 + c
 You can draw sprites that span multiple tiles using the `width` and `height` parameters of the [[gfx.draw_sprite]] function. For example, a 16 x 16 pixel character uses `width = 2, height = 2`.
 
 ``` lua
--- Draw a 2x2 tile sprite (16x16 pixels) starting at index 0
-sprite(0, x, y, 2, 2)
+-- Draw a 2x2 tile gfx.draw_sprite (16x16 pixels) starting at index 0
+gfx.draw_sprite(0, x, y, 2, 2)
 ```
 
 The engine draws a rectangular block of tiles from the sprite sheet starting at the given index.

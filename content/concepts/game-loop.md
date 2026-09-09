@@ -67,7 +67,7 @@ Use `_update()` for all game logic:
 
 ``` lua
 function _draw()
-  clear(0)
+  gfx.clear(0)
   -- draw map, sprites, shapes, UI...
 end
 ```

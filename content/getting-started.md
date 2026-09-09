@@ -35,15 +35,15 @@ function _init()
 end
 
 function _update()
-  if key_pressed("ArrowLeft") then x = x - 2 end
-  if key_pressed("ArrowRight") then x = x + 2 end
-  if key_pressed("ArrowUp") then y = y - 2 end
-  if key_pressed("ArrowDown") then y = y + 2 end
+  if input.key_pressed("ArrowLeft") then x = x - 2 end
+  if input.key_pressed("ArrowRight") then x = x + 2 end
+  if input.key_pressed("ArrowUp") then y = y - 2 end
+  if input.key_pressed("ArrowDown") then y = y + 2 end
 end
 
 function _draw()
-  clear(0)
-  sprite(0, x, y, 1, 1)
+  gfx.clear(0)
+  gfx.draw_sprite(0, x, y, 1, 1)
 end
 ```
 

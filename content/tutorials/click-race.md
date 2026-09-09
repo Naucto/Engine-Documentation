@@ -95,10 +95,10 @@ For drawing, iterate the players. `pairs` over a `net.state` branch yields **str
 
 ``` lua
 for id, p in pairs(net.state.players or {}) do
-  fill_rect(p.col, p.x, p.y, PLAYER_SIZE, PLAYER_SIZE)
+  gfx.fill_rect(p.x, p.y, PLAYER_SIZE, PLAYER_SIZE, p.col)
 
   if tonumber(id) == net.id() then
-    rect(7, p.x - 2, p.y - 2, PLAYER_SIZE + 4, PLAYER_SIZE + 4)   -- highlight yourself
+    gfx.rect(p.x - 2, p.y - 2, PLAYER_SIZE + 4, PLAYER_SIZE + 4, 7)   -- highlight yourself
   end
 end
 ```

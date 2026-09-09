@@ -52,7 +52,7 @@ Alongside `state`, declare two more globals you will need throughout: `is_host` 
 You will also want the usual `clamp(v, lo, hi)` helper, and a handful of constants: the screen size (`320 x 180`), paddle dimensions and speed, ball size, and a winning score. Pick palette colors for each side -- the examples below use `12` (blue) for the left paddle and `8` (red) for the right.
 
 > [!NOTE]
-> There is no on-canvas text API, so menus and announcements go to the **output panel** with [[sys.log]].
+> Menus and announcements go to the **output panel** with [[sys.log]] rather than onto the canvas. [[gfx.print]] does draw text, but in a 4x6 font sized for a score, not for a paragraph of instructions.
 
 ## Step 2: Hosting and joining
 
@@ -63,11 +63,11 @@ You will also want the usual `clamp(v, lo, hi)` helper, and a handful of constan
 
 ``` lua
 function update_menu()
-  if key_pressed("h") then
+  if input.key_pressed("h") then
     state   = "waiting"
     is_host = true
     net.host({ max_players = 2, title = "Pong" }, on_connected)
-  elseif key_pressed("j") then
+  elseif input.key_pressed("j") then
     state   = "waiting"
     is_host = false
     net.join(on_connected)
@@ -175,7 +175,7 @@ The host decides the winner by writing `net.state.winner`; everyone else just wa
 
 ``` lua
 function update_over()
-  if key_pressed("m") then
+  if input.key_pressed("m") then
     net.leave()
     _init()
   end

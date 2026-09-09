@@ -27,7 +27,7 @@ function _update()
 end
 
 function _draw()
-  clear(0)
+  gfx.clear(0)
   -- all rendering
 end
 ```
@@ -50,7 +50,7 @@ function _update()
 end
 
 function _draw()
-  clear(0)
+  gfx.clear(0)
   draw_level()
   draw_enemies()
   draw_player()
@@ -103,7 +103,7 @@ function _update()
 end
 
 function _draw()
-  clear(0)
+  gfx.clear(0)
   if state == "menu" then
     draw_menu()
   elseif state == "play" then

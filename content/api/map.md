@@ -36,6 +36,6 @@ function is_solid_at_pixel(x, y)
     return false
   end
 
-  return fget(mget(tile_x, tile_y), FLAG_SOLID)
+  return map.flag(map.get(tile_x, tile_y), FLAG_SOLID)
 end
 ```

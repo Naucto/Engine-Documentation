@@ -114,7 +114,7 @@ Note the familiar details doing their job: string `pairs` keys converted with `t
 Not everything belongs in `net.state`. A taunt is a one-shot moment with no lasting truth -- exactly what `net.emit` is for. On space, with a one-second local cooldown so holding the key does not spam:
 
 ``` lua
-if key_pressed(" ") and taunt_timer <= 0 then
+if input.key_pressed(" ") and taunt_timer <= 0 then
   taunt_timer = 60
   net.emit("taunt")
   print("You taunt everyone!")

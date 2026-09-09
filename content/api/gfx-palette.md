@@ -47,16 +47,16 @@ The palette has **16 colors**, indexes `0` to `15` (the standard PICO-8 set). Ev
 
 ``` lua
 function _draw()
-  clear(0)
+  gfx.clear(0)
 
   -- Draw enemies with a red tint
-  set_col(8, 4)
+  gfx.set_col(8, 4)
   for i = 1, #enemies do
-    sprite(enemies[i].spr, enemies[i].x, enemies[i].y, 1, 1)
+    gfx.draw_sprite(enemies[i].spr, enemies[i].x, enemies[i].y, 1, 1)
   end
-  reset_col()
+  gfx.reset_col()
 
   -- Draw the player with normal colors
-  sprite(player.spr, player.x, player.y, 1, 2)
+  gfx.draw_sprite(player.spr, player.x, player.y, 1, 2)
 end
 ```

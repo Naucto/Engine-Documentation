@@ -18,6 +18,22 @@ functions:
   - name: y
     type: number
     description: Y position in pixels where the map starts.
+  - name: tx
+    type: number
+    description: Optional first map column to draw, in tiles. Defaults to `0`.
+    optional: true
+  - name: ty
+    type: number
+    description: Optional first map row to draw, in tiles. Defaults to `0`.
+    optional: true
+  - name: tw
+    type: number
+    description: Optional number of columns to draw. Defaults to the whole map width.
+    optional: true
+  - name: th
+    type: number
+    description: Optional number of rows to draw. Defaults to the whole map height.
+    optional: true
   returns: null
   examples:
   - |-

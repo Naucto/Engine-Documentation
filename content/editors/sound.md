@@ -42,12 +42,12 @@ Use [[sound.play_music]] and [[sound.stop_music]] from your game code:
 
 ``` lua
 function _init()
-  play_music(0)  -- plays Sound Editor slot 1
+  sound.play_music(0)  -- plays Sound Editor slot 1
 end
 
 function _update()
-  if key_pressed(" ") then
-    stop_music()
+  if input.key_pressed(" ") then
+    sound.stop_music()
   end
 end
 ```

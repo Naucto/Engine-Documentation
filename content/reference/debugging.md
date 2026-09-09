@@ -41,14 +41,14 @@ If you used [[gfx.set_col]] to remap palette colors, make sure you call [[gfx.re
 
 ``` lua
 -- Wrong: color swap leaks into other sprites
-set_col(8, 10)
-sprite(0, x, y, 1, 1)
+gfx.set_col(8, 10)
+gfx.draw_sprite(0, x, y, 1, 1)
 -- Everything after this also uses the swapped color!
 
 -- Correct: reset after the effect
-set_col(8, 10)
-sprite(0, x, y, 1, 1)
-reset_col()
+gfx.set_col(8, 10)
+gfx.draw_sprite(0, x, y, 1, 1)
+gfx.reset_col()
 ```
 
 ## Errors in the output panel

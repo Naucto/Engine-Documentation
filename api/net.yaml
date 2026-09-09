@@ -150,7 +150,14 @@ functions:
     key literally named `error`. Listening for `"error"` is the intended way to detect a write the host
     rolled back; the [permissions](/learn/tutorials/permissions) tutorial shows that rejected-write behavior
     in action, there observed via the protected value flipping back.'
-  params: []
+  params:
+  - name: pattern
+    type: string
+    description: A reserved name from the table above, an `event:<name>` subscription, or a dotted
+      [[net.state]] key path, where `*` matches one segment and `**` any number.
+  - name: callback
+    type: function
+    description: Called with the arguments the table above gives for that pattern.
   returns: null
   examples:
   - |-
@@ -193,6 +200,11 @@ functions:
   - name: name
     type: string
     description: Event name; receivers subscribe with `net.on("event:" .. name, ...)`.
+  - name: payload
+    type: any
+    description: Optional value to send along -- a number, string, boolean, or nested table. Functions
+      cannot be sent. Omitted, the receivers get `nil`.
+    optional: true
   returns: null
   examples:
   - |-

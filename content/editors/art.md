@@ -56,12 +56,12 @@ Flags are useful for gameplay metadata that belongs to a sprite. For example, yo
 
 ``` lua
 -- Test bit 0 on the tile's sprite index.
-if fget(tile_sprite, 0) then
+if map.flag(tile_sprite, 0) then
   -- solid tile
 end
 
 -- Read the full 8-bit flag value.
-flags = fget(tile_sprite)
+flags = map.flag(tile_sprite)
 ```
 
 ## Tips for organizing your sprites
@@ -87,13 +87,13 @@ Once you have drawn your sprites, reference them by index in your code:
 
 ``` lua
 -- Single 8x8 sprite
-sprite(0, player.x, player.y, 1, 1)
+gfx.draw_sprite(0, player.x, player.y, 1, 1)
 
 -- 8x16 character (1 tile wide, 2 tiles tall)
-sprite(0, player.x, player.y, 1, 2)
+gfx.draw_sprite(0, player.x, player.y, 1, 2)
 
 -- 16x16 character (2 tiles wide, 2 tiles tall)
-sprite(0, player.x, player.y, 2, 2)
+gfx.draw_sprite(0, player.x, player.y, 2, 2)
 ```
 
 See [[gfx.draw_sprite]] in the API reference for full details.

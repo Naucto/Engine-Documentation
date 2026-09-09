@@ -89,7 +89,7 @@ function tile_has_flag(tx, ty, flag)
     return false
   end
 
-  local sprite_index = mget(tx, ty)
+  local sprite_index = map.get(tx, ty)
   if type(sprite_index) ~= "number" then
     return false
   end
@@ -98,11 +98,11 @@ function tile_has_flag(tx, ty, flag)
     return false
   end
 
-  return fget(sprite_index, flag)
+  return map.flag(sprite_index, flag)
 end
 ```
 
-The guards are not decoration. [[map.get]] outside the map and [[map.flag]] outside `0`--`255` raise fatal errors that stop the game -- and a jumping player *will* poke tiles above the map. Treating everything out of bounds as "no flag" makes the world edges simply empty. (This is also why `MAP_W` / `MAP_H` must match your project's real map size.)
+The guards are not decoration, but not because the engine punishes you: [[map.get]] outside the map returns `0`, and [[map.flag]] outside `0`--`255` returns no flags. Sprite `0` is a real sprite, so without the guard every tile above the map reads as sprite `0` and inherits whatever flags you gave it -- a solid sprite `0` puts an invisible ceiling over the whole level. Treating everything out of bounds as "no flag" makes the world edges simply empty. (This is also why `MAP_W` / `MAP_H` must match your project's real map size.)
 
 Two thin helpers complete the toolkit -- write them yourself:
 
@@ -193,7 +193,7 @@ function check_special_tiles()
 end
 ```
 
-`win_game()` sets `game_finished = true`, zeroes the velocity, and announces the win -- with [[sys.log]], since text goes to the output panel, not the canvas. Guard it with an early return if `game_finished` is already set so it fires once.
+`win_game()` sets `game_finished = true`, zeroes the velocity, and announces the win -- with [[sys.log]] (`print` is the same call), which writes to the output panel. [[gfx.print]] would put it on the canvas instead, in a 4x6 font. Guard it with an early return if `game_finished` is already set so it fires once.
 
 Wire it into `_update()` after `move_y()`, and make the whole function a no-op when `game_finished` is set (early return at the top). Note that once the game is won, `_update()` stops doing anything but `_draw()` keeps running -- the world stays frozen on screen rather than going blank.
 
@@ -206,7 +206,7 @@ Both of these are presentation on top of state you already track.
 **The camera** is one line at the top of `_draw()`, and the clamp is the whole art:
 
 ``` lua
-camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
+gfx.camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
 ```
 
 `player.x - 160` centers a 320-pixel screen on the player; the clamp stops the view from sliding past either end of the map. Everything drawn afterwards -- the map and the player -- shifts automatically.
