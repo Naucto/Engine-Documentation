@@ -81,7 +81,6 @@ functions:
   - sprite
   seeAlso:
   - gfx.draw_region
-  - gfx.set_transparent
   - map.draw
   since: '1.0'
 - name: draw_region
@@ -143,7 +142,6 @@ functions:
   aliases: []
   seeAlso:
   - gfx.draw_sprite
-  - gfx.set_transparent
   since: '2.0'
 - name: pixel
   signature: gfx.pixel(x, y, colour)
@@ -518,32 +516,6 @@ functions:
   seeAlso:
   - gfx.set_col
   since: '1.0'
-- name: set_transparent
-  signature: gfx.set_transparent(colour[, on])
-  summary: 'Toggle transparency of a palette index when drawing sprites (default: only 0).'
-  description: Chooses which palette indices are skipped when sprites are drawn. Index 0 is transparent
-    by default; turn it opaque, or make a second colour transparent, per draw.
-  params:
-  - name: colour
-    type: number
-    required: true
-    description: Palette index 0..15.
-  - name: 'on'
-    type: boolean
-    required: false
-    description: Transparent when true (default), opaque when false.
-  returns: null
-  examples:
-  - |-
-    gfx.set_transparent(0, false) -- draw index 0 as a real colour
-    gfx.draw_sprite(1, 8, 8)
-    gfx.set_transparent(0)        -- back to the default
-  notes: []
-  aliases: []
-  seeAlso:
-  - gfx.draw_sprite
-  - gfx.set_col
-  since: '2.0'
 - name: set_color
   signature: gfx.set_color(index, hex | r, g, b)
   summary: Change a screen colour at runtime.
