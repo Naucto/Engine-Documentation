@@ -33,14 +33,19 @@ The game canvas is **320 x 180 pixels**.
 
 ## Sprite sheet layout
 
-The engine uses a single sprite sheet made of **8 x 8 pixel** tiles.
+The engine uses a sprite sheet made of **8 x 8 pixel** tiles. A new game's sheet is 128 x 128
+pixels; the ART editor can make it any whole number of sprites wide and tall, up to 256 x 256.
 
-| Property           | Value            |
+| Property           | A new game       |
 |--------------------|------------------|
 | Sprite size        | 8 x 8 pixels     |
 | Sheet size         | 128 x 128 pixels |
 | Sprites per row    | 16               |
 | Total sprite slots | 256 (0 -- 255)   |
+
+A wider sheet fits more sprites in a row, so the number of a given sprite depends on the size the
+sheet is: the arithmetic below holds, but `16` is whatever the sheet's width in sprites happens to
+be.
 
 ### Sprite indexing
 

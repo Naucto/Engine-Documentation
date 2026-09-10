@@ -19,6 +19,8 @@ The map is a grid where each cell holds a reference to a sprite index. When you 
 
 - Each tile is **8 x 8 pixels** (same size as a sprite)
 - The map uses the **same sprite sheet** as the Sprite Editor
+- The **W** and **H** fields beside the whole-map view change the map's size in tiles; as in the
+  Sprite Editor, shrinking puts tiles out of reach rather than deleting them
 - Painting a tile on the map means "draw this sprite at this grid position"
 
 ## Painting tiles

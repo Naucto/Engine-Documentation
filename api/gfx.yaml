@@ -38,7 +38,8 @@ functions:
   params:
   - name: n
     type: number
-    description: Sprite index in the sprite sheet (0--255).
+    description: Sprite index in the sprite sheet. A new game has 256 of them, numbered from `0`;
+      a larger sheet has more.
   - name: x
     type: number
     description: Destination x position in pixels.
@@ -87,7 +88,7 @@ functions:
 - name: draw_region
   signature: gfx.draw_region(sx, sy, sw, sh, dx, dy[, dw, dh, flip_h, flip_v, transparent])
   summary: Draw a pixel rectangle of the sprite sheet, optionally scaled.
-  description: Copies an arbitrary pixel rectangle out of the 128x128 sprite sheet, rather than whole
+  description: Copies an arbitrary pixel rectangle out of the sprite sheet, rather than whole
     8x8 tiles. Give dw/dh to stretch it; leave them out and the destination matches the source size.
   params:
   - name: sx

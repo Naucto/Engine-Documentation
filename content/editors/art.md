@@ -16,7 +16,9 @@ The Sprite Editor is where you create all the visual assets for your game: chara
 
 ## Sprite sheet basics
 
-Your project has a single **128 x 128 pixel** sprite sheet, divided into a grid of **8 x 8 pixel** tiles. This gives you **256 sprite slots** (16 columns x 16 rows), indexed from `0` to `255`.
+A new project has a **128 x 128 pixel** sprite sheet, divided into a grid of **8 x 8 pixel** tiles: **256 sprite slots** (16 columns x 16 rows), indexed from `0` to `255`.
+
+The **W** and **H** fields above the sheet map change that. A sheet is always a whole number of sprites across and down, and may be up to 256 x 256 pixels -- 1024 slots. Making a sheet smaller does not erase what falls outside it: the editor says how much it is about to put out of reach, and growing the sheet again brings it back.
 
     128 px wide
     +--+--+--+--+--+--+-- ... --+

@@ -68,9 +68,9 @@ functions:
     tile_sprite = map.get(tile_x, tile_y)
   notes:
   - kind: warning
-    text: Reading outside the map -- the default map is **128 x 32 tiles**, so columns `0`--`127` and
-      rows `0`--`31` -- raises a fatal runtime error that stops the game. Bounds-check the coordinates
-      first (see the example below).
+    text: Reading outside the map raises a fatal runtime error that stops the game. A new game's map
+      is **128 x 32 tiles** and can be made another size in the editor, so bounds-check against
+      `map.width()` and `map.height()` rather than against those numbers (see the example below).
   aliases:
   - mget
   seeAlso:
@@ -122,7 +122,8 @@ functions:
   params:
   - name: n
     type: number
-    description: Sprite index in the sprite sheet (0--255).
+    description: Sprite index in the sprite sheet. A new game has 256 of them, numbered from `0`;
+      a larger sheet has more.
   - name: bit
     type: number
     description: Optional bit index from `0` to `7`.
@@ -146,10 +147,11 @@ functions:
   since: '1.0'
 - name: width
   signature: map.width()
-  summary: Map width in tiles (128).
-  description: Map width in tiles. Always 128.
+  summary: Map width in tiles.
+  description: Map width in tiles. A game chooses its own map size, so read this rather than
+    assuming one.
   params: []
-  returns: '128.'
+  returns: The map's width in tiles.
   examples:
   - |-
     local right_edge = map.width() * 8
@@ -160,10 +162,11 @@ functions:
   since: '2.0'
 - name: height
   signature: map.height()
-  summary: Map height in tiles (32).
-  description: Map height in tiles. Always 32.
+  summary: Map height in tiles.
+  description: Map height in tiles. A game chooses its own map size, so read this rather than
+    assuming one.
   params: []
-  returns: '32.'
+  returns: The map's height in tiles.
   examples:
   - |-
     local floor = map.height() * 8
