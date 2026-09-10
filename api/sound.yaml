@@ -3,14 +3,16 @@ title: Sound
 functions:
 - name: play_sfx
   signature: sound.play_sfx(slot[, channel, pitch_offset, volume])
-  summary: Play SFX slot 0..15.
-  description: Plays one of the sixteen SFX slots from the sound editor. Sound effects take the last voice
-    first and steal the oldest one when they need another, so music keeps playing underneath.
+  summary: Play a numbered SFX slot.
+  description: Plays the sound effect kept at that number in the sound editor's bank. Any number will
+    do and an empty one is silent, so a game may spread its effects out however it likes. Sound effects
+    take the last voice first and steal the oldest one when they need another, so music keeps playing
+    underneath.
   params:
   - name: slot
     type: number
     required: true
-    description: SFX slot 0..15.
+    description: The number the sound editor shows on the slot.
   - name: channel
     type: number
     required: false
