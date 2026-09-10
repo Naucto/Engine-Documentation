@@ -12,13 +12,13 @@ legacy_slugs:
 
 # Permissions -- locking down net.state
 
-By default `net.state` trusts every client: any peer can write any key, and games stay honest by [ownership convention](/learn/concepts/multiplayer). That is fine for a friendly game, but a determined client could just do `net.state.winner = net.id()` and win. This tutorial turns that convention into a rule the host enforces, using the **MULTIPLAYER** tab.
+By default `net.state` trusts every client: any peer can write any key, and games stay honest by [ownership convention](/learn/concepts/multiplayer). That is fine for a friendly game, but a determined client could just do `net.state.winner = net.id()` and win. This tutorial turns that convention into a rule the host enforces, using the **NET** tab.
 
 We build on the [click-race](/learn/tutorials/click-race) game -- have it working first.
 
 ## The two flags
 
-Every `net.state` path has two client permissions, set in the **MULTIPLAYER** tab and enforced by the **host** at runtime:
+Every `net.state` path has two client permissions, set in the **NET** tab and enforced by the **host** at runtime:
 
 - **Clients can write** -- when off, only the host may write the path. A client's write is applied optimistically and then rolled back when the host's rejection arrives, so a `net.on` change listener sees the value flip and flip back.
 - **Clients can read** -- when off, the host keeps the path private: it is never sent to clients, in the join snapshot or in live updates.
@@ -70,7 +70,7 @@ function update_playing()
 end
 ```
 
-Now lock the key. In the **MULTIPLAYER** tab, add a node for `winner` and turn **Clients can write** off (leave **Clients can read** on -- everyone still needs to see who won). Re-run and host: the game plays exactly as before, because only the host writes `winner` now.
+Now lock the key. In the **NET** tab, add a node for `winner` and turn **Clients can write** off (leave **Clients can read** on -- everyone still needs to see who won). You can do this before running anything: the flags live in the game, not in the session. Run and host, and the game plays exactly as before, because only the host writes `winner` now.
 
 To see the rule bite, temporarily add `net.state.winner = net.id()` to a client path (say, on a key press). Instead of ending the game it is rejected -- the write is applied for a moment and then the host's rejection snaps the value back, so a `net.on("winner", ...)` listener sees it flip and flip back.
 

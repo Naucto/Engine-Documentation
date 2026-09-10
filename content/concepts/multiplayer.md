@@ -66,7 +66,7 @@ When two peers genuinely must write the same key, protect it with `net.lock`.
 
 ### Enforcing it: permissions
 
-Convention is enough for a cooperative game, but you can make it a rule. The **MULTIPLAYER** tab in the editor gives every `net.state` path two flags, enforced by the host at runtime:
+Convention is enough for a cooperative game, but you can make it a rule. The **NET** tab in the editor gives every `net.state` path two flags, enforced by the host at runtime:
 
 - **Clients can write** (off = only the host may write it). A client's write to a protected path is rejected and rolled back -- so a player cannot set its own `score` or declare itself the `winner`.
 - **Clients can read** (off = the host keeps it private). The host never sends the path to clients, in snapshots or live updates -- for server-only state like a shuffled deck.
