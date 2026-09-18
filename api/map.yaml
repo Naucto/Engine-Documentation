@@ -2,12 +2,17 @@ namespace: map
 title: Map
 functions:
 - name: draw
-  signature: map.draw(x, y[, tx, ty, tw, th])
+  signature: map.draw(x, y[, tx, ty, tw, th, m])
   summary: Draw the tile map (or a sub-rectangle of tiles) at a pixel position.
   description: 'Draw the tilemap created in the map editor.
 
 
     This draws the entire map at once. The map uses the same 8 x 8 tile size as the sprite sheet.
+
+
+    A game may keep several maps, made in the MAP tab. Each `map.*` call takes the map it works on
+    as its last argument, counted from `1` in the order of the strip in that tab, and works on the
+    first one when that argument is left out - so a game with one map never has to name it.
 
 
     To read map tiles from Lua, use [[map.get]]. To inspect sprite flags on a tile sprite, use [[map.flag]].'
@@ -34,10 +39,16 @@ functions:
     type: number
     description: Optional number of rows to draw. Defaults to the whole map height.
     optional: true
+  - name: m
+    type: number
+    description: Which map to draw, counted from `1` in the order of the MAP tab's strip. Defaults
+      to the first.
+    optional: true
   returns: null
   examples:
   - |-
-    map.draw(0, 0)  -- draw the map at the world origin
+    map.draw(0, 0)  -- draw the first map at the world origin
+    map.draw(0, 0, 0, 0, 40, 23, 2)  -- the top-left screen of the second map
   notes: []
   aliases:
   - map
@@ -46,7 +57,7 @@ functions:
   - map.get
   since: '1.0'
 - name: get
-  signature: map.get(tx, ty)
+  signature: map.get(tx, ty[, m])
   summary: Sprite index at a tile.
   description: 'Read a tile from the map.
 
@@ -60,6 +71,11 @@ functions:
   - name: ty
     type: number
     description: Tile row in the map grid.
+  - name: m
+    type: number
+    description: Which map, counted from `1` in the order of the MAP tab's strip. Defaults to the
+      first.
+    optional: true
   returns: Sprite index stored at that map cell.
   examples:
   - |-
@@ -78,7 +94,7 @@ functions:
   - map.flag
   since: '1.0'
 - name: set
-  signature: map.set(tx, ty, n)
+  signature: map.set(tx, ty, n[, m])
   summary: Change a tile for this run only.
   description: Changes a tile for the rest of this run. The edit lives in memory only - the saved map
     is untouched, so a restart brings the level back.
@@ -86,15 +102,20 @@ functions:
   - name: tx
     type: number
     required: true
-    description: Tile column 0..127.
+    description: Tile column, from `0` to `map.width() - 1`.
   - name: ty
     type: number
     required: true
-    description: Tile row 0..31.
+    description: Tile row, from `0` to `map.height() - 1`.
   - name: n
     type: number
     required: true
     description: Sprite index to place, 0 for empty.
+  - name: m
+    type: number
+    description: Which map, counted from `1` in the order of the MAP tab's strip. Defaults to the
+      first.
+    optional: true
   returns: null
   examples:
   - |-
@@ -146,11 +167,17 @@ functions:
   - gfx.get_pixel
   since: '1.0'
 - name: width
-  signature: map.width()
+  signature: map.width([m])
   summary: Map width in tiles.
-  description: Map width in tiles. A game chooses its own map size, so read this rather than
-    assuming one.
-  params: []
+  description: Map width in tiles. A game chooses its own map size, and each of its maps has its
+    own, so read this rather than assuming one.
+  params:
+  - name: m
+    type: number
+    description: Which map, counted from `1` in the order of the MAP tab's strip. Defaults to the
+      first.
+    optional: true
+
   returns: The map's width in tiles.
   examples:
   - |-
@@ -161,11 +188,17 @@ functions:
   - map.height
   since: '2.0'
 - name: height
-  signature: map.height()
+  signature: map.height([m])
   summary: Map height in tiles.
-  description: Map height in tiles. A game chooses its own map size, so read this rather than
-    assuming one.
-  params: []
+  description: Map height in tiles. A game chooses its own map size, and each of its maps has its
+    own, so read this rather than assuming one.
+  params:
+  - name: m
+    type: number
+    description: Which map, counted from `1` in the order of the MAP tab's strip. Defaults to the
+      first.
+    optional: true
+
   returns: The map's height in tiles.
   examples:
   - |-

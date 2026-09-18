@@ -43,6 +43,17 @@ end
 
 The `x` and `y` parameters control where the top-left corner of the map is drawn. Combined with [[gfx.camera]], you can scroll through large levels.
 
+## Several maps
+
+The `+` beside the map strip adds a map, and each one has its own size and its own tiles. Every `map.*` function takes the map it works on as its last argument, counted from `1` in the order of the strip; leave it out and the first map is used, so a game with a single map never names it.
+
+``` lua
+function _draw()
+  gfx.clear(12)
+  if level == 1 then map.draw(0, 0) else map.draw(0, 0, 0, 0, map.width(2), map.height(2), 2) end
+end
+```
+
 ## Map and collision
 
 The Lua API can read map tiles with [[map.get]]. This lets you ask which sprite index is stored at a map cell and combine that value with sprite flags from [[map.flag]].
