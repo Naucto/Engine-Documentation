@@ -1,0 +1,356 @@
+namespace: sound
+title: Sound
+functions:
+- name: play_sfx
+  signature: sound.play_sfx(slot[, channel, pitch_offset, volume])
+  summary: Play a numbered SFX slot.
+  description: 'Play the sound effect kept at that number in the SOUND tab''s bank. Any number will do and an empty one is silent. It plays at priority 1, above the music: it takes the first free voice of the five, and when none is free it takes one from the music, oldest first, so music keeps playing on the others.'
+  params:
+  - name: slot
+    type: number
+    required: true
+    description: The number the sound editor shows on the slot.
+  - name: channel
+    type: number
+    optional: true
+    description: 'Force a voice `0` to `4` instead of letting the mixer choose; a number outside is clamped. The whole pattern then plays on that one voice, one note at a time.'
+  - name: pitch_offset
+    type: number
+    optional: true
+    description: Semitones to transpose by.
+  - name: volume
+    type: number
+    optional: true
+    description: 'Multiplies the volume of the pattern''s notes, `1` by default; the result is kept within `0` to `1`.'
+  returns: null
+  examples:
+  - |-
+    if input.pressed("a") then sound.play_sfx(0) end
+    -- same jump, a fifth higher
+    sound.play_sfx(0, nil, 7)
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_note
+  - sound.stop
+  - sound.set_volume
+  since: '2.0'
+- name: play_note
+  signature: sound.play_note(instrument, pitch[, length, volume, channel])
+  summary: Play a note now; pitch is MIDI or "C4".
+  description: 'Play a single note on an instrument right now, without a pattern. A new game has no instrument: add one in the SOUND tab first, from a preset or from scratch, and name it here. The pitch is a MIDI number or a name like `"C4"`; a name that cannot be read plays C4. The note plays at priority 1, like a sound effect, and `volume` is its velocity.'
+  params:
+  - name: instrument
+    type: string
+    required: true
+    description: 'The instrument''s name exactly as the SOUND tab shows it, case included (a preset is called `"Square lead"`, not `"lead"`), or its id. A name no instrument has plays nothing and warns once in the console.'
+  - name: pitch
+    type: number|string
+    required: true
+    description: MIDI note or name such as "C4".
+  - name: length
+    type: number
+    optional: true
+    description: 'Seconds to hold; left out, a quarter of a second. `0` holds the note until `sound.stop_note`.'
+  - name: volume
+    type: number
+    optional: true
+    description: 0..1, default 1.
+  - name: channel
+    type: number
+    optional: true
+    description: Force a voice 0..4.
+  returns: null
+  examples:
+  - |-
+    -- a two-note pickup jingle, on the Square lead preset added in the SOUND tab
+    sound.play_note("Square lead", "C5", 0.08)
+    sound.play_note("Square lead", "G5", 0.12)
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.stop_note
+  - sound.play_sfx
+  since: '2.0'
+- name: stop_note
+  signature: sound.stop_note(channel)
+  summary: Release a voice.
+  description: Releases a voice, letting its envelope fade out. Use it for notes started with a length of `0`; it releases a voice the music is using just the same.
+  params:
+  - name: channel
+    type: number
+    required: true
+    description: Voice 0..4.
+  returns: null
+  examples:
+  - |-
+    sound.play_note("Pad", "A3", 0, 0.6, 2)  -- held on voice 2
+    -- ... later
+    sound.stop_note(2)
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_note
+  - sound.is_playing
+  since: '2.0'
+- name: play_music
+  signature: sound.play_music([song, loop, fade_in])
+  summary: Start music 0..15; loops from its start unless told otherwise.
+  description: 'Play one of the sixteen musics of the SOUND tab, replacing the one playing. A number outside `0` to `15`, or an empty one, plays nothing and raises no error. A music loops from its start unless the code says otherwise: `loop` here, or `sound.set_music` for that music.'
+  params:
+  - name: song
+    type: number
+    description: 'Music number, as the `#` field of the SOUND tab shows it, `0` to `15`; left out, `0`. An empty number plays nothing.'
+    optional: true
+  - name: loop
+    type: boolean
+    description: 'Whether the music restarts when it reaches its end. Left out, it loops, unless `sound.set_music` said otherwise for this music. Lua truth applies: only `false` means no, so `0` loops; a `nil` is the same as leaving it out.'
+    optional: true
+  - name: fade_in
+    type: number
+    description: Seconds to fade the music up over. Defaults to `0`, which starts at full volume.
+    optional: true
+  returns: null
+  examples:
+  - |-
+    function _init()
+      sound.play_music(0)  -- music number 0, the first
+    end
+  notes: []
+  aliases:
+  - play_music
+  seeAlso:
+  - sound.stop_music
+  - sound.music_pos
+  since: '1.0'
+- name: stop_music
+  signature: sound.stop_music([fade_out])
+  summary: Stop the music.
+  description: 'Stop the music, at once or over a fade. During the fade `sound.music_pos()` still answers, until the fade ends.'
+  params:
+  - name: fade_out
+    type: number
+    description: Seconds to fade the music down over. Defaults to `0`, which stops it at once.
+    optional: true
+  returns: null
+  examples:
+  - |-
+    if input.pressed("pause") then
+      sound.stop_music(0.5)
+    end
+  notes: []
+  aliases:
+  - stop_music
+  seeAlso:
+  - sound.play_music
+  - sound.stop
+  since: '1.0'
+- name: stop
+  signature: sound.stop()
+  summary: Stop everything.
+  description: 'Stops everything at once: music, sound effects and any held notes.'
+  params: []
+  returns: null
+  examples:
+  - |-
+    function game_over()
+      sound.stop()
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.stop_music
+  - sound.stop_note
+  since: '2.0'
+- name: set_volume
+  signature: sound.set_volume(master[, music, sfx])
+  summary: Mixer levels 0..1.
+  description: 'Sets the mixer levels, each `0` to `1`: `music` and `sfx` left out keep their value, `master` left out is `1`. Pass `master` alone to duck everything, or all three to balance music against effects. A level above `1` is not refused: the mix is soft-clipped, so it gets louder and rounder rather than breaking up. The levels survive `sound.stop()`.'
+  params:
+  - name: master
+    type: number
+    optional: true
+    description: 'Overall level 0..1; left out, `1`.'
+  - name: music
+    type: number
+    optional: true
+    description: Music level 0..1.
+  - name: sfx
+    type: number
+    optional: true
+    description: Sound effect level 0..1.
+  returns: null
+  examples:
+  - |-
+    -- half volume while the pause menu is up
+    local paused = true
+    sound.set_volume(paused and 0.5 or 1)
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_music
+  - sound.stop
+  since: '2.0'
+- name: music_pos
+  signature: sound.music_pos()
+  summary: Place in the music's chain and the step now sounding, 0-based; nil when nothing plays.
+  description: 'Where the music has got to: its place in the music''s chain of patterns, counted from `0` (not the pattern''s own number), and the step now sounding inside that pattern, counted from `0` too. Both are `nil` when nothing plays. The value comes back from the audio thread a frame or two late, and a step lasts several frames, so a test like `step % 4 == 0` is true for a few frames in a row: fine for a beat light, late for anything that must land on the step.'
+  params: []
+  returns: place, step, or nil.
+  returnType: number|nil
+  examples:
+  - |-
+    -- a beat light: the first step of every beat, four steps to the beat
+    local pulse = 0
+    local place, step = sound.music_pos()
+    if step and step % 4 == 0 then pulse = 1 end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_music
+  - sound.is_playing
+  since: '2.0'
+- name: is_playing
+  signature: sound.is_playing(channel)
+  summary: Whether a voice is sounding.
+  description: 'Whether a voice is currently sounding, music included. The answer comes back from the audio thread a frame or two late: right after `play_sfx` it is still `false`, so do not use it to avoid a double trigger.'
+  params:
+  - name: channel
+    type: number
+    required: true
+    description: Voice 0..4.
+  returns: True while the voice sounds.
+  returnType: boolean
+  examples:
+  - |-
+    if sound.is_playing(4) then gfx.fill_rect(0, 0, 8, 8, 5) end  -- a light while voice 4 sounds
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_note
+  - sound.music_pos
+  since: '2.0'
+- name: set_instrument
+  signature: sound.set_instrument(name, fields)
+  summary: Change an instrument for this run.
+  description: |-
+    Change some settings of an instrument **for this run only**: the SOUND tab and the saved game keep theirs, and the next run starts from them again. A note already sounding keeps the instrument it started with; the change lands from the next note on, in music, in a sound effect or from `sound.play_note` alike. Calling it again adds to what it set before, and a value outside its range is kept at the nearest end.
+
+    | Field | What it is | Range |
+    | --- | --- | --- |
+    | `osc` | Waveform: `"square"`, `"sine"`, `"triangle"`, `"saw"`, `"noise"` or `"sample"` | |
+    | `duty` | Width of the square wave, `0.5` is even | `0.05` to `0.95` |
+    | `detune` | Semitones added to every note | `-12` to `12` |
+    | `glide` | Seconds the pitch takes to reach a new note, `0` is none | `0` to `0.5` |
+    | `attack`, `decay`, `release` | Envelope times, in seconds | `0` to `3` |
+    | `sustain` | Level held after the decay | `0` to `1` |
+    | `vibrato_rate` | Wobbles a second | `1` to `20` |
+    | `vibrato_depth` | Depth of the wobble | `0` to `1` |
+    | `vibrato_delay` | Seconds before it starts | `0` to `1` |
+    | `arp_rate` | Chord notes walked a second, `0` sounds them together | `0` to `30` |
+    | `filter` | `"off"`, `"lp"`, `"hp"` or `"bp"` | |
+    | `cutoff` | Filter frequency, in Hz | `100` to `12000` |
+    | `resonance` | Filter peak | `0` to `1` |
+    | `volume` | Level | `0` to `1` |
+    | `pan` | Left to right | `-1` to `1` |
+
+    A field it does not know, or a value of the wrong kind, is skipped with one warning in the console.
+  params:
+  - name: name
+    type: string
+    required: true
+    description: 'The instrument''s name exactly as the SOUND tab shows it, case included. A name no instrument has warns once and changes nothing.'
+  - name: fields
+    type: table
+    required: true
+    description: The settings to change, any of the table above; the others keep their value.
+  returns: null
+  examples:
+  - |-
+    -- the lead thins out as health drops
+    local hp = 3
+    function _update()
+      sound.set_instrument("Square lead", { cutoff = 400 + hp * 2000, resonance = 0.6 })
+    end
+  - |-
+    -- the same lead, slightly detuned and buzzier, for this run
+    function _init()
+      sound.set_instrument("Square lead", { osc = "saw", detune = 0.1, vibrato_depth = 0.2, filter = "lp" })
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_note
+  - sound.set_pattern
+  since: '2.0'
+- name: set_pattern
+  signature: sound.set_pattern(n, fields)
+  summary: Change the tempo or length of a pattern for this run.
+  description: |-
+    Change the tempo or the length of a pattern **for this run only**: the SOUND tab and the saved game keep theirs. On the music it takes effect at once, even while the pattern plays: the next step comes at the new tempo, and a pattern past its new end goes on to the next one. A sound effect already playing keeps the pattern it copied when it was triggered, tempo included: the change reaches it from its next trigger. Calling it again adds to what it set before.
+
+    | Field | What it is | Range |
+    | --- | --- | --- |
+    | `bpm` | Beats a minute | `40` to `240` |
+    | `steps` | Length, in steps; notes past it are not played | `1` to `64` |
+  params:
+  - name: n
+    type: number
+    required: true
+    description: 'The pattern''s number, as the PATTERN field of the SOUND tab shows it. A number no pattern has warns once and changes nothing.'
+  - name: fields
+    type: table
+    required: true
+    description: '`bpm`, `steps`, or both; the other keeps its value.'
+  returns: null
+  examples:
+  - |-
+    -- the music speeds up when the timer goes under ten seconds
+    local left = 60
+    function _update()
+      local before = left
+      left = left - sys.dt()
+      if before >= 10 and left < 10 then
+        sound.set_pattern(0, { bpm = 180 })
+      end
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_music
+  - sound.set_instrument
+  - sound.set_music
+  since: '2.0'
+- name: set_music
+  signature: sound.set_music(n, fields)
+  summary: Change whether a music loops for this run.
+  description: |-
+    Set whether a music restarts when it reaches its end, **for this run only**. A music loops from its start unless the code says otherwise, and this is one way of saying so. On the music playing it takes effect at once, so a loop can be let out at its next end; on any other it is what `sound.play_music` does for that music when it is not given a `loop` of its own. Lua truth applies: only `false` means no; a `nil` is the same as leaving it out, and the music loops.
+
+    | Field | What it is |
+    | --- | --- |
+    | `loop` | `true` to start over at the end, `false` to stop there |
+  params:
+  - name: n
+    type: number
+    required: true
+    description: 'Music number, as the `#` field of the SOUND tab shows it, `0` to `15`. An empty number warns once and changes nothing.'
+  - name: fields
+    type: table
+    required: true
+    description: '`loop`, `true` or `false`.'
+  returns: null
+  examples:
+  - |-
+    -- the music plays out to its end, then the ending shows
+    function game_over()
+      sound.set_music(0, { loop = false })
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_music
+  - sound.stop_music
+  - sound.set_pattern
+  since: '2.0'
+values: []

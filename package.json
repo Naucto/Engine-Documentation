@@ -1,0 +1,14 @@
+{
+  "name": "@naucto/engine-documentation",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Naucto engine documentation: Markdown pages plus the machine-readable Lua API manifest.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-manifest.mjs",
+    "validate": "node scripts/validate.mjs"
+  },
+  "devDependencies": {
+    "yaml": "^2.9.0"
+  }
+}
