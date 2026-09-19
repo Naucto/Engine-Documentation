@@ -3,7 +3,7 @@ title: Build a Tag Arena
 slug: tutorials/tag
 lua: tag/main.lua
 section: tutorials
-order: 5
+order: 6
 description: A four-player game of tag where one player is "it" and touching someone passes it on; a tutorial about reacting to net.state changes, mid-game joins and cleanup.
 legacy_slugs:
 - tutorials/tag.html

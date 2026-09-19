@@ -3,14 +3,14 @@ title: Tutorials
 slug: tutorials/index
 section: tutorials
 order: 0
-description: Six guided builds, from a ten-minute coin hunt to a host-refereed online game, each teaching one idea of the engine at a time.
+description: Seven guided builds, from a ten-minute coin hunt to a host-refereed online game, each teaching one idea of the engine at a time.
 legacy_slugs:
 - tutorials/index.html
 ---
 
 # Tutorials
 
-Six games built step by step. Each tutorial explains one idea at a time and shows only the lines that carry it; the complete code is folded at the foot of the page, and **Copy to new game** installs it in a fresh project so you can compare your version against it.
+Seven games built step by step. Each tutorial explains one idea at a time and shows only the lines that carry it; the complete code is folded at the foot of the page, and **Copy to new game** installs it in a fresh project so you can compare your version against it.
 
 Before any of them, do [Getting started](/learn/getting-started) and read [the game loop](/learn/concepts/game-loop). Every tutorial assumes you can run a game and know what `_init`, `_update` and `_draw` are for.
 
@@ -21,6 +21,10 @@ Before any of them, do [Getting started](/learn/getting-started) and read [the g
 ## Next: the platformer
 
 [Build a platformer](/learn/tutorials/platformer) is the second solo game. It builds on the same map-as-collision idea and adds gravity and jumping, movement resolved one axis at a time, a small animation state machine and a clamped camera.
+
+## Then: make it sound
+
+[Make it sound](/learn/tutorials/sound) is the third solo build, and the short one. It visits SOUND for an instrument from a preset, a pattern on the piano roll and a chain of two in the MUSIC grid, then CODE for [[sound.play_sfx]] on a key press, [[sound.play_music]] from the first frame and a beat indicator read off [[sound.music_position]].
 
 ## Then online, in this order
 
