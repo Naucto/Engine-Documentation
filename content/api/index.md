@@ -37,8 +37,8 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 | [[gfx.get_color]] | Current screen colour as "#rrggbb", of the frame or of the line being scanned |
 | [[gfx.reset_palette]] | Restore the game palette; inside `_scanline`, put the line back to the frame palette |
 | [[gfx.screen_col]] | Screen palette remap applied at display time, for the frame or from this line on |
-| [[gfx.shift]] | Shift the display by whole pixels: the frame in `_draw`, this line on in `_scanline` |
-| [[gfx.blank]] | Show black instead: the whole frame in `_draw`, this line on in `_scanline` |
+| [[gfx.shift]] | Shift the display by whole pixels: the frame from anywhere but `_scanline`, this line on from inside it |
+| [[gfx.blank]] | Show black instead: the whole frame from anywhere but `_scanline`, this line on from inside it |
 | [[gfx.width]] | Screen width (320) |
 | [[gfx.height]] | Screen height (180) |
 
@@ -67,6 +67,8 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 | [[input.mouse_down]] | True on the step a mouse button was pressed |
 | [[input.players]] | Number of connected players (keyboard counts as one) |
 
+`key_pressed` and `mouse_pressed` mean **held**, whatever their names say; the edges are `key_down` and `mouse_down`, as `pressed` is for an action.
+
 ## sound · Sound
 
 | Function | What it does |
@@ -78,8 +80,11 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 | [[sound.stop_music]] | Stop the music |
 | [[sound.stop]] | Stop everything |
 | [[sound.set_volume]] | Mixer levels 0..1 |
-| [[sound.music_position]] | pattern_index, step of the playing song (nil when stopped) |
+| [[sound.music_pos]] | Place in the music's chain and the step now sounding, 0-based; nil when nothing plays |
 | [[sound.is_playing]] | Whether a voice is sounding |
+| [[sound.set_instrument]] | Change an instrument for this run |
+| [[sound.set_pattern]] | Change the tempo or length of a pattern for this run |
+| [[sound.set_music]] | Change whether a music loops for this run |
 
 ## sys · Time and console
 

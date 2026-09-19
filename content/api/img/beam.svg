@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" role="img" aria-label="The beam reads the index frame _draw() wrote line by line, calling _scanline(y) for each, through the frame palette or the one a line set for itself and the lines below">
-  <title>The beam reads the index frame _draw() wrote line by line, calling _scanline(y) for each, through the frame palette or the one a line set for itself and the lines below</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" role="img" aria-label="The beam reads the index frame _draw() wrote line by line, calling _scanline(y) for each, through the frame's line state (palette, shift, blank) or the state a line set for itself and the lines below">
+  <title>The beam reads the index frame _draw() wrote line by line, calling _scanline(y) for each, through the frame's line state (palette, shift, blank) or the state a line set for itself and the lines below</title>
   <g class="d-box">
     <rect x="8.5" y="40.5" width="144" height="96"/>
   </g>

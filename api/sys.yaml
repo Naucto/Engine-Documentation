@@ -69,7 +69,7 @@ functions:
 - name: log
   signature: sys.log(...)
   summary: Write to the console (same as print).
-  description: 'Write a line to the console under the viewer. Values are turned into text and joined with tabs; a table is written as JSON, with its keys as strings. `print` is the same function. The console keeps the last five hundred lines.'
+  description: 'Write a line to the console under the viewer. Values are turned into text and joined with tabs: `nil` prints `nil`, a boolean `true` or `false`, a function `function`, and a table is written as JSON, with its keys as strings. `print` is the same function. The console keeps the last five hundred lines.'
   params:
   - name: '...'
     type: any
@@ -102,7 +102,7 @@ functions:
   examples:
   - |-
     local enemies = {}
-    if #enemies > 64 then sys.warn("too many enemies: ", #enemies) end
+    if #enemies > 64 then sys.warn("too many enemies: " .. #enemies) end  -- one string: a comma would put a tab between the two
   notes: []
   aliases: []
   seeAlso:
@@ -124,7 +124,7 @@ functions:
   - |-
     local n = 3
     local level = nil
-    if not level then sys.error("level ", n, " is missing") end
+    if not level then sys.error("level " .. n .. " is missing") end
   notes: []
   aliases: []
   seeAlso:

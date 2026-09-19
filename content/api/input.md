@@ -26,8 +26,8 @@ The default bindings, which the player can change in Settings → Controls:
 | `left` `right` `up` `down` | Arrow keys, <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> and <kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd> | <kbd>I</kbd> <kbd>J</kbd> <kbd>K</kbd> <kbd>L</kbd> | D-pad or left stick |
 | `a` | <kbd>X</kbd>, <kbd>Space</kbd> | <kbd>N</kbd> | Button 0 (A / Cross) |
 | `b` | <kbd>C</kbd>, <kbd>Shift</kbd> | <kbd>M</kbd> | Button 1 (B / Circle) |
-| `x` | <kbd>V</kbd> | <kbd>,</kbd> | Button 2 (X / Square) |
-| `y` | <kbd>B</kbd> | <kbd>.</kbd> | Button 3 (Y / Triangle) |
+| `x` | <kbd>V</kbd> | <kbd>,</kbd>, and <kbd>;</kbd> on AZERTY | Button 2 (X / Square) |
+| `y` | <kbd>B</kbd> | <kbd>.</kbd>, and <kbd>:</kbd> on AZERTY | Button 3 (Y / Triangle) |
 | `pause` | <kbd>Esc</kbd>, <kbd>Enter</kbd> | <kbd>P</kbd> | Button 9 (Start) |
 
 The keyboard and the first gamepad are player 1 together; a second gamepad is player 2, and so on up to four. **The second keyboard layout also plays as player 2**, whether or not a gamepad is plugged in.
@@ -56,6 +56,9 @@ end
 ## Raw keys
 
 Key names are the browser's `event.key` values, and they are **case-sensitive and layout-dependent**: with <kbd>Shift</kbd> held the A key reports `"A"`, not `"a"`, and the key next to <kbd>Tab</kbd> reports `"q"` on a French keyboard. That is why the default bindings list both cases and both layouts.
+
+> [!WARNING]
+> **`key_pressed` means held**, whatever its name says: it is `true` for every step the key is down, the way `held` is for an action. The step the key goes down is `key_down`. The mouse pair is the same: `mouse_pressed` while the button is held, `mouse_down` on the click.
 
 {{api:input.key_pressed}}
 

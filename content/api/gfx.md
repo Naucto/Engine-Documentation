@@ -13,13 +13,15 @@ namespace: gfx
 
 # gfx · Rendering
 
-Everything the screen shows goes through `gfx`: the console is **320 × 180 pixels with 16 palette colours**, drawn again from scratch every frame inside `_draw()`, then shown line by line by a display beam that a `_scanline(y)` function can steer.
+Everything the screen shows goes through `gfx`: the console is **320 × 180 pixels with 16 palette colours**, drawn inside `_draw()` on a frame that keeps what was drawn until the next [[gfx.clear]], then shown line by line by a display beam that a `_scanline(y)` function can steer.
+
+The pictures on this page use the Platformer Tutorial's sheet and map.
 
 The origin is the top-left corner, `x` grows to the right and `y` downwards, and every position is floored to a whole pixel before it is drawn. The [coordinates](/learn/concepts/coordinates) page has the full model.
 
 ## The frame
 
-Clear the screen first, then draw over it. Some settings outlive the frame: **the camera, the clip, a `set_col` remap, the frame palette and the frame shift stay as they are** until you change them, so a camera set in `_init()` holds for the whole game and a remap forgotten in `_draw()` tints the next frame too. What a `_scanline` sets is the exception: it lasts one frame.
+Clear the screen first, then draw over it: the frame is not wiped between two `_draw()` calls, so what a frame does not clear is still there on the next. Some settings outlive the frame too: **the camera, the clip, a `set_col` remap, the frame palette, the frame shift and a frame `blank` stay as they are** until you change them, so a camera set in `_init()` holds for the whole game and a remap forgotten in `_draw()` tints the next frame too. What a `_scanline` sets is the exception: it lasts one frame.
 
 The camera moves what is drawn and what [[gfx.get_pixel]] reads. It moves neither the clip rectangle, which is in screen pixels, nor [[gfx.clear]], which fills the whole screen whatever the camera and the clip say.
 
@@ -99,18 +101,16 @@ Colour `0` is a colour like any other for shapes, pixels, text and [[gfx.clear]]
 
 ### Remapping colours while drawing
 
-A **draw remap** ([[gfx.set_col]]) changes the number that gets written while drawing: after `gfx.set_col(9, 2)`, every pixel that would have been `9` is stored as `2`, for sprites, shapes, map and text alike. It is baked into the frame, so [[gfx.get_pixel]] reads `2`, and it stays on until [[gfx.reset_col]], across frames. **Reset before the next thing you draw plain**, or the whole screen stays tinted, this frame and the next.
+A **draw remap** ([[gfx.set_col]]) changes the number that gets written while drawing: after `gfx.set_col(4, 5)`, every pixel that would have been `4` is stored as `5`, for sprites, shapes, map and text alike. It is baked into the frame, so [[gfx.get_pixel]] reads `5`, and it stays on until [[gfx.reset_col]], across frames. **Reset before the next thing you draw plain**, or the whole screen stays tinted, this frame and the next. The picture below, its labels aside:
 
 ```lua
-local enemies = { { spr = 2, x = 40, y = 60 }, { spr = 2, x = 90, y = 60, hit = true } }
-
 function _draw()
   gfx.clear(0)
-  for _, e in ipairs(enemies) do
-    if e.hit then gfx.set_col(2, 5) end   -- red drawn as white
-    gfx.draw_sprite(e.spr, e.x, e.y)
-    gfx.reset_col()
-  end
+  gfx.draw_sprite(1, 48, 56, 1, 1, false, false, 4)
+  gfx.set_col(4, 5)   -- yellow drawn as white, from here on
+  gfx.draw_sprite(1, 144, 56, 1, 1, false, false, 4)
+  gfx.reset_col()     -- and plain again
+  gfx.draw_sprite(1, 240, 56, 1, 1, false, false, 4)
 end
 ```
 
@@ -134,7 +134,7 @@ The palette and display functions ([[gfx.set_color]], [[gfx.get_color]], [[gfx.s
 Unlike [[gfx.set_col]], none of this touches the frame: [[gfx.get_pixel]] still reads the number that was drawn, and a HUD drawn in colour `5` shows whatever `5` means on its line.
 
 > [!TIP]
-> `_scanline` shares the instruction budget of the step with `_update` and `_draw`, and runs 180 times a frame. Keep each call to a few lines: compute tables in `_init`, and change the palette only on the lines where something changes (`if y % 12 == 0 then …`).
+> `_update` and `_draw` each get a fresh instruction budget, ten million instructions a step, and the 180 calls to `_scanline` spend `_draw`'s. Keep each call to a few lines: compute tables in `_init`, and change the palette only on the lines where something changes (`if y % 12 == 0 then …`).
 
 ### A gradient the game never drew
 
@@ -164,7 +164,50 @@ A frame holds sixteen numbers, but each band of lines can show them as sixteen c
 
 ```lua
 local BAND = 12
-local bands = {}   -- bands[b][i]: the colour band b shows for index i, filled in _init
+local BANDS = 180 // BAND
+
+-- The hue at h degrees as full-strength r, g, b in 0..1.
+local function hue(h)
+  local x = 1 - math.abs((h / 60) % 2 - 1)
+  if h < 60 then return 1, x, 0
+  elseif h < 120 then return x, 1, 0
+  elseif h < 180 then return 0, 1, x
+  elseif h < 240 then return 0, x, 1
+  elseif h < 300 then return x, 0, 1
+  else return 1, 0, x end
+end
+
+-- That hue at lightness l: 0 is black, 0.5 the hue itself, 1 white.
+local function shade(h, l)
+  local r, g, b = hue(h)
+  if l < 0.5 then
+    r, g, b = r * 2 * l, g * 2 * l, b * 2 * l
+  else
+    local w = 2 * l - 1
+    r, g, b = r + (1 - r) * w, g + (1 - g) * w, b + (1 - b) * w
+  end
+  return { r * 255, g * 255, b * 255 }
+end
+
+local bands = {}   -- bands[b][i]: the colour band b shows for index i, 240 in all
+
+function _init()
+  for b = 1, BANDS do
+    bands[b] = {}
+    for i = 0, 15 do
+      bands[b][i] = shade((b - 1) * 360 / BANDS, 0.08 + 0.84 * i / 15)
+    end
+  end
+end
+
+function _draw()
+  for y = 0, 179, 4 do
+    for x = 0, 319, 4 do
+      local v = math.sin(x / 23) + math.sin(y / 17) + math.sin((x + y) / 31)
+      gfx.fill_rect(x, y, 4, 4, math.floor((v + 3) / 6 * 16) % 16)
+    end
+  end
+end
 
 function _scanline(y)
   if y % BAND == 0 then
@@ -176,7 +219,7 @@ function _scanline(y)
 end
 ```
 
-![A plasma in 240 colours](../../api/img/frames/gfx-plasma.png "A plasma drawn with sixteen indices; each band of twelve lines shows them as its own sixteen hues, 240 colours in all.")
+![A plasma in 240 colours](../../api/img/frames/gfx-plasma.png "A plasma drawn with sixteen indices; each band of twelve lines shows them as sixteen shades of its own hue, dark to light, 240 colours in all.")
 
 ### A photograph, band by band
 

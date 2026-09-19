@@ -32,7 +32,7 @@ functions:
   params:
   - name: config
     type: table
-    description: Optional session settings (see below).
+    description: Optional session settings, the table above.
     optional: true
   - name: callback
     type: function
@@ -116,6 +116,7 @@ functions:
   returns: Your own player id in the session, as an integer.
   examples:
   - |-
+    -- inside the host or join callback
     print("my id is " .. net.id())
   notes: []
   aliases: []
@@ -147,7 +148,7 @@ functions:
     acquire, a queue push or a queue pop. **Guest only**; `reason` is `"forbidden"` (the path is not writable
     by guests) or `"conflict"` (another write got there first) |
 
-    | anything else (a state path) | `(path, newValue)` | A matching [[net.state]] key \| changes |
+    | anything else (a state path) | `(path, newValue)` | A matching [[net.state]] key changes |
 
 
     State patterns match dotted key paths and support two wildcards: `*` matches exactly one path segment,
@@ -172,6 +173,7 @@ functions:
   returns: null
   examples:
   - |-
+    -- inside the host or join callback
     net.on("score", function(path, value)
       print("score is now " .. value)
     end)
@@ -217,6 +219,7 @@ functions:
   returns: null
   examples:
   - |-
+    -- inside the host or join callback, or later in the session
     net.emit("serve", { direction = -1 })
   notes: []
   aliases: []
@@ -251,8 +254,9 @@ functions:
   returns: A lock handle -- a table with an `acquire` and an `is_locked` function.
   examples:
   - |-
+    -- inside the host callback
     net.state.score_lock = net.lock()   -- the host creates the shared lock once
-    
+
     net.state.score_lock.acquire(function(release)
       -- nobody else holds the lock in here
       net.state.score = (net.state.score or 0) + 1
@@ -299,6 +303,7 @@ functions:
   returns: A queue handle -- a table with `push`, `pop`, `length` and `peek`.
   examples:
   - |-
+    -- inside the host callback
     net.state.respawns = net.queue()      -- create the shared queue (host does this once)
 
     net.state.respawns.push({ coin = 3 }) -- append a value
@@ -323,15 +328,18 @@ values:
   signature: net.state
   summary: A table shared by every player in the session. Writes replicate to all peers automatically;
     reads always return the latest replicated value.
-  description: 'A table shared by every player in the session. Writes replicate to all peers; reads answer the latest replicated value. A player who joins mid-game receives everything they may read. Stored values are numbers, strings, booleans and nested tables; a function raises `net: cannot store a function`. Reading it outside a session raises `net: no active session`.'
+  description: 'A table shared by every player in the session. Writes replicate to all peers; reads answer the latest replicated value. A player who joins mid-game receives everything they may read. Stored values are numbers, strings, booleans and nested tables; a function raises `net: cannot store a function in net.state`. Writing `nil` to a key deletes it, and everything under it. Reading it outside a session raises `net: no active session`.'
   params: []
   returns: null
   examples:
   - |-
+    -- inside the host or join callback, or later in the session
     net.state.score = 0                          -- write a value
     net.state.ball = { x = 160, y = 90, dx = 2 } -- assign a whole table at once
     net.state.ball.x = 42                        -- update a nested field
+    net.state.ball = nil                         -- delete the key and everything under it
   - |-
+    -- inside the host or join callback
     local me = net.id()
     local entry = { x = 24, y = 40 }
     if net.state.players then

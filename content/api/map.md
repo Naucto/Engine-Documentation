@@ -13,11 +13,17 @@ namespace: map
 
 The map is the grid of sprite numbers the MAP tab paints, **tiles of 8 × 8 pixels**, read by the same numbers the sheet gives them. The game draws it with `draw`, reads a tile with `get`, changes one for the current run with `set`, and asks a sprite what it means with `flag`.
 
-A game can hold several maps. Every function takes the map's number as its last argument, **counted from `1`** in the order of the MAP tab's strip, and works on the first map without it. Asking for a map the game does not have prints one warning in the console, once per function and map; then `draw` and `set` do nothing, and `get`, `width` and `height` answer `0`.
+The pictures on this page use the Platformer Tutorial's sheet and map.
+
+A game can hold several maps. Every function but `flag` takes the map's number as its last argument, **counted from `1`** in the order of the MAP tab's strip, and works on the first map without it. Asking for a map the game does not have prints one warning in the console, once per function and map; then `draw` and `set` do nothing, and `get`, `width` and `height` answer `0`.
 
 ## Drawing it
 
 {{api:map.draw}}
+
+`tx`, `ty`, `tw`, `th` name a window of the map in tiles, so one call draws a room of it:
+
+![A 12 by 8 window of the map drawn at (40, 20) and outlined](../../api/img/frames/map-draw-region.png "map.draw(40, 20, 4, ty, 12, 8): a 12 × 8 window of the map, twelve rows above its floor, drawn at (40, 20) and outlined.")
 
 ## Reading and changing tiles
 

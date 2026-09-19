@@ -15,8 +15,10 @@ functions:
   returns: null
   examples:
   - |-
-    gfx.clear(0)   -- black background
-    gfx.clear(11)  -- light blue background
+    function _draw()
+      gfx.clear(1)                 -- a dark red background
+      gfx.draw_sprite(1, 152, 82)  -- then the scene over it
+    end
   notes:
   - kind: note
     text: 'An index past `15` wraps around: `16` draws as `0` and `-1` as `15`. Nothing stops the game.'
@@ -30,7 +32,7 @@ functions:
   signature: gfx.draw_sprite(n, x, y[, w, h, flip_h, flip_v, scale, transparent])
   summary: Draw w×h tiles starting at sprite n. Colour 0 is the transparent one by default.
   picture: img/frames/gfx-draw-sprite.png
-  caption: 'The same sprite plain, flipped horizontally, flipped vertically, and at scale 3.'
+  caption: 'Sprite 1 plain, flipped horizontally, flipped vertically, at scale 3, and the 2 × 2 block from it: sprites 1, 2, 17 and 18 drawn as one.'
   description: 'Draw one sprite, or a block of them, from the sheet the ART tab edits. `w` and `h` count sprites: left out, one 8 × 8 sprite. A flip mirrors the whole block, tiles included. Transparency is tested on the sheet''s own colour, before any `set_col` remap. Positions are floored to whole pixels. A sprite number past the end of the sheet draws stretched edge pixels rather than failing.'
   params:
   - name: n
@@ -75,11 +77,12 @@ functions:
   returns: null
   examples:
   - |-
-    gfx.draw_sprite(0, 10, 20)         -- one sprite at (10, 20)
-    gfx.draw_sprite(32, 40, 50, 2, 1)  -- a strip two sprites wide, from sprite 32
-    gfx.draw_sprite(0, 60, 20, 1, 2)   -- one wide, two tall (8 × 16 pixels)
-    gfx.draw_sprite(0, 90, 20, 1, 1, true)          -- mirrored
-    gfx.draw_sprite(0, 120, 20, 1, 1, false, false, 3) -- three times the size
+    -- a new game's moon is sprites 1, 2, 17 and 18: a 2 × 2 block from sprite 1
+    gfx.draw_sprite(1, 10, 20)                              -- its top-left quarter alone
+    gfx.draw_sprite(1, 40, 20, 2, 2)                        -- the whole moon, 16 × 16 pixels
+    gfx.draw_sprite(1, 80, 20, 2, 2, true)                  -- mirrored
+    gfx.draw_sprite(1, 120, 20, 2, 2, false, false, 3)      -- three times the size
+    gfx.draw_sprite(1, 200, 20, 2, 2, false, false, 1, nil) -- every colour drawn: a black square with the moon in it
   notes: []
   aliases:
   - sprite
@@ -140,8 +143,10 @@ functions:
   returns: null
   examples:
   - |-
-    -- a 24x8 banner from the sheet, drawn at double size
-    gfx.draw_region(0, 32, 24, 8, 20, 12, 48, 16)
+    -- the moon of a new game, sprites 1, 2, 17 and 18, as one 16 × 16 rectangle of the sheet
+    gfx.draw_region(8, 0, 16, 16, 152, 82)
+    -- the same at double size
+    gfx.draw_region(8, 0, 16, 16, 20, 12, 32, 32)
   notes: []
   aliases: []
   seeAlso:
@@ -165,7 +170,7 @@ functions:
   - name: colour
     type: number
     required: true
-    description: 'Palette index `0` to `15`; left out, `0`.'
+    description: 'Palette index `0` to `15`.'
   returns: null
   examples:
   - |-
@@ -234,7 +239,7 @@ functions:
     required: true
   - name: colour
     type: number
-    description: Palette color index.
+    description: Palette index 0..15.
     required: true
   returns: null
   examples:
@@ -272,7 +277,7 @@ functions:
     required: true
   - name: colour
     type: number
-    description: Palette color index.
+    description: Palette index 0..15.
     required: true
   returns: null
   examples:
@@ -310,7 +315,7 @@ functions:
     required: true
   - name: colour
     type: number
-    description: Palette color index.
+    description: Palette index 0..15.
     required: true
   returns: null
   examples:
@@ -383,9 +388,17 @@ functions:
   returns: null
   examples:
   - |-
-    -- a shrinking explosion
+    -- a shrinking explosion: the radius is the life left
     local boom = { x = 160, y = 90, life = 12 }
-    gfx.fill_circle(boom.x, boom.y, boom.life, 3)
+
+    function _update()
+      if boom.life > 0 then boom.life = boom.life - 1 end
+    end
+
+    function _draw()
+      gfx.clear(0)
+      if boom.life > 0 then gfx.fill_circle(boom.x, boom.y, boom.life, 3) end
+    end
   notes: []
   aliases: []
   seeAlso:
@@ -396,8 +409,8 @@ functions:
   signature: gfx.print(text, x, y[, colour])
   summary: Draw text with the built-in 4×6 font; returns its width.
   picture: img/frames/gfx-print.png
-  caption: 'Text at the default colour, in two others, and a number joined to a string.'
-  description: 'Draw text with the built-in 4 × 6 font, in capitals, lowercase is drawn as uppercase, and a character outside plain ASCII takes its 4 pixels and shows nothing. A number is written as text. Returns the width of the last line drawn, which is what centring needs.'
+  caption: 'Text in the default white, in colours 4 and 11, and a number joined to a string in colour 7.'
+  description: 'Draw text with the built-in 4 × 6 font, in capitals, lowercase is drawn as uppercase, and a character outside plain ASCII takes its 4 pixels and shows nothing. A number is written as text. A `\n` in the text starts a new line 6 pixels lower. Returns the width of the last line drawn, which is what centring needs.'
   params:
   - name: text
     type: string
@@ -415,7 +428,7 @@ functions:
     type: number
     optional: true
     description: 'Palette index; left out, `5` (white in the default palette).'
-  returns: Width of the drawn text in pixels.
+  returns: Width of the last line drawn, in pixels.
   examples:
   - |-
     local score = 0
@@ -434,7 +447,7 @@ functions:
   signature: gfx.camera([x, y])
   summary: Offset every later draw call; no arguments resets.
   picture: img/frames/gfx-camera.png
-  caption: 'The map and a sprite drawn with the camera at (-40, -20): everything shifts right and down.'
+  caption: 'The map and a sprite drawn with the camera at (-40, -20): the pink outline is where the sprite lands without it, and everything is 40 pixels right and 20 down from that.'
   description: 'Move the view. Everything drawn after it is shifted by `-x`, `-y`, so a camera at `(40, 0)` scrolls the world 40 pixels to the left. `gfx.camera()` puts it back at the origin, and `gfx.camera(x)` alone sets `y` to `0`. Values are floored.'
   params:
   - name: x
@@ -462,7 +475,7 @@ functions:
   signature: gfx.clip([x, y, w, h])
   summary: Restrict drawing to a rectangle; no arguments resets.
   picture: img/frames/gfx-clip.png
-  caption: 'A full-screen fill and a row of circles, only visible inside the clip rectangle outlined in white.'
+  caption: 'A full-screen fill and a row of circles, only visible inside the clip rectangle, outlined in pink (colour 6) once the clip is reset.'
   description: 'Keep every later draw call inside a rectangle of the screen; the rectangle is in screen pixels, the camera does not move it. `gfx.clip()` draws to the whole screen again. A new clip replaces the old one, it stays from one frame to the next, and `gfx.clear` ignores it.'
   params:
   - name: x
@@ -537,7 +550,10 @@ functions:
   returns: null
   examples:
   - |-
-    gfx.reset_col()
+    gfx.set_col(4, 5)            -- yellow drawn as white
+    gfx.draw_sprite(1, 40, 40)
+    gfx.reset_col()              -- the next sprite is drawn plain
+    gfx.draw_sprite(1, 60, 40)
   notes: []
   aliases:
   - reset_col
@@ -550,7 +566,7 @@ functions:
   picture: img/frames/gfx-palette.png
   caption: 'The sixteen palette entries; colour 4 redefined to a cyan by set_color, so the row and the box both change; colour 9 drawn as colour 2 by set_col.'
   description: |-
-    Change what one of the sixteen colours shows, as `"#rrggbb"` (the `#` may be left out) or as three components `0` to `255`. The change applies when the frame is shown, to everything drawn in it; the game's saved palette is untouched.
+    Change what one of the sixteen colours shows, as `"#rrggbb"` (the `#` may be left out) or as three components `0` to `255`, each clamped to that range and rounded to a whole number. The change applies when the frame is shown, to everything drawn in it; the game's saved palette is untouched.
 
     Called anywhere but `_scanline`, it changes the **frame palette**: what every line shows, kept from frame to frame until `gfx.reset_palette()`. Called inside `_scanline(y)`, it changes the **line palette**: what line `y` shows, and every line below it until another call changes it, for this frame only. The next frame's beam starts from the frame palette again.
   params:
@@ -558,10 +574,10 @@ functions:
     type: number
     required: true
     description: 'Palette index, `0` to `15`.'
-  - name: hex
+  - name: hex | r
     type: string|number
     required: true
-    description: 'The colour as `"#rrggbb"`, or, with three numbers, the red component. A single number is read as red alone.'
+    description: 'The colour as `"#rrggbb"`, or, with `g` and `b`, the red component `0` to `255`. A single number is read as red alone.'
   - name: g
     type: number
     optional: true
@@ -589,7 +605,7 @@ functions:
   - kind: note
     text: 'An unreadable string gives black, without an error.'
   - kind: tip
-    text: 'The beam calls `_scanline` 180 times per frame, on the same instruction budget as `_draw`; keep the work per line small, and do the arithmetic once in `_init` where you can.'
+    text: 'The beam calls `_scanline` 180 times per frame, and those calls spend `_draw`''s instruction budget (ten million a step); keep the work per line small, and do the arithmetic once in `_init` where you can.'
   aliases: []
   seeAlso:
   - gfx.get_color
@@ -609,11 +625,11 @@ functions:
   returns: Colour string "#rrggbb".
   examples:
   - |-
-    local sky = gfx.get_color(12)
+    local lime = gfx.get_color(12)  -- "#bfff3c" on Bubblegum 16
   - |-
-    -- read from inside the beam: what colour 0 shows on this line
+    -- read from inside the beam, once: what colour 0 shows on line 90
     function _scanline(y)
-      if y == 90 then print(gfx.get_color(0)) end
+      if y == 90 and sys.frame() == 1 then print(gfx.get_color(0)) end
     end
   notes: []
   aliases: []
@@ -628,10 +644,22 @@ functions:
   returns: null
   examples:
   - |-
-    -- the end of a fade to black
-    local fade = 0
-    if fade == 0 then
-      gfx.reset_palette()
+    -- a fade to black over a second, from the game's own colours; then the palette back
+    local left = 60
+
+    function _draw()
+      gfx.clear(0)
+      map.draw(0, 0)
+      left = left - 1
+      gfx.reset_palette()  -- the game's colours, to read and dim from
+      if left > 0 then
+        local k = left / 60
+        for i = 1, 15 do
+          local hex = gfx.get_color(i)
+          local r, g, b = tonumber(hex:sub(2, 3), 16), tonumber(hex:sub(4, 5), 16), tonumber(hex:sub(6, 7), 16)
+          gfx.set_color(i, r * k, g * k, b * k)
+        end
+      end
     end
   - |-
     -- a tinted band: the frame palette above and below, a warmer colour 0 in between
@@ -648,7 +676,9 @@ functions:
 - name: screen_col
   signature: gfx.screen_col(from, to)
   summary: Screen palette remap applied at display time, for the frame or from this line on.
-  description: 'Show one colour as another on the finished frame, after everything is drawn: the colour currently shown at `to` is copied over `from`, and a later change of `to` does not follow. Unlike `set_col` it costs nothing per draw call, and unlike it **it stays**: for the frame, until `gfx.reset_palette()` or a `set_color` of `from`; inside `_scanline(y)`, for line `y` and the lines below it, for this frame.'
+  description: 'Show one colour as another on the finished frame, after everything is drawn: the colour currently shown at `to` is copied over `from`, and a later change of `to` does not follow. Unlike `set_col` it costs nothing per draw call, and unlike it **it stays**: for the frame, until `gfx.reset_palette()` (which undoes every `set_color` as well) or a `set_color` of `from`; inside `_scanline(y)`, for line `y` and the lines below it, for this frame.'
+  picture: img/frames/gfx-silhouette.png
+  caption: 'From line 90 down every colour but the background shows as colour 1: the same scene in silhouette on its lower half.'
   params:
   - name: from
     type: number
@@ -669,7 +699,13 @@ functions:
       gfx.reset_palette()
     end
   - |-
-    -- the lower half in silhouette: every colour shows as colour 1 from line 90 down
+    -- the lower half in silhouette: every colour but the background shows as colour 1 from line 90 down
+    function _draw()
+      gfx.clear(0)
+      map.draw(0, 180 - map.height() * 8)
+      gfx.draw_sprite(1, 100, 60, 1, 1, false, false, 4)
+    end
+
     function _scanline(y)
       if y == 90 then
         for i = 2, 15 do gfx.screen_col(i, 1) end
@@ -684,9 +720,9 @@ functions:
   since: '2.0'
 - name: shift
   signature: gfx.shift(dx[, dy][, wrap])
-  summary: 'Shift the display by whole pixels: the frame in `_draw`, this line on in `_scanline`.'
-  picture: img/frames/gfx-scanline.png
-  caption: 'The lower third shifted by a sine of its line, and colour 0 set on every line so the sky is a gradient.'
+  summary: 'Shift the display by whole pixels: the frame from anywhere but `_scanline`, this line on from inside it.'
+  picture: img/frames/gfx-shift.png
+  caption: 'The whole frame shifted 12 pixels right and 6 down by gfx.shift(12, 6): the band it uncovers along the left and the top shows colour 0.'
   description: |-
     Move the finished picture when it is shown, without redrawing anything: `dx` to the right and `dy` down, in whole pixels, negative the other way. What a shift uncovers shows colour `0`, or, with `wrap`, the pixels pushed off the other side; `dy` never wraps.
 
@@ -738,7 +774,9 @@ functions:
   since: '2.0'
 - name: blank
   signature: gfx.blank([on])
-  summary: 'Show black instead: the whole frame in `_draw`, this line on in `_scanline`.'
+  summary: 'Show black instead: the whole frame from anywhere but `_scanline`, this line on from inside it.'
+  picture: img/frames/gfx-blank.png
+  caption: 'A letterbox: gfx.blank() on line 0 and again on line 160, gfx.blank(false) on line 20, so the picture shows between them.'
   description: 'Show black in place of the picture, which stays drawn underneath. Called anywhere but `_scanline`, it blanks the **whole frame** and stays until `gfx.blank(false)`: a cut to black that costs nothing to draw. Called inside `_scanline(y)`, it blanks **line `y` and the lines below it** for this frame, until `gfx.blank(false)` on a later line: a letterbox is a `blank()` on the first line and a `blank(false)` where the picture starts.'
   params:
   - name: 'on'

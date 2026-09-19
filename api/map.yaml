@@ -4,12 +4,12 @@ functions:
 - name: draw
   signature: map.draw(x, y[, tx, ty, tw, th, m])
   summary: Draw a map (or a sub-rectangle of its tiles) at a pixel position. m picks the map, from 1.
-  picture: img/frames/map-draw-region.png
-  caption: 'A 12×8 window of the map, twelve rows above its floor, drawn at (40, 20) and outlined.'
+  picture: img/frames/map-draw.png
+  caption: 'The whole first map drawn with map.draw(0, y), y chosen so its last row, the floor, sits on the bottom of the screen.'
   description: |-
     Draw the map, or the part of it that `tx`, `ty`, `tw`, `th` name, with its top-left corner at `x`, `y`. Tiles are the sheet's 8 × 8 sprites; a tile of sprite `0` is empty. The camera moves it like anything else, and a tile changed with `map.set` is drawn changed. `tw` and `th` left out are the whole width and height even when `tx`, `ty` are not `0`.
 
-    A game may keep several maps, made in the MAP tab. Each `map.*` call takes the map it works on as its last argument, counted from `1` in the order of the strip in that tab, and works on the first one when that argument is left out.
+    A game may keep several maps, made in the MAP tab. Every `map.*` call but `map.flag` takes the map it works on as its last argument, counted from `1` in the order of the strip in that tab, and works on the first one when that argument is left out.
   params:
   - name: x
     type: number
@@ -91,7 +91,7 @@ functions:
   summary: Change a tile of map m (the first by default) for this run only.
   picture: img/frames/map-set.png
   caption: 'The same window of the map before and after map.set(9, 26, 0): the outlined tile of the platform is gone on the right.'
-  description: 'Change a tile for the rest of this run. The edit lives in memory only, the saved map is untouched, and reloading the game brings the level back. Out of the map, or on a map that does not exist, the call does nothing.'
+  description: 'Change a tile for the rest of this run. The edit lives in memory only, the saved map is untouched, and reloading the game brings the level back. Out of the map the call does nothing; on a map the game does not have it does nothing either, with a warning in the console.'
   params:
   - name: tx
     type: number

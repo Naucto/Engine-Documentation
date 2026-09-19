@@ -18,6 +18,19 @@ Sessions are created through the platform's own dialogs: [[net.host]] and [[net.
 > [!NOTE]
 > [[net.host]], [[net.join]] and [[net.leave]] work at any time, and [[net.lock]] and [[net.queue]] make local objects that work without a session. Everything else, [[net.on]] included, needs an active session and raises `net: no active session` otherwise: register your listeners inside the host or join callback, not in `_init`.
 
+Every example on this page that says "inside the callback" sits in this frame:
+
+```lua
+local state = "menu"
+
+function start_hosting()
+  net.host({ max_players = 4, title = "Tag arena" }, function()
+    state = "playing"
+    -- the session exists from here on: net.id(), net.on(...), net.state, net.emit(...)
+  end)
+end
+```
+
 ## Host and guests
 
 The host keeps the one true copy of [[net.state]]. **`peer.joined` and `peer.left` fire on the host only**: a guest only ever talks to the host and is not told about the other guests. A guest's write is applied locally at once, sent to the host, and either confirmed or undone; `"error"` therefore fires only on the guest whose write was refused, with the reason `"forbidden"` (the path is not writable by guests) or `"conflict"` (another write got there first). The same `"error"` fires with `"forbidden"` when the permissions refuse a guest's lock acquire, queue push or queue pop. The host's own writes are never refused.
