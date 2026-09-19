@@ -63,10 +63,14 @@ This scales because each function has one job, a bug is found by its name, and a
 
 ## Several tabs
 
-The CODE editor holds several tabs, and the natural next step is **one tab per system**: `main` for the lifecycle functions, `player` for `init_player` and friends, `enemies` for the enemies. Three things about how tabs run decide how to split them:
+The CODE editor holds several tabs, and the natural next step is **one tab per system**: `main` for the lifecycle functions, `player` for `init_player` and friends, `enemies` for the enemies. The tabs sit side by side in the strip above the editor, each with its rank and its name, `1 main`, `2 player`, `3 enemies`; the `+` at the right end of the strip adds one, and a tab can be dragged to another place in the row.
+
+![The tab strip](../editors/img/code-tabs.png "The tab strip of a game split in three: 1 main, 2 player and 3 enemies, numbered in the order they run, with the + and the magnifier at the right end.")
+
+Three things about how tabs run decide how to split them:
 
 - The tabs run **in the order of the strip**, all of them, before `_init`. A tab that only defines functions can go anywhere; a tab whose top-level code uses a global defined in another tab must come after it.
-- There is no `require`. A tab is not loaded on demand; it has already run.
+- There is no way to load a tab from code. A tab is not loaded on demand; it has already run.
 - A top-level `local` is private to its tab. Anything two tabs share, a `player` table, a `SPRITE_PLAYER` constant, is a global.
 
 A tab name is at most 24 characters, cannot hold a colon, and cannot be the name of a Lua library (`string`, `table`, `math`, ...). An error names the tab it came from, `enemies:12:`, with the line counted in that tab.

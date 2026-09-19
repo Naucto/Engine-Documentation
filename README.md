@@ -9,7 +9,8 @@ submodule (`docs/`) and builds it at compile time.
 | Path                                | What                                                                                                                     |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `content/**/*.md`                   | Pages. Front-matter: `title`, `slug`, `section`, `order`, `description`, `legacy_slugs`, and on API pages `namespace`    |
-| `content/tutorials/<name>/main.lua` | The complete code of a tutorial, named by the page's `lua:` field and folded in where the page says `{{lua:main.lua}}` |
+| `content/tutorials/<name>/main.lua` | The complete code of a tutorial, named by the page's `lua:` field: what Copy to new game installs, byte-identical to the last step file |
+| `content/tutorials/<name>/steps/<n>.lua` | The whole game at the end of `## Step n`, for every step that shows code; every lua block of the step is a verbatim run of it, and `docs:shots` plays each one for the frame under the step |
 | `content/tutorials/<name>/assets.json` | The rest of a tutorial's game — sprites as rows of hex colours, flags, map spans — named by the page's `assets:` field and copied along with the code |
 | `content/**/img/`                   | The pictures a page shows, next to the page (see below)                                                                  |
 | `api/<ns>.yaml`                     | The Lua API manifest, one file per namespace (`gfx`, `map`, `input`, `sound`, `sys`, `net`)                              |

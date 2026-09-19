@@ -12,7 +12,7 @@ legacy_slugs:
 
 A Naucto game is made in one window with six tabs down its left edge. This page says what each tab is for and what they all share; each tab has a page of its own.
 
-![The editor on the CODE tab](img/code.png "The editor on CODE: the rail of six tabs down the left edge, the workspace in the middle, and the console column with the running game on the right.")
+![The editor on the CODE tab](img/code.png "The editor on the CODE tab of a new game, running: the rail of six tabs down the left edge, the code in the middle, and the console column at the right with the moon on the screen and the Console under it.")
 
 ## The six tabs
 
@@ -29,7 +29,7 @@ In the order of the rail:
 
 Every tab has the same three parts: the **rail** on the left, the workspace in the middle, and a panel on the right that is the tab's inspector. The panel is the same width everywhere, so switching tabs never moves the workspace.
 
-The console column, with the 320×180 screen and the Console and Perf strips, exists only on CODE. On the other tabs the game keeps running unseen, unless you pop the viewer out.
+The console column, with the 320×180 screen and the Console and Perf strips, exists only on CODE. On the other tabs the game is **paused**, unless you pop the viewer out; it resumes when its screen is shown again.
 
 ### The floating viewer
 

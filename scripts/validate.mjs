@@ -1,8 +1,9 @@
 // Checks every page has front-matter, every [[ref]] resolves, every picture exists, every api
 // entry has a signature, every signature's parameters are documented and say whether they are
-// required, no Lua example calls a v0 global, and no prose uses a word the docs have retired.
+// required, no Lua example calls a v0 global, no prose uses a word the docs have retired, and every
+// tutorial step's code is whole and in the step file that holds the game at that point.
 import { readdir, readFile, stat } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 
 import { parse } from 'yaml';
 
@@ -96,7 +97,7 @@ for await (const file of walk(resolve(root, 'content'))) {
       errors.push(`${file}: assets file ${meta.assets} does not parse: ${e.message}`);
     }
   }
-  pages.push({ file, body: src.slice(m[0].length), offset: m[0].split('\n').length - 1 });
+  pages.push({ file, meta, body: src.slice(m[0].length), offset: m[0].split('\n').length - 1 });
 }
 /**
  * The one thing a reader copies verbatim.
@@ -154,7 +155,85 @@ function retiredWordsIn(body) {
   return found;
 }
 
-for (const { file, body, offset } of pages) {
+/**
+ * The code a tutorial page hands out, step by step, against the game it says it builds.
+ *
+ * A reader follows a page in the app without the copy button, so a step's Lua block has to be
+ * pasteable: the whole function, not a body cut out of one. `steps/N.lua` beside the page's
+ * `main.lua` is the complete game at the end of Step N, for every step that gives code, and the
+ * check is that each block of the step is in that file line for line. A fragment cannot be, since
+ * the file only has whole functions; and `main.lua`, which the copy button installs, has to be the
+ * last step byte for byte, or the page and the button would give two games.
+ *
+ * Blank lines and lines that are only a comment are left out of the comparison on both sides, so
+ * a page may quote a function without the file's comments, and the file may have section banners
+ * between the functions a step gives one after the other.
+ */
+function codeLines(text) {
+  return text
+    .split('\n')
+    .map((l) => l.trimEnd())
+    .filter((l) => l.trim() && !/^\s*--/.test(l));
+}
+
+function stepsIn(body) {
+  const steps = [];
+  let current = null;
+  let fence = null;
+  for (const line of body.split('\n')) {
+    const head = /^## Step (\d+):/.exec(line);
+    if (head && !fence) {
+      current = { n: Number(head[1]), blocks: [] };
+      steps.push(current);
+      continue;
+    }
+    if (/^## /.test(line) && !fence) current = null;
+    if (/^\s*```/.test(line)) {
+      if (fence) {
+        if (fence.lua && current) current.blocks.push(fence.lines.join('\n'));
+        fence = null;
+      } else fence = { lua: /^\s*```\s*lua\b/.test(line), lines: [] };
+      continue;
+    }
+    if (fence) fence.lines.push(line);
+  }
+  return steps.filter((s) => s.blocks.length);
+}
+
+async function checkSteps(file, body, meta) {
+  if (meta.section !== 'tutorials') return;
+  const steps = stepsIn(body);
+  if (!steps.length) return;
+  if (!meta.lua) {
+    errors.push(`${file}: gives code in steps but names no lua file`);
+    return;
+  }
+  const dir = resolve(dirname(file), dirname(meta.lua));
+  let last = null;
+  for (const step of steps) {
+    const stepFile = resolve(dir, 'steps', `${step.n}.lua`);
+    if (!(await exists(stepFile))) {
+      errors.push(`${file}: Step ${step.n} gives code but ${dirname(meta.lua)}/steps/${step.n}.lua is not there`);
+      continue;
+    }
+    last = stepFile;
+    const fileLines = codeLines(await readFile(stepFile, 'utf8'));
+    for (const block of step.blocks) {
+      const want = codeLines(block);
+      if (!want.length) continue;
+      const found = fileLines.some((_, i) => want.every((l, j) => fileLines[i + j] === l));
+      if (!found)
+        errors.push(
+          `${file}: Step ${step.n} has a lua block that is not verbatim in steps/${step.n}.lua (starts "${want[0].trim()}")`,
+        );
+    }
+  }
+  if (last && (await readFile(last, 'utf8')) !== (await readFile(resolve(dirname(file), meta.lua), 'utf8')))
+    errors.push(`${file}: ${meta.lua} is not byte-identical to the last step, ${relative(dirname(file), last)}`);
+}
+
+for (const { file, body, offset, meta } of pages) {
+  await checkSteps(file, body, meta);
   for (const [, href] of body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g))
     if (!/^(https?:)?\/\//.test(href) && !(await exists(resolve(dirname(file), href))))
       errors.push(`${file}: picture ${href} is not there`);

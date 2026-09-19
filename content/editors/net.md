@@ -10,7 +10,7 @@ description: The NET tab shows the shared state a multiplayer game declares, the
 
 The NET tab is the window on a multiplayer game: the **shared state** it declares and what each path holds, the session it is running, who is in it, and a second client to play against yourself. The model behind it is on [Multiplayer](/learn/concepts/multiplayer); what the permissions are for is the [Permissions & authority](/learn/tutorials/permissions) tutorial.
 
-![The NET tab](img/net.png "The NET tab: the SHARED STATE table on the left, the SESSION column on the right.")
+![The NET tab](img/net.png "The NET tab outside a session: SHARED STATE lists two declared paths, score and winner, with their R and W toggles and a dash for Value and Owner; in the SESSION column the two slots are open and the TEST RIG waits for a session to be hosted.")
 
 ## The layout
 
@@ -20,7 +20,7 @@ The workspace is the SHARED STATE table, and its head says whether the game is `
 
 The table is every path the game declares under `net.state`, and, while a session runs, what it holds.
 
-![The SHARED STATE table](img/net-state.png "SHARED STATE: Path, Value, Owner and Perms, with the R and W toggles.")
+![The SHARED STATE table](img/net-state.png "SHARED STATE outside a session: the root and two declared paths, score and winner, with a dash under Value and Owner since nothing is running, and the R and W toggles, W off on winner.")
 
 - **Path** is the tree, from `<root>` down, with a chevron to fold a branch. Filter paths in the head narrows it; Expand all and Collapse all open and close every branch.
 - **Value** is a Lua literal, so a string keeps its quotes and an empty one is visible. A branch says how many entries it has. A path the game declared and no session has reached yet shows a dash: it has no value yet, which is not the same as `nil`.
@@ -41,13 +41,15 @@ PLAYERS is `Players · n / max`, where the maximum is what the game asked for in
 
 ### TEST RIG
 
-![The TEST RIG](img/net-rig.png "TEST RIG: the second client, its latency and loss, and Force a relay.")
+![The TEST RIG](img/net-rig.png "The TEST RIG outside a session: Spawn a second client, the line that asks you to host first, the Latency and Loss sliders at zero, and Force a relay.")
 
-**Spawn a second client** opens a second copy of the game inside the panel, on this machine, that joins your session, so you can test netplay alone. It needs a session first: run the game and call `net.host()`. The panel says `Waiting for this client to call net.join()` until the second copy joins, then `Joined as a second player`. Close the second client takes it away.
+**Spawn a second client** opens a second copy of the game as a small screen inside the panel, on this machine, so you can test netplay alone. It needs a session first: run the game and call `net.host()`. The second copy starts at `_init` like any run, so it joins the way a player would, through your game's own menu: **click its screen** to give it the keyboard, then press the key your menu uses to join. The panel says `Waiting for this client to call net.join()` until then, and `Joined as a second player` after. Close the second client takes it away.
+
+Since the rig is on NET and the console column is on CODE, **pop the VIEWER out** before you come here, or your own game pauses while you are on this tab and the host with it; and turn Auto off, since an edit reruns the game and a rerun ends the session.
 
 Latency, 0 to 400 ms, and Loss, 0 to 30 %, are applied to that client's outgoing frames, not to yours. They are live while the rig is open.
 
 > [!NOTE]
-> The second client runs on your account but plays under an id of its own, so [[net.id]] answers a different number in each window. PLAYERS lists it as **you (test client)**, and a game that keys its players by id treats it as a second player.
+> The second client runs on your account but plays under an id of its own, so [[net.id]] answers a different number in each client. PLAYERS lists it as **you (test client)**, and a game that keys its players by id treats it as a second player.
 
 **Force a relay** refuses the direct path, to measure what a relayed session costs. It sends real traffic through the provider, so it spends the allowance, and it applies to the next session, not the one running.

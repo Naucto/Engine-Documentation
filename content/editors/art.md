@@ -12,13 +12,13 @@ legacy_slugs:
 
 The ART tab is where you draw the sprites of your game: characters, tiles, objects, everything a call to [[gfx.draw_sprite]] puts on screen. It is written for whoever holds the pen; the Lua side is one short section at the end.
 
-![The ART tab](img/art.png "The ART tab: the sheet in the middle, the tools above it, and the SHEET, FLAGS and PALETTE panels at the right.")
+![The ART tab](img/art.png "The ART tab of a new game: the sheet in the middle with the starter moon on sprites 1, 2, 17 and 18, the tools above it, and the SHEET, FLAGS and PALETTE panels at the right. The gold outline on the second cell is the region; Lock is off, and PREVIEW at the bottom right reads SPRITE 001.")
 
 ## The sheet
 
-A new game has one sheet of **128 × 128 pixels**, cut into cells of 8 × 8. Each cell is a sprite, numbered from `0` left to right and top to bottom: sixteen per row, 256 in all. That number is what your code hands to [[gfx.draw_sprite]].
+A new game has one sheet of **128 × 128 pixels**, cut into cells of 8 × 8. Each cell is a sprite, numbered from `0` left to right and top to bottom: sixteen per row, 256 in all. That number is what your code hands to [[gfx.draw_sprite]]. A sheet and a **tileset** are the same thing: the header here and the MAP tab, which stamps its tiles from a sheet, call it a tileset.
 
-The canvas in the middle shows the whole sheet. The gold outline on it is the **region**: the cells you are working on, what the preview at the bottom right shows, and what the FLAGS panel writes to. The header names the sheet (`Tileset #1`), then the region's size in cells when it is bigger than one, then its size in pixels. Under PREVIEW, `SPRITE 001` is the number of the region's first cell.
+The canvas in the middle shows the whole sheet. The gold outline on it is the **region**: the cells you are working on, and what the FLAGS panel writes to. The header names the sheet (`Tileset #1`), then the region's size in cells when it is bigger than one, then its size in pixels. PREVIEW, at the bottom right of the canvas, shows the region at its real size, and under it `SPRITE 001` is the number of the region's first cell.
 
 At the bottom left, `X 000 Y 000 · COL 00` follows the pointer: the sheet pixel under it and the colour it holds.
 
@@ -39,7 +39,7 @@ The bar above the panel and the two toggles in the header set how the sheet is s
 | Grid    | On by default: the cell lines over the canvas                                                                                    |
 | Crop    | Shows only the region, fitted to the panel, once the neighbours stop mattering                                                   |
 | Onion   | Only while Crop is on: ghosts the cells one region's width to the left, so the previous frame of an animation shows under this one |
-| Lock    | On by default: a stroke stops at the region's edge. Hidden while Crop is on, there being nothing outside the region to reach. On a laptop-wide window Lock and Crop show their icon alone |
+| Lock    | An option, off by default: on, a stroke stops at the region's edge instead of running onto the neighbouring cells. Hidden while Crop is on, there being nothing outside the region to reach. On a laptop-wide window Lock and Crop show their icon alone |
 | Zoom    | `×1` to `×64` with the `−` and `+` buttons, the slider, or <kbd>Ctrl/⌘</kbd> + wheel; the `×N` readout fits the sheet to the panel again |
 
 > [!TIP]
@@ -103,11 +103,14 @@ The MAP tab stamps tiles from any sheet. [[gfx.draw_region]], which copies a rec
 
 ## Flags
 
-![The FLAGS panel](img/art-flags.png "The FLAGS panel: eight bits, written on every cell of the region.")
+![The FLAGS panel](img/art-flags.png "The FLAGS panel: the eight bits, 0 to 7, as buttons; bit 0 is lit, in the green MAP's Flags overlay gives it.")
 
 Every sprite carries **eight bits**, numbered 0 to 7, and the FLAGS panel shows the ones set on the region's first cell. Clicking a bit toggles it on every cell of the region, so a sprite that spans several cells keeps one set of flags. There is no numeric field: the eight buttons are the whole panel.
 
 The engine gives the bits no meaning. Your game reads them with [[map.flag]] and decides that bit 0 means solid, bit 2 means water, and so on. The MAP tab can tint tiles by their first flag, which is the quickest way to check a level's collision.
+
+> [!WARNING]
+> The panel writes bits on a sprite of any sheet, but [[map.flag]] reads the **first sheet only**: for a sprite of a second sheet it answers `0` whatever the panel shows. Keep the sprites whose flags matter, the solid tiles, on the first sheet.
 
 ``` lua
 -- bit 0 of sprite 17, true or false

@@ -16,7 +16,11 @@ A **sprite** is one 8 × 8 cell of a sheet, named by its number: `0` is the top-
 
 ## Sheet
 
-A **sheet** is a picture cut into sprites. A new game has one sheet of 128 × 128 pixels, 256 sprites, and the ART tab can add more or resize one to anything from 8 to 256 pixels a side, in steps of 8. See [ART](/learn/editors/art).
+A **sheet** is a picture cut into sprites. A new game has one sheet of 128 × 128 pixels, 256 sprites, and the ART tab can add more or resize one to anything from 8 to 256 pixels a side, in steps of 8. The MAP tab calls it a tileset; it is the same thing. See [ART](/learn/editors/art).
+
+## Region
+
+The **region** is the rectangle of cells the ART tab is working on, drawn with a gold outline on the canvas: one cell for a single sprite, 2 × 2 for a character that spans four. It is chosen on the SHEET map, PREVIEW shows it at its real size, and the FLAGS panel writes to every cell of it. The Lock option keeps a stroke inside it. See [ART](/learn/editors/art).
 
 ## Tile
 
@@ -24,7 +28,11 @@ A **tile** is one cell of a map, 8 × 8 pixels, holding a sprite number. Tile co
 
 ## Map
 
-A **map** is a grid of tiles, 128 × 32 by default and anything from 1 to 256 tiles a side. A game can have several, numbered from `1` in the order of the MAP tab's strip; every `map.*` function takes the map as its last argument and works on the first one when it is left out. [[map.draw]] draws it, [[map.get]] and [[map.set]] read and write a tile. See [MAP](/learn/editors/map).
+A **map** is a grid of tiles, 128 × 32 by default and anything from 1 to 256 tiles a side. A game can have several, numbered from `1` in the order of the MAP tab's strip; every `map.*` function but [[map.flag]], which reads a sprite rather than a map, takes the map as its last argument and works on the first one when it is left out. [[map.draw]] draws it, [[map.get]] and [[map.set]] read and write a tile. See [MAP](/learn/editors/map).
+
+## Brush
+
+The **brush** is what the Stamp tool of MAP lays on the map: one sprite, chosen by clicking a cell of the TILE PICKER, or a block of up to 8 × 8 cells framed by a drag on it. See [MAP](/learn/editors/map).
 
 ## Flag
 
@@ -34,9 +42,23 @@ A **flag** is one of the eight bits, `0` to `7`, every sprite carries. The FLAGS
 
 A **pattern** is one page of the piano roll, numbered `00` to `99`, with a tempo and a length of its own. Every number is already a pattern, most of them empty. A sound effect is a pattern kept in an SFX slot; a music is a chain of them. See [SOUND](/learn/editors/sound).
 
-## Step
+## Step and frame
 
-On the piano roll a **step** is one column of the grid, a quarter of a beat: a pattern has 16 to 64 of them, and the default snap places a note on one. The game loop has a step too, the 1/60 s that runs one `_update` and one `_draw`, which is what the Step button of the transport runs once. See [Game loop](/learn/concepts/game-loop).
+On the piano roll a **step** is one column of the grid, a quarter of a beat: a pattern has 16 to 64 of them, and the default snap places a note on one.
+
+The game loop has a step too: 1/60 s of game time, one `_update` followed by one `_draw`, which is what the Step button of the transport runs once. A **frame** is one picture shown on the screen. The two usually go together, but a browser that fell behind runs several steps before showing one picture, so a step can run without its frame ever being seen. [[sys.frame]] counts steps. See [Game loop](/learn/concepts/game-loop).
+
+## Delta
+
+The **delta** is the time one step stands for, which [[sys.dt]] returns. In Naucto it is always `1/60`: the step is fixed, so a speed is written per step rather than multiplied by a changing delta. See [Limitations](/learn/reference/limitations).
+
+## Snap
+
+**Snap** is the grid a note lands on when it is placed on the piano roll, so a click a little off still puts it on a step. The button in the inspector's head row cycles Off, 1/4, 1/8, 1/16, 1/32; 1/16, one step, is the default. See [SOUND](/learn/editors/sound).
+
+## BPM
+
+**BPM**, beats per minute, is the tempo of a pattern: how many beats go by in a minute, from 40 to 240, 124 by default. Each pattern keeps its own, at four steps to the beat. See [SOUND](/learn/editors/sound).
 
 ## SFX slot
 
@@ -49,6 +71,14 @@ A **music** is a chain of patterns, one of the sixteen the MUSIC bank holds, num
 ## Instrument
 
 An **instrument** is what a note is written with: a wave, an envelope, modulation, a filter and a mix of its own, under a name of up to 16 characters and a colour that paints its notes on the roll. [[sound.play_note]] plays one from code, without a pattern. See [SOUND](/learn/editors/sound).
+
+## Voice
+
+A **voice** is one sound playing at a time. The console has five, so five notes can sound at once; a sound effect takes the first free one, and when none is free it takes one from the music. The keyboard of the piano roll plays on the fifth. See [SOUND](/learn/editors/sound).
+
+## Envelope
+
+The **envelope** is how loud a note is over its life, in four stages: attack, the time to reach full volume; decay, the time to fall from there to the sustain level; sustain, the level held while the note lasts; release, the time to fade once it ends. A, D and R are times, S is a level. See [SOUND](/learn/editors/sound).
 
 ## Sample
 
@@ -86,6 +116,26 @@ The **host** is the player who called [[net.host]]: the referee of the session, 
 
 A **peer** is one player's copy of the game in a session, the host included, known by the id [[net.id]] returns. The `peer.joined` and `peer.left` events name that id, and fire on the host only. See [net](/learn/api/net).
 
+## Relay
+
+A **relay** is a server in the middle that passes traffic between two peers that cannot reach each other directly. The platform falls back to one on its own, the Route line of NET says `relayed` when it does, and Force a relay in the TEST RIG asks for one on purpose, to measure what it costs. See [NET](/learn/editors/net).
+
+## Snapshot
+
+A **snapshot** is the whole of `net.state` as it stands, sent to a player on joining so that a late joiner starts from the same values as everyone else. Paths whose R flag is off are left out of it. Events are not in it: a player who joins later never sees past events. See [Multiplayer](/learn/concepts/multiplayer).
+
+## Path
+
+A **path** is the address of a value in `net.state`, written with dots: `net.state.players[3].x` is the path `players.3.x`, and each word between the dots is a segment. The NET tab lists the shared state one path per row, the permissions are set per path, and the patterns of `net.on` name paths, with `*` for one segment and `**` for any number. See [Multiplayer](/learn/concepts/multiplayer).
+
+## Event
+
+An **event** is a one-shot message sent with [[net.emit]] and received by the other peers through `net.on("event:<name>")`. It is not stored, so a player who joins later never sees it; anything that must survive a join belongs in `net.state`. The engine has events of its own too, `peer.joined`, `peer.left`, `ended` and `error`. See [net](/learn/api/net).
+
+## Callback
+
+A **callback** is a function you hand to another function, to be called later when something happens: the function given to [[net.host]] or [[net.join]] runs once the session exists, the one given to `net.on` runs at every matching change. An error inside a `net` callback does not halt the game; it is printed to the Console. See [Multiplayer](/learn/concepts/multiplayer).
+
 ## Lock
 
 A **lock** is what [[net.lock]] creates: a coordination object placed in `net.state` so that two players competing for one thing take it in turn. Its `acquire` hands the holder a `release`, grants are ordered by the host, and a player who leaves releases every lock it held. The Lock toggle of ART is another thing: it keeps a stroke inside the region. See [Multiplayer](/learn/concepts/multiplayer).
@@ -109,3 +159,15 @@ The **camera** is the offset [[gfx.camera]] sets: something drawn at `(px, py)` 
 ## Clip
 
 The **clip** is the rectangle [[gfx.clip]] keeps every later draw call inside, in screen pixels, so the camera does not move it. Drawing outside it is dropped, `gfx.clip()` opens the whole screen again, and [[gfx.clear]] ignores it. See [Coordinates](/learn/concepts/coordinates).
+
+## Beam and scanline
+
+The **beam** is how the picture reaches the screen: one line at a time, from the top line, `0`, to the bottom one, `179`, each palette index turned into a colour on the way. A **scanline** is one of those lines. If the game defines `_scanline(y)`, the beam calls it just before showing line `y`, so a line can have its own palette or shift for that frame only. See [The display beam](/learn/api/gfx#the-display-beam).
+
+## Action
+
+An **action** is one of the nine inputs a game reads, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, rather than a key: [[input.held]] and [[input.pressed]] take its name, and the player's keyboard, gamepad or touch controls are mapped to it. `a` is <kbd>X</kbd> or <kbd>Space</kbd> by default, and the key <kbd>A</kbd> is `left`. See [input](/learn/api/input).
+
+## Table, global and local
+
+A **table** is Lua's one container: a box with named slots, `{ x = 156, y = 86 }`, or numbered ones, `{ 1, 2, 3 }`. A **global** is a name written without `local`; it is visible to every tab and to `_init`, `_update` and `_draw` wherever they are. A **local** is a name declared with `local`, visible only in the block, or the tab, where it is written. Every launch starts with the globals empty. See [Code structure](/learn/reference/structure).

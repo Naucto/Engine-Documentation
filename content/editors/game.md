@@ -27,7 +27,7 @@ The name is 25 characters at most, the summary 50, the description 300 and there
 
 ### Controls
 
-The console has nine actions, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, and the code reads them by those names with `input.held`, `input.pressed` and `input.released` (see [input](/learn/api/input)). The Controls block is one row per action with a field for **the word your game gives it**, 25 characters at most: `Jump` beside `a`, `Walk` beside `left`. Leave empty the actions the game does not read.
+The console has nine actions, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, and the code reads them by those names with `input.held`, `input.pressed` and `input.released`. An action is not a key: `a`, `b`, `x` and `y` are the four buttons of a gamepad, and on the keyboard they are <kbd>X</kbd> or <kbd>Space</kbd>, <kbd>C</kbd> or <kbd>Shift</kbd>, <kbd>V</kbd> and <kbd>B</kbd> by default, while the key <kbd>A</kbd> is `left`. The whole table of default keys is in [input](/learn/api/input#actions). The Controls block is one row per action with a field for **the word your game gives it**, 25 characters at most: `Jump` beside `a`, `Walk` beside `left`. Leave empty the actions the game does not read.
 
 The names are part of the game document, so they are saved and published with it and need no code. Two places show them: the **How to play** panel on the game's page, which lists only the actions you named, and Settings › Controls, where the label column reads them beside each binding while that game is on screen. A game that names nothing gets the console's own words instead.
 

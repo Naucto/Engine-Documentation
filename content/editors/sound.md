@@ -10,9 +10,9 @@ legacy_slugs:
 
 # SOUND
 
-The SOUND tab is where you build instruments, write patterns on a piano roll, and chain those patterns into the musics and sound effects your game plays. Everything here goes through the console's own synthesizer: **five voices**, a handful of waves, and samples of about a second.
+The SOUND tab is where you build instruments, write patterns on a piano roll, and chain those patterns into the musics and sound effects your game plays. Everything here goes through the console's own synthesizer: **five voices**, a handful of waves, and samples of about a second. A **voice** is one sound playing at a time; five voices means five notes can sound at once, and a sixth has to wait or take one over.
 
-![The SOUND tab](img/sound.png "The SOUND tab: the instruments and banks on the left, the piano roll in the middle, the inspector on the right.")
+![The SOUND tab](img/sound.png "The SOUND tab on the Platformer tutorial game: its instruments on the left, with the SFX SLOTS and MUSIC banks under them, pattern 0 with its notes on the piano roll under the pattern bar (pattern, transport, loop, click, BPM, STEPS, undo and redo), and the inspector on the right showing the lead, a square wave.")
 
 ## The layout
 
@@ -43,11 +43,11 @@ The inspector is the instrument itself, in four blocks, and a fifth that says wh
 
 ![The inspector](img/sound-inspector.png "The inspector: OSCILLATOR, ENVELOPE, MODULATION & FILTER, MIX, and where the instrument is used.")
 
-**OSCILLATOR** picks the raw wave: Square, Sine, Tri, Saw, Noise or PCM. Square adds a DUTY slider (5 % to 95 %). Noise ignores pitch. Under the wave, DETUNE shifts every note by up to 12 semitones either way, and GLIDE (0 to 500 ms) is the time the pitch takes to slide from one note to the next.
+**OSCILLATOR** picks the raw wave: Square, Sine, Tri, Saw, Noise or PCM. Square adds a DUTY slider (5 % to 95 %): the **duty** is the share of each cycle the wave spends high, and it changes the tone, hollow at 50 %, thinner towards the ends. Noise ignores pitch. Under the wave, DETUNE shifts every note by up to 12 **semitones** either way, a semitone being the distance between two neighbouring keys of the keyboard, and GLIDE (0 to 500 ms) is the time the pitch takes to slide from one note to the next.
 
-**ENVELOPE** is how loud the note is over its life. The graph has draggable handles: the peak moves attack and sustain at once, the next one decay, the last one release. The A, D, S and R sliders under it are the precise control, up to 3 s for each stage.
+**ENVELOPE** is how loud the note is over its life, in four stages: **attack**, the time it takes to reach full volume; **decay**, the time it takes to fall from there to the sustain level; **sustain**, the level it holds while the note lasts; **release**, the time it takes to fade once the note ends. The graph has draggable handles: the peak moves attack and sustain at once, the next one decay, the last one release. The A, D, S and R sliders under it are the precise control: A, D and R are times, up to 3 s each, and S is a level, from 0 to 100 %.
 
-**MODULATION & FILTER**: VIB is the vibrato depth, RATE its speed (1 to 20 Hz) and DELAY how long the note waits before it starts wobbling. ARP walks a chord with a single voice, at 0 to 30 Hz; write several notes on the same step and the instrument plays them in turn. OFF holds them all at once. FILT picks Off, LP, HP or BP, with CUT and RES.
+**MODULATION & FILTER**: VIB is the depth of the **vibrato**, a small wobble of the pitch, RATE its speed (1 to 20 Hz) and DELAY how long the note waits before it starts wobbling. ARP is the **arpeggio**: it walks a chord with a single voice, at 0 to 30 Hz; write several notes on the same step and the instrument plays them in turn. OFF holds them all at once. FILT is a **filter**, which takes part of the sound away: LP (low-pass) keeps the low frequencies, HP (high-pass) keeps the high ones, BP (band-pass) keeps a band in the middle. CUT is the **cutoff**, the frequency where the filter starts to cut, and RES the **resonance**, how much it boosts the sound right at that frequency.
 
 **MIX** is the instrument's own VOL and PAN. Every note it plays goes through them.
 
@@ -68,7 +68,7 @@ Pitches run down the roll from **C1 to B6**, 72 of them, with a keyboard at the 
 
 ![The piano roll](img/sound-roll.png "The piano roll: pitches down the side, steps across, each note in its instrument's colour, the VOICES lane under it.")
 
-Each pattern keeps its own **BPM** (40 to 240, 124 by default) and its own **STEPS** (16 to 64 by bars of 16, 32 by default), at four steps to the beat. Shortening a pattern with notes past the new end asks first, **Shorten this pattern?**, because those notes go and it cannot be undone. A note that merely runs over the edge is trimmed rather than dropped.
+Each pattern keeps its own **BPM**, beats per minute, the tempo (40 to 240, 124 by default), and its own **STEPS** (16 to 64 by bars of 16, 32 by default), at four steps to the beat. Shortening a pattern with notes past the new end asks first, **Shorten this pattern?**, because those notes go and it cannot be undone. A note that merely runs over the edge is trimmed rather than dropped.
 
 The trash beside the PATTERN field is **Clear pattern NN**. It asks, then empties the pattern; anything that plays it, a music or a sound effect, keeps its place and falls silent.
 
@@ -79,15 +79,15 @@ Writing notes:
 - Right click deletes a note.
 - A note placed, moved or grabbed sounds once, so you hear what you wrote.
 
-**Snap**, in the inspector's head row, is the grid a note lands on: one press cycles Off, 1/4, 1/8, 1/16, 1/32 and back. The default is 1/16, one step. Off places freely, down to an eighth of a step. Zoom goes from ×0.5, where a 64-step pattern fits whole, to ×4; the two buttons double or halve it, and the `×N` readout sets it back to 1.
+**Snap**, in the inspector's head row, is the grid a note lands on, so that a click a little off still puts the note on a step: one press cycles Off, 1/4, 1/8, 1/16, 1/32 and back. The default is 1/16, one step. Off places freely, down to an eighth of a step. Zoom goes from ×0.5, where a 64-step pattern fits whole, to ×4; the two buttons double or halve it, and the `×N` readout sets it back to 1.
 
-The keyboard at the left of the roll plays the selected instrument for as long as a key is held, and a drag across the keys is a glissando. It sounds on the fifth voice, so a pattern playing underneath keeps the others. The **VOICES** lane under the roll shows the five voices, each lit while it sounds, and the oscilloscope beside Snap draws the output.
+The keyboard at the left of the roll plays the selected instrument for as long as a key is held, and a drag across the keys is a **glissando**, a slide through every note on the way. It sounds on the fifth voice, so a pattern playing underneath keeps the others. The **VOICES** lane under the roll shows the five voices, each lit while it sounds, and the oscilloscope beside Snap draws the output.
 
 ### Transport
 
 ![The transport](img/sound-transport.png "The pattern bar: PATTERN and its trash, Play, Back to the start, Stop, Loop and Click, then BPM, STEPS and undo.")
 
-Play starts the pattern in front of you from wherever the head stands, and becomes Pause while it runs; Pause keeps the head where it was. **Back to the start** rewinds and Stop ends the take, so the head goes out. Loop repeats the pattern; Click is a metronome that ticks on every beat, louder on the downbeat, and never writes into the pattern.
+Play starts the pattern in front of you from wherever the head stands, and becomes Pause while it runs; Pause keeps the head where it was. **Back to the start** rewinds and Stop ends the take, so the head goes out. Loop repeats the pattern; Click is a metronome that ticks on every beat, louder on the **downbeat**, the first beat of each bar, and never writes into the pattern. In a window narrower than 1440 px the bar keeps the icons of Loop and Click but drops their words.
 
 The ruler at the top of the roll places the head: click it, or drag along it. This works during playback too. The take pauses for the length of the drag and picks up again where you let go.
 
@@ -98,7 +98,7 @@ The ruler at the top of the roll places the head: click it, or drag along it. Th
 
 The bank under the instruments is the sound effects the game plays with [[sound.play_sfx]]. **Click a slot to put the current pattern in it.** Click it again to clear it. A slot holding the pattern in front of you is drawn as current; a slot holding another pattern is filled; a free row always waits at the end, so there is always another number.
 
-![SFX SLOTS](img/sound-sfx.png "SFX SLOTS: the current pattern in one slot, another pattern in the one before, and a free row.")
+![SFX SLOTS](img/sound-sfx.png "The SFX SLOTS bank of the Platformer game: slots 00 and 01 each hold a pattern, 02 is lit as the one holding the pattern in front of you, and 03 to 07 are free.")
 
 ![The SFX SLOTS help](img/sound-sfx-help.png "The help bubble of SFX SLOTS.")
 
@@ -109,6 +109,8 @@ function _update()
   end
 end
 ```
+
+`"a"` there is the **action**, not the key A: by default it is <kbd>X</kbd> or <kbd>Space</kbd> on the keyboard, and the first button of a gamepad (see [input](/learn/api/input#actions)).
 
 A sound effect takes the first free voice of the five. When none is free it takes one from the music, oldest first, so the music keeps playing on the others.
 

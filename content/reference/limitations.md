@@ -19,7 +19,7 @@ The Naucto API is small on purpose. This page lists what a game cannot exceed an
 | Screen | 320 × 180 pixels, 16 colours, one 4 × 6 font |
 | Sprite sheet | 8 to 256 pixels a side, in steps of 8; several sheets, numbered on from one another |
 | Map | 1 to 256 tiles a side; several maps, numbered from 1 |
-| Sound | 5 voices; 16 song slots (`0` to `15`); a PCM sample of at most 8 KB |
+| Sound | 5 voices; 100 patterns (`00` to `99`); 16 musics (`0` to `15`); a PCM sample of at most 8 KB |
 | Code | 10 million Lua instructions per call; a tab name of at most 24 characters |
 | Publishing | 1 MB for the whole game (code, art, maps, sound); a name and a one-line summary |
 
@@ -72,4 +72,4 @@ A session has the capacity the game declares (`max_players`, `2` by default). On
 
 ## What works well today
 
-Within these limits, the tutorials show the range: a [platformer](/learn/tutorials/platformer) with tilemap collisions, sprite flags and a camera; a two-player [pong](/learn/tutorials/pong) over the network; a [coin rush](/learn/tutorials/click-race) built on locks and events; a [tag arena](/learn/tutorials/tag) with a host-driven world. HUDs with [[gfx.print]] and shapes, palette swaps with [[gfx.set_col]] and songs from the SOUND tab all come from the same small API.
+Within these limits, the tutorials show the range: a [platformer](/learn/tutorials/platformer) with tilemap collisions, sprite flags and a camera; a two-player [pong](/learn/tutorials/pong) over the network; a [coin rush](/learn/tutorials/click-race) built on locks and events; a [tag arena](/learn/tutorials/tag) with a host-driven world. HUDs with [[gfx.print]] and shapes, palette swaps with [[gfx.set_col]] and musics from the SOUND tab all come from the same small API.

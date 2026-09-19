@@ -10,7 +10,7 @@ legacy_slugs:
 
 # Coordinates and Rendering Model
 
-This page is the map of every number you pass to a drawing function: screen pixels, the camera that shifts them, the clip that cuts them, and the sprite and tile numbers that name a picture. It ends with what the screen actually is, an array of palette indices.
+This page is the map of every number you pass to a drawing function: screen pixels, the camera that shifts them, the clip that cuts them, and the sprite and tile numbers that name a picture. It ends with what the screen actually is, an array of palette indices. The words it uses are in the [Glossary](/learn/reference/glossary).
 
 ## The screen
 
@@ -32,14 +32,14 @@ local player = { x = 500, y = 120 }
 function _draw()
   gfx.clear(0)
   gfx.camera(player.x - 160, player.y - 90)   -- the world moves
-  map.draw(0, 0)
+  map.draw(0, 0)                              -- the level painted in MAP
   gfx.fill_rect(player.x, player.y, 8, 8, 4)
   gfx.camera()                                -- the HUD does not
   gfx.print("score 0", 4, 4, 5)
 end
 ```
 
-![The map and a sprite drawn with the camera at the origin, then shifted](../../api/img/frames/gfx-camera.png "The same scene with the camera at the origin and moved: everything drawn after gfx.camera shifts together.")
+![A level drawn with the camera at (-40, -20)](../../api/img/frames/gfx-camera.png "One state of the scene, with the camera at (-40, -20): the platforms are drawn 40 pixels further right and 20 further down than their place on the map, since something at (px, py) lands at (px + 40, py + 20).")
 
 ## The clip
 
@@ -73,6 +73,6 @@ A map is a grid of sprite numbers, one per **8 × 8 tile**. Tile coordinates cou
 
 ## What the screen is made of
 
-The screen is not a picture but an array of **palette indices**, one per pixel, from `0` to `15`. Drawing functions write indices; the palette turns them into colours only at display time, which is why [[gfx.set_col]] can recolour what is already drawn and why a colour index above 15 wraps around (17 draws as 1).
+The screen is not a picture but an array of **palette indices**, one per pixel, from `0` to `15`. Drawing functions write indices; the palette turns them into colours only at display time, which is why [[gfx.set_color]], which changes what a slot of the palette looks like, recolours what is already drawn, and why a colour index above 15 wraps around (17 draws as 1). [[gfx.set_col]] is a different thing: it swaps the number that gets written while you draw, so it changes only what is drawn after it.
 
-Nothing erases the array for you: what `_draw` does not overwrite stays from the previous frame, so a frame usually opens with [[gfx.clear]]. Between the array and the display sits the beam: `_scanline(y)` can give each line its own palette or shift, for one frame. [The display beam](/learn/api/gfx#the-display-beam) covers it.
+Nothing erases the array for you: what `_draw` does not overwrite stays from the previous frame, so a frame usually opens with [[gfx.clear]]. Between the array and the display sits the **beam**: the picture goes to the screen one line at a time, from the top line down, and if your game defines a function `_scanline(y)` it is called just before line `y` is shown, so each line can have its own palette or shift, for that frame only. [The display beam](/learn/api/gfx#the-display-beam) covers it.
