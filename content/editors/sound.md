@@ -19,11 +19,15 @@ The Sound Editor allows you to compose music for your game using a built-in sequ
 
 Projects include **16 music slots**. The buttons on the side of the Sound Editor switch between those slots so you can keep separate tracks for menus, levels, battles, or short jingles.
 
+![The music panel](img/sound-music.png "MUSIC: a numbered song, its transport, and the grid of pattern numbers it plays.")
+
 The editor labels slots as `1` through `16`. Lua uses zero-based indexes, so slot `1` is played with `sound.play_music(0)`, slot `2` with `sound.play_music(1)`, and so on.
 
 ## Sequencer grid
 
 The grid has **24 note rows** and **32 columns**. Each column is a beat, and the current music plays at `240` BPM by default.
+
+![The piano roll](img/sound-roll.png "The piano roll: pitches down the side, steps across, each note in its instrument's colour, the voices lane under it.")
 
 - Click an empty cell to add a one-beat note with the selected instrument.
 - Click an existing note start to remove it.
@@ -36,7 +40,15 @@ The grid has **24 note rows** and **32 columns**. Each column is a beat, and the
 
 The built-in instruments are **Piano**, **Guitar**, **Flute**, **Trumpet**, **Contrabass**, and **Harmonica**.
 
+![The instrument list](img/sound-instruments.png "INSTRUMENTS and, under them, the SFX SLOTS the game plays with sound.play_sfx.")
+
 You can also create custom instruments. Custom instruments expose Tone.js synth parameters such as volume, detune, portamento, harmonicity, oscillator type, oscillator partials, and envelope settings. Custom instruments can be edited or deleted after creation.
+
+![New instrument](img/sound-new-instrument.png "The + opens New instrument: a preset to start from, or a custom square wave.")
+
+![Presets](img/sound-presets.png "The presets, by family. A card plays when it is clicked; CREATE makes the instrument under the preset's name.")
+
+![The inspector](img/sound-inspector.png "The inspector: oscillator, envelope, modulation and filter, mix — every dial of the instrument in hand.")
 
 ## Using music in Lua
 

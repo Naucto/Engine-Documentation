@@ -36,6 +36,12 @@ function declaredParams(signature) {
   return inner.replace(/[[\]]/g, '').split(',').map((s) => s.trim()).filter(Boolean);
 }
 
+const exists = (p) =>
+  stat(p).then(
+    () => true,
+    () => false,
+  );
+
 const known = new Set();
 const legacyGlobals = new Map();
 for (const file of (await readdir(resolve(root, 'api'))).filter((f) => f.endsWith('.yaml'))) {
@@ -50,6 +56,8 @@ for (const file of (await readdir(resolve(root, 'api'))).filter((f) => f.endsWit
         if (!REAL_GLOBALS.has(a)) legacyGlobals.set(a, full);
       }
       if (!f.signature) errors.push(`${full}: missing signature`);
+      if (f.picture && !(await exists(resolve(root, 'api', f.picture))))
+        errors.push(`${full}: picture ${f.picture} is not there`);
       if (!f.summary) errors.push(`${full}: missing summary`);
       const declared = declaredParams(f.signature);
       const documented = (f.params ?? []).map((p) => p.name);
@@ -101,12 +109,6 @@ function legacyCallsIn(body) {
   });
   return found;
 }
-
-const exists = (p) =>
-  stat(p).then(
-    () => true,
-    () => false,
-  );
 
 for (const { file, body } of pages) {
   for (const [, href] of body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g))

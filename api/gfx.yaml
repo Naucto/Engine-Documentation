@@ -4,6 +4,8 @@ functions:
 - name: clear
   signature: gfx.clear([colour])
   summary: Fill the screen with a palette colour (default 0).
+  picture: img/frames/gfx-clear.png
+  caption: 'The screen filled with palette colour 1, then a line of text over it.'
   description: 'Clear the entire screen with a palette color.
 
 
@@ -31,6 +33,8 @@ functions:
 - name: draw_sprite
   signature: gfx.draw_sprite(n, x, y[, w, h, flip_h, flip_v, scale, transparent])
   summary: Draw w×h tiles starting at sprite n. Index 0 is the transparent one by default.
+  picture: img/frames/gfx-draw-sprite.png
+  caption: 'The same sprite plain, flipped horizontally, flipped vertically, and at scale 3.'
   description: 'Draw one sprite or a rectangular block of sprites from the sprite sheet.
 
 
@@ -153,6 +157,8 @@ functions:
 - name: pixel
   signature: gfx.pixel(x, y, colour)
   summary: Set one screen pixel.
+  picture: img/frames/gfx-shapes.png
+  caption: 'rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.'
   description: Sets one pixel in screen space, after the camera offset and inside the current clip rectangle.
   params:
   - name: x
@@ -211,6 +217,8 @@ functions:
 - name: line
   signature: gfx.line(x0, y0, x1, y1, colour)
   summary: Draw a one-pixel line.
+  picture: img/frames/gfx-shapes.png
+  caption: 'rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.'
   description: Draw a straight line between two points.
   params:
   - name: x0
@@ -247,6 +255,8 @@ functions:
 - name: rect
   signature: gfx.rect(x, y, w, h, colour)
   summary: Draw a rectangle outline.
+  picture: img/frames/gfx-shapes.png
+  caption: 'rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.'
   description: Draw an outlined (unfilled) rectangle.
   params:
   - name: x
@@ -283,6 +293,8 @@ functions:
 - name: fill_rect
   signature: gfx.fill_rect(x, y, w, h, colour)
   summary: Draw a filled rectangle.
+  picture: img/frames/gfx-shapes.png
+  caption: 'rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.'
   description: Draw a filled rectangle.
   params:
   - name: x
@@ -320,6 +332,8 @@ functions:
 - name: circle
   signature: gfx.circle(cx, cy, r, colour)
   summary: Draw a circle outline.
+  picture: img/frames/gfx-shapes.png
+  caption: 'rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.'
   description: Draws a one-pixel circle outline centred on cx, cy.
   params:
   - name: cx
@@ -351,6 +365,8 @@ functions:
 - name: fill_circle
   signature: gfx.fill_circle(cx, cy, r, colour)
   summary: Draw a filled circle.
+  picture: img/frames/gfx-shapes.png
+  caption: 'rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.'
   description: Draws a filled disc centred on cx, cy.
   params:
   - name: cx
@@ -383,6 +399,8 @@ functions:
 - name: print
   signature: gfx.print(text, x, y[, colour])
   summary: Draw text with the built-in 4×6 font; returns its width.
+  picture: img/frames/gfx-print.png
+  caption: 'Text at the default colour, in two others, and a number joined to a string.'
   description: Draws text with the built-in 4x6 font and returns the width it took, which is what you
     use to centre it.
   params:
@@ -416,6 +434,8 @@ functions:
 - name: camera
   signature: gfx.camera([x, y])
   summary: Offset every later draw call; no arguments resets.
+  picture: img/frames/gfx-camera.png
+  caption: 'The map and a sprite drawn with the camera at (-40, -20): everything shifts right and down.'
   description: 'Set the camera offset. All subsequent drawing calls are shifted by this offset.
 
 
@@ -445,6 +465,8 @@ functions:
 - name: clip
   signature: gfx.clip([x, y, w, h])
   summary: Restrict drawing to a rectangle; no arguments resets.
+  picture: img/frames/gfx-clip.png
+  caption: 'A full-screen fill and a row of circles, only visible inside the clip rectangle outlined in white.'
   description: Restricts every later draw call to a rectangle, in screen space. Call it with no arguments
     to draw to the whole screen again.
   params:
@@ -479,6 +501,8 @@ functions:
 - name: set_col
   signature: gfx.set_col(from, to)
   summary: 'Draw palette remap: pixels of colour `from` are drawn as `to`.'
+  picture: img/frames/gfx-palette.png
+  caption: 'The sixteen palette entries, then colour 4 redefined to a cyan, then colour 9 remapped to colour 2.'
   description: 'Temporarily remap one palette color to another.
 
 
@@ -545,6 +569,8 @@ functions:
 - name: set_color
   signature: gfx.set_color(index, hex | r, g, b)
   summary: Change a screen colour at runtime.
+  picture: img/frames/gfx-palette.png
+  caption: 'The sixteen palette entries, then colour 4 redefined to a cyan, then colour 9 remapped to colour 2.'
   description: Changes one of the sixteen screen colours while the game runs. Accepts "#rrggbb" or three
     0..255 components. It does not touch the game's saved palette - gfx.reset_palette() puts it back.
   params:
@@ -668,6 +694,8 @@ functions:
 - name: scanline
   signature: gfx.scanline(y, {shift_x=, shift_y=, palette=, wrap=, blank=})
   summary: Per-row display effect.
+  picture: img/frames/gfx-scanline.png
+  caption: 'Every row shifted by a sine of its position: the map and the sprite wave.'
   description: 'Sets the display effect for one screen row: shift it sideways or vertically, draw it through
     another palette row, or blank it. Effects are cleared by gfx.clear() unless you call gfx.persist_effects(true).'
   params:

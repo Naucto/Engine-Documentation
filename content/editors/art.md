@@ -20,6 +20,8 @@ The Sprite Editor is where you create all the visual assets for your game: chara
 
 A new project has a **128 x 128 pixel** sprite sheet, divided into a grid of **8 x 8 pixel** tiles: **256 sprite slots** (16 columns x 16 rows), indexed from `0` to `255`.
 
+![The sheet panel](img/art-sheet.png "The SHEET panel: the whole sheet at a glance, the frame is what the canvas shows, and the + adds a sheet.")
+
 The **W** and **H** fields above the sheet map change that. A sheet is always a whole number of sprites across and down, and may be up to 256 x 256 pixels -- 1024 slots. Making a sheet smaller does not erase what falls outside it: the editor says how much it is about to put out of reach, and growing the sheet again brings it back.
 
     128 px wide
@@ -40,6 +42,8 @@ The **W** and **H** fields above the sheet map change that. A sheet is always a 
 3.  **Paint pixels** by clicking or dragging on the enlarged editing area.
 4.  **Change the editable tile size** with the mouse wheel over either sprite canvas when you want to draw a larger multi-tile sprite at once.
 
+![The drawing tools](img/art-tools.png "The tools: pen, fill, line, rectangle, ellipse, select and bucket, with LOCK to keep a stroke inside the sprite.")
+
 The editor shows the full sprite sheet on the left and a larger editing canvas for the selected area on the right. The highlighted frame on the sprite sheet follows the selected area, so a `16 x 16` or `32 x 32` editing region stays aligned to the underlying `8 x 8` sprite grid.
 
 Only the pen tool is currently enabled. It draws continuous lines while you drag so fast mouse movement does not leave gaps.
@@ -48,9 +52,13 @@ Only the pen tool is currently enabled. It draws continuous lines while you drag
 
 The engine uses a fixed color palette. Each color has an index number that you can reference in your Lua code with functions like [[gfx.clear]], [[gfx.line]], [[gfx.rect]], and [[gfx.fill_rect]].
 
+![The palette](img/art-palette.png "The PALETTE panel: sixteen slots, presets, and the sliders of the slot in hand. The header folds it away.")
+
 ## Sprite indexes and flags
 
 The metadata panel shows the selected sprite index and its flag value. Sprite flags are an 8-bit value stored per sprite slot:
+
+![The flags](img/art-flags.png "The FLAGS panel: eight bits for the sprite in hand, read back in Lua with map.flag.")
 
 - Use the numeric input to set a full flag value from `0` to `255`.
 - Use the bit buttons `0` through `7` to toggle individual flags.

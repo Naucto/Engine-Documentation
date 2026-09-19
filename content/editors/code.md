@@ -23,6 +23,8 @@ The Code Editor is where you write the Lua scripts that power your game. It is a
 - **Real-time collaboration** -- when working with others, you can see their cursors and edits in real time
 - **Error reporting** -- runtime errors from your Lua code appear in the output panel below the game canvas
 
+![The file tabs](img/code-tabs.png "The tabs: one per file, a + to add one, FIND to search across them.")
+
 ![The reference beside the code](img/code-reference.png "F1 opens the reference beside the console; it follows the symbol under the caret.")
 
 ## Writing your game
@@ -76,6 +78,8 @@ Every launch starts clean. The globals go, the palette and the camera come back 
 show, the sound stops, and a tile written with `map.set` is forgotten -- so nothing a run did is
 still there in the next one. Nothing a running game changes is written back to your project either:
 `map.set` and the palette functions last as long as the run and no longer.
+
+![The console](img/code-console.png "The console column: the running game, AUTO-RUN, and what the game prints or throws.")
 
 ## Tips
 

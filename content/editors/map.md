@@ -19,6 +19,8 @@ The Map Editor lets you paint tile-based levels and backgrounds using the sprite
 
 The map is a grid where each cell holds a reference to a sprite index. When you call [[map.draw]] in your Lua code, the engine draws every tile in the grid at its correct position.
 
+![The whole map](img/map-minimap.png "The WHOLE MAP panel: every tile at three pixels, the frame is what the canvas shows; click or drag to jump.")
+
 - Each tile is **8 x 8 pixels** (same size as a sprite)
 - The map uses the **same sprite sheet** as the Sprite Editor
 - The **W** and **H** fields beside the whole-map view change the map's size in tiles; as in the
@@ -30,6 +32,8 @@ The map is a grid where each cell holds a reference to a sprite index. When you 
 1.  **Select a sprite** from the sprite sheet palette (shown alongside the map grid)
 2.  **Click or drag** on the map grid to place tiles
 3.  **Erase tiles** by selecting an empty sprite slot and painting over existing tiles
+
+![The brush picker](img/map-brush.png "The sheet as a brush picker: drag a rectangle to stamp several tiles at once.")
 
 ## Drawing the map in Lua
 

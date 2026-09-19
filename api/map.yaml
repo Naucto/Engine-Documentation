@@ -4,6 +4,8 @@ functions:
 - name: draw
   signature: map.draw(x, y[, tx, ty, tw, th, m])
   summary: Draw a map (or a sub-rectangle of its tiles) at a pixel position. m picks the map, from 1.
+  picture: img/frames/map-draw-region.png
+  caption: 'A 12×8 window of the map, twelve rows above its floor, drawn at (40, 20) and outlined.'
   description: 'Draw the tilemap created in the map editor.
 
 
