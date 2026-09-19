@@ -12,6 +12,7 @@ functions:
   - name: colour
     type: number
     description: Palette index (`0`--`15`) used as the background color.
+    optional: true
   returns: null
   examples:
   - |-
@@ -40,12 +41,15 @@ functions:
     type: number
     description: Sprite index in the sprite sheet. A new game has 256 of them, numbered from `0`;
       a larger sheet has more.
+    required: true
   - name: x
     type: number
     description: Destination x position in pixels.
+    required: true
   - name: y
     type: number
     description: Destination y position in pixels.
+    required: true
   - name: w
     type: number
     description: Optional width in sprite units (1 unit = 8 pixels). Defaults to `1`.
@@ -212,18 +216,23 @@ functions:
   - name: x0
     type: number
     description: Start x position.
+    required: true
   - name: y0
     type: number
     description: Start y position.
+    required: true
   - name: x1
     type: number
     description: End x position.
+    required: true
   - name: y1
     type: number
     description: End y position.
+    required: true
   - name: colour
     type: number
     description: Palette color index.
+    required: true
   returns: null
   examples:
   - |-
@@ -243,18 +252,23 @@ functions:
   - name: x
     type: number
     description: Top-left x position.
+    required: true
   - name: y
     type: number
     description: Top-left y position.
+    required: true
   - name: w
     type: number
     description: Width in pixels.
+    required: true
   - name: h
     type: number
     description: Height in pixels.
+    required: true
   - name: colour
     type: number
     description: Palette color index.
+    required: true
   returns: null
   examples:
   - |-
@@ -274,18 +288,23 @@ functions:
   - name: x
     type: number
     description: Top-left x position.
+    required: true
   - name: y
     type: number
     description: Top-left y position.
+    required: true
   - name: w
     type: number
     description: Width in pixels.
+    required: true
   - name: h
     type: number
     description: Height in pixels.
+    required: true
   - name: colour
     type: number
     description: Palette color index.
+    required: true
   returns: null
   examples:
   - |-
@@ -406,9 +425,11 @@ functions:
   - name: x
     type: number
     description: Horizontal camera offset in pixels.
+    optional: true
   - name: y
     type: number
     description: Vertical camera offset in pixels.
+    optional: true
   returns: null
   examples:
   - |-
@@ -479,9 +500,11 @@ functions:
   - name: from
     type: number
     description: Palette slot to replace.
+    required: true
   - name: to
     type: number
     description: Palette slot to copy into it.
+    required: true
   returns: null
   examples:
   - |-

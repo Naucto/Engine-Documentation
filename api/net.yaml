@@ -155,9 +155,11 @@ functions:
     type: string
     description: A reserved name from the table above, an `event:<name>` subscription, or a dotted
       [[net.state]] key path, where `*` matches one segment and `**` any number.
+    required: true
   - name: callback
     type: function
     description: Called with the arguments the table above gives for that pattern.
+    required: true
   returns: null
   examples:
   - |-
@@ -200,6 +202,7 @@ functions:
   - name: name
     type: string
     description: Event name; receivers subscribe with `net.on("event:" .. name, ...)`.
+    required: true
   - name: payload
     type: any
     description: Optional value to send along -- a number, string, boolean, or nested table. Functions

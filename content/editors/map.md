@@ -13,6 +13,8 @@ legacy_slugs:
 
 The Map Editor lets you paint tile-based levels and backgrounds using the sprites you created in the Sprite Editor.
 
+![Map Editor](img/map.png "The MAP tab: tiles stamped from the sheet, with the whole map beside.")
+
 ## How the map works
 
 The map is a grid where each cell holds a reference to a sprite index. When you call [[map.draw]] in your Lua code, the engine draws every tile in the grid at its correct position.

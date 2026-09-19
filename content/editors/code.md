@@ -14,12 +14,16 @@ legacy_slugs:
 
 The Code Editor is where you write the Lua scripts that power your game. It is a full-featured code editor built on CodeMirror.
 
+![Code Editor](img/code.png "The CODE tab: the game's Lua, its console and the reference one key away.")
+
 ## Features
 
 - **Lua syntax highlighting** -- keywords, strings, numbers, and comments are color-coded
 - **Auto-indentation** -- code is automatically indented as you type
 - **Real-time collaboration** -- when working with others, you can see their cursors and edits in real time
 - **Error reporting** -- runtime errors from your Lua code appear in the output panel below the game canvas
+
+![The reference beside the code](img/code-reference.png "F1 opens the reference beside the console; it follows the symbol under the caret.")
 
 ## Writing your game
 

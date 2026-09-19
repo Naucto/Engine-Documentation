@@ -13,6 +13,8 @@ legacy_slugs:
 
 The Sound Editor allows you to compose music for your game using a built-in sequencer powered by Tone.js.
 
+![Sound Editor](img/sound.png "The SOUND tab: instruments, the piano roll and the inspector.")
+
 ## Music slots
 
 Projects include **16 music slots**. The buttons on the side of the Sound Editor switch between those slots so you can keep separate tracks for menus, levels, battles, or short jingles.

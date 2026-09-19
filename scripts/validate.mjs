@@ -1,7 +1,8 @@
-// Checks every page has front-matter, every [[ref]] resolves, every api entry has a signature,
-// every signature's parameters are documented, and no Lua example calls a v0 global.
-import { readdir, readFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+// Checks every page has front-matter, every [[ref]] resolves, every picture exists, every api
+// entry has a signature, every signature's parameters are documented and say whether they are
+// required, and no Lua example calls a v0 global.
+import { readdir, readFile, stat } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
 
 import { parse } from 'yaml';
 
@@ -52,6 +53,11 @@ for (const file of (await readdir(resolve(root, 'api'))).filter((f) => f.endsWit
       if (!f.summary) errors.push(`${full}: missing summary`);
       const declared = declaredParams(f.signature);
       const documented = (f.params ?? []).map((p) => p.name);
+      // Either word, but one of them: a parameter that says neither is rendered as required by
+      // omission, which is a guess dressed as a fact.
+      for (const p of f.params ?? [])
+        if (p.required === undefined && p.optional === undefined)
+          errors.push(`${full}: param ${p.name} says neither required nor optional`);
       for (const name of declared ?? [])
         if (!documented.includes(name)) errors.push(`${full}: signature takes ${name}, params does not document it`);
       for (const name of declared ? documented : [])
@@ -96,7 +102,16 @@ function legacyCallsIn(body) {
   return found;
 }
 
+const exists = (p) =>
+  stat(p).then(
+    () => true,
+    () => false,
+  );
+
 for (const { file, body } of pages) {
+  for (const [, href] of body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g))
+    if (!/^(https?:)?\/\//.test(href) && !(await exists(resolve(dirname(file), href))))
+      errors.push(`${file}: picture ${href} is not there`);
   for (const { line, name, use } of legacyCallsIn(body))
     errors.push(`${file}:${line}: lua example calls the v0 global ${name}(), use ${use}()`);
   for (const [, ref] of body.matchAll(/\[\[([a-z]+\.[a-z_]+)\]\]/g)) if (!known.has(ref)) errors.push(`${file}: unknown api ref [[${ref}]]`);

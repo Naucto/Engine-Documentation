@@ -14,6 +14,8 @@ legacy_slugs:
 
 The Sprite Editor is where you create all the visual assets for your game: characters, objects, tiles, UI elements, and anything else that appears on screen.
 
+![Sprite Editor](img/art.png "The ART tab: the sprite sheet, its tools and the palette.")
+
 ## Sprite sheet basics
 
 A new project has a **128 x 128 pixel** sprite sheet, divided into a grid of **8 x 8 pixel** tiles: **256 sprite slots** (16 columns x 16 rows), indexed from `0` to `255`.

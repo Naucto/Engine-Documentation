@@ -3,7 +3,7 @@ title: Map
 functions:
 - name: draw
   signature: map.draw(x, y[, tx, ty, tw, th, m])
-  summary: Draw the tile map (or a sub-rectangle of tiles) at a pixel position.
+  summary: Draw a map (or a sub-rectangle of its tiles) at a pixel position. m picks the map, from 1.
   description: 'Draw the tilemap created in the map editor.
 
 
@@ -20,9 +20,11 @@ functions:
   - name: x
     type: number
     description: X position in pixels where the map starts.
+    required: true
   - name: y
     type: number
     description: Y position in pixels where the map starts.
+    required: true
   - name: tx
     type: number
     description: Optional first map column to draw, in tiles. Defaults to `0`.
@@ -58,7 +60,7 @@ functions:
   since: '1.0'
 - name: get
   signature: map.get(tx, ty[, m])
-  summary: Sprite index at a tile.
+  summary: Sprite index at a tile of map m (the first by default).
   description: 'Read a tile from the map.
 
 
@@ -68,9 +70,11 @@ functions:
   - name: tx
     type: number
     description: Tile column in the map grid.
+    required: true
   - name: ty
     type: number
     description: Tile row in the map grid.
+    required: true
   - name: m
     type: number
     description: Which map, counted from `1` in the order of the MAP tab's strip. Defaults to the
@@ -95,7 +99,7 @@ functions:
   since: '1.0'
 - name: set
   signature: map.set(tx, ty, n[, m])
-  summary: Change a tile for this run only.
+  summary: Change a tile of map m (the first by default) for this run only.
   description: Changes a tile for the rest of this run. The edit lives in memory only - the saved map
     is untouched, so a restart brings the level back.
   params:
@@ -145,6 +149,7 @@ functions:
     type: number
     description: Sprite index in the sprite sheet. A new game has 256 of them, numbered from `0`;
       a larger sheet has more.
+    required: true
   - name: bit
     type: number
     description: Optional bit index from `0` to `7`.
@@ -168,7 +173,7 @@ functions:
   since: '1.0'
 - name: width
   signature: map.width([m])
-  summary: Map width in tiles.
+  summary: Width of map m (the first by default), in tiles.
   description: Map width in tiles. A game chooses its own map size, and each of its maps has its
     own, so read this rather than assuming one.
   params:
@@ -189,7 +194,7 @@ functions:
   since: '2.0'
 - name: height
   signature: map.height([m])
-  summary: Map height in tiles.
+  summary: Height of map m (the first by default), in tiles.
   description: Map height in tiles. A game chooses its own map size, and each of its maps has its
     own, so read this rather than assuming one.
   params:

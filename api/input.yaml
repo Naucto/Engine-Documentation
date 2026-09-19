@@ -91,6 +91,7 @@ functions:
   - name: key
     type: string
     description: Key name from the browser keyboard event.
+    required: true
   returns: '`true` if the key is pressed, `false` otherwise.'
   examples:
   - |-
