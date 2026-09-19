@@ -114,6 +114,7 @@ functions:
   description: 'The id of this player''s account, the same id the host receives in `peer.joined` / `peer.left` and every peer gets as the `from` of an event, so it is the natural key for per-player data in [[net.state]]. It is not a seat number from `1` to `max_players`: ids are large, not contiguous, and two windows on one account share one.'
   params: []
   returns: Your own player id in the session, as an integer.
+  returnType: number
   examples:
   - |-
     -- inside the host or join callback
@@ -252,6 +253,7 @@ functions:
     its callback never runs, and `net.on("error")` fires with the path and `"forbidden"`.'
   params: []
   returns: A lock handle -- a table with an `acquire` and an `is_locked` function.
+  returnType: table
   examples:
   - |-
     -- inside the host callback
@@ -301,6 +303,7 @@ functions:
     and the `pop` callback still gets `nil`, as on an empty queue.'
   params: []
   returns: A queue handle -- a table with `push`, `pop`, `length` and `peek`.
+  returnType: table
   examples:
   - |-
     -- inside the host callback

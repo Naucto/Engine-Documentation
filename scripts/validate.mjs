@@ -1,7 +1,8 @@
 // Checks every page has front-matter, every [[ref]] resolves, every picture exists, every api
 // entry has a signature, every signature's parameters are documented and say whether they are
-// required, no Lua example calls a v0 global, no prose uses a word the docs have retired, and every
-// tutorial step's code is whole and in the step file that holds the game at that point.
+// required, every function that returns something says what type it returns, no Lua example calls
+// a v0 global, no prose uses a word the docs have retired, and every tutorial step's code is whole
+// and in the step file that holds the game at that point.
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 
@@ -36,6 +37,9 @@ function declaredParams(signature) {
   if (/[{}|.]/.test(inner)) return null;
   return inner.replace(/[[\]]/g, '').split(',').map((s) => s.trim()).filter(Boolean);
 }
+
+/** The type names a `returnType` may be made of, alone or in a union like `number|nil`. */
+const TYPES = new Set(['number', 'string', 'boolean', 'table', 'function', 'nil', 'any']);
 
 const exists = (p) =>
   stat(p).then(
@@ -84,6 +88,12 @@ for (const file of (await readdir(resolve(root, 'api'))).filter((f) => f.endsWit
         if (!documented.includes(name)) errors.push(`${full}: signature takes ${name}, params does not document it`);
       for (const name of declared ? documented : [])
         if (!declared.includes(name)) errors.push(`${full}: params documents ${name}, which the signature does not take`);
+      // The prose says what comes back; the type is what the cards colour it by, so one without
+      // the other is a card with a hole in it.
+      if (kind === 'functions' && f.returns && !f.returnType) errors.push(`${full}: returns something but says no returnType`);
+      if (f.returnType && !f.returns) errors.push(`${full}: has a returnType but returns nothing`);
+      for (const t of f.returnType ? String(f.returnType).split('|') : [])
+        if (!TYPES.has(t)) errors.push(`${full}: returnType ${t} is not one of ${[...TYPES].join(', ')}`);
     }
 }
 

@@ -201,6 +201,7 @@ functions:
     required: true
     description: 'Vertical position, before the camera offset.'
   returns: Palette index 0..15.
+  returnType: number
   examples:
   - |-
     -- treat colour 2 as solid ground
@@ -431,6 +432,7 @@ functions:
     optional: true
     description: 'Palette index; left out, `5` (white in the default palette).'
   returns: Width of the last line drawn, in pixels.
+  returnType: number
   examples:
   - |-
     local score = 0
@@ -576,10 +578,10 @@ functions:
     type: number
     required: true
     description: 'Palette index, `0` to `15`.'
-  - name: hex | r
+  - name: hex
     type: string|number
     required: true
-    description: 'The colour as `"#rrggbb"`, or, with `g` and `b`, the red component `0` to `255`. A single number is read as red alone.'
+    description: 'The colour as `"#rrggbb"`, or, with three numbers, the red component `0` to `255`. A single number is read as red alone.'
   - name: g
     type: number
     optional: true
@@ -625,6 +627,7 @@ functions:
     required: true
     description: Palette index 0..15.
   returns: Colour string "#rrggbb".
+  returnType: string
   examples:
   - |-
     local lime = gfx.get_color(12)  -- "#bfff3c" on Bubblegum 16
@@ -811,6 +814,7 @@ functions:
   description: Screen width in pixels. Always 320, but read it rather than hard-coding it.
   params: []
   returns: '320.'
+  returnType: number
   examples:
   - |-
     local middle = gfx.width() // 2
@@ -825,6 +829,7 @@ functions:
   description: Screen height in pixels. Always 180.
   params: []
   returns: '180.'
+  returnType: number
   examples:
   - |-
     gfx.fill_rect(0, gfx.height() - 8, gfx.width(), 8, 1)

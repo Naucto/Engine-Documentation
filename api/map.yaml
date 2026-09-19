@@ -71,6 +71,7 @@ functions:
       first.
     optional: true
   returns: Sprite index stored at that map cell.
+  returnType: number
   examples:
   - |-
     local player = { x = 37, y = 50 }
@@ -136,6 +137,7 @@ functions:
     description: Optional bit index from `0` to `7`.
     optional: true
   returns: The full flag value when `bit` is omitted, or `true`/`false` for a single bit.
+  returnType: number|boolean
   examples:
   - |-
     local tile_sprite = map.get(4, 6)
@@ -164,6 +166,7 @@ functions:
     optional: true
 
   returns: The map's width in tiles.
+  returnType: number
   examples:
   - |-
     local right_edge = map.width() * 8
@@ -184,6 +187,7 @@ functions:
     optional: true
 
   returns: The map's height in tiles.
+  returnType: number
   examples:
   - |-
     local floor = map.height() * 8

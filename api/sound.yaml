@@ -197,6 +197,7 @@ functions:
   description: 'Where the music has got to: its place in the music''s chain of patterns, counted from `0` (not the pattern''s own number), and the step now sounding inside that pattern, counted from `0` too. Both are `nil` when nothing plays. The value comes back from the audio thread a frame or two late, and a step lasts several frames, so a test like `step % 4 == 0` is true for a few frames in a row: fine for a beat light, late for anything that must land on the step.'
   params: []
   returns: place, step, or nil.
+  returnType: number|nil
   examples:
   - |-
     -- a beat light: the first step of every beat, four steps to the beat
@@ -219,6 +220,7 @@ functions:
     required: true
     description: Voice 0..4.
   returns: True while the voice sounds.
+  returnType: boolean
   examples:
   - |-
     if sound.is_playing(4) then gfx.fill_rect(0, 0, 8, 8, 5) end  -- a light while voice 4 sounds

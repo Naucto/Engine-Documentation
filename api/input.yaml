@@ -17,6 +17,7 @@ functions:
     optional: true
     description: 'Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first gamepad are player 1 together, the second keyboard layout and the second gamepad player 2. A number past `4` answers `false`.'
   returns: True while held.
+  returnType: boolean
   examples:
   - |-
     local player = { x = 40, y = 40 }
@@ -46,6 +47,7 @@ functions:
     optional: true
     description: 'Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first gamepad are player 1 together, the second keyboard layout and the second gamepad player 2. A number past `4` answers `false`.'
   returns: True on the press step.
+  returnType: boolean
   examples:
   - |-
     local player = { vy = 0, on_ground = true }
@@ -73,6 +75,7 @@ functions:
     optional: true
     description: 'Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first gamepad are player 1 together, the second keyboard layout and the second gamepad player 2. A number past `4` answers `false`.'
   returns: True on the release step.
+  returnType: boolean
   examples:
   - |-
     -- variable jump height: cut the rise when the button is let go
@@ -94,6 +97,7 @@ functions:
     description: Key name from the browser keyboard event.
     required: true
   returns: '`true` if the key is pressed, `false` otherwise.'
+  returnType: boolean
   examples:
   - |-
     local speed = 2
@@ -119,6 +123,7 @@ functions:
     required: true
     description: A key name as the browser reports it.
   returns: True on the press step.
+  returnType: boolean
   examples:
   - |-
     if input.key_down("r") then print("restart") end
@@ -136,6 +141,7 @@ functions:
   description: 'Mouse position in screen pixels, or `nil` when the pointer is outside the screen. The camera does not apply: to aim at the world, add the camera offset you keep in a variable.'
   params: []
   returns: x, y in screen pixels, or nil.
+  returnType: number|nil
   examples:
   - |-
     local cam = { x = 0, y = 0 }   -- what gfx.camera was last given
@@ -157,6 +163,7 @@ functions:
     optional: true
     description: 'Button `0` (left), `1` (right) or `2` (middle); left out, `0`.'
   returns: True while held.
+  returnType: boolean
   examples:
   - |-
     local mx, my = input.get_mouse_pos()
@@ -179,6 +186,7 @@ functions:
     optional: true
     description: 'Button `0` (left), `1` (right) or `2` (middle); left out, `0`.'
   returns: True on the press step.
+  returnType: boolean
   examples:
   - |-
     if input.mouse_down() then
@@ -197,6 +205,7 @@ functions:
   description: 'How many players have a controller. The keyboard and the first gamepad are one player together; a second gamepad is player 2, and so on. A second keyboard layout (J, L, I, K…) plays as player 2 without counting here.'
   params: []
   returns: Player count, at least 1.
+  returnType: number
   examples:
   - |-
     for p = 1, input.players() do

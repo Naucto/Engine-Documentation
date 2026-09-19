@@ -55,7 +55,10 @@ the file: the palette is the theme's.
 The engine's `luaApiTable.ts` is the source of truth for names, signatures and one-line summaries;
 the Frontend runs a parity test so every engine function is documented here with the same signature
 and summary, and nothing here is undocumented in the engine. Every parameter says `required: true`
-or `optional: true`.
+or `optional: true`. A function says what comes back twice: `returns` is the prose, and `returnType`
+is the type the cards colour it by, one of `number`, `string`, `boolean`, `table`, `function`,
+`nil`, or a union of them such as `number|nil`; a function that returns nothing says `returns: null`
+and no `returnType`. A parameter's `type` uses the same names.
 
 ## Working on it
 

@@ -7,6 +7,7 @@ functions:
   description: 'Length of one fixed step in seconds, always 1/60. The console runs `_update` at a fixed rate, so there is nothing to scale by: speeds are written per step. `sys.dt` tells you how long a step is, for a clock or a timer that counts in seconds.'
   params: []
   returns: 1/60.
+  returnType: number
   examples:
   - |-
     -- a ten-second countdown, one step's worth per _update
@@ -26,6 +27,7 @@ functions:
   description: 'The number of steps the game has taken: `0` in `_init`, `1` on the first `_update`. It counts fixed steps, not frames shown, and stops while the game is paused.'
   params: []
   returns: Frame count.
+  returnType: number
   examples:
   - |-
     -- four-frame walk cycle, one frame every 8 steps
@@ -44,6 +46,7 @@ functions:
     own clock.
   params: []
   returns: Seconds since _init.
+  returnType: number
   examples:
   - |-
     local bob = math.sin(sys.time() * 3) * 2
@@ -59,6 +62,7 @@ functions:
   description: 'Frames per second actually being shown, averaged over the last sixty frames, so a fraction like `59.8`; it is `0` on the very first frames. The editor shows the same number beside the screen.'
   params: []
   returns: Measured frames per second.
+  returnType: number
   examples:
   - |-
     gfx.print(math.floor(sys.fps()) .. " FPS", 2, 2, 5)
