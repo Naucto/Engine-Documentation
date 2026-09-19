@@ -9,8 +9,8 @@ IT_SPEED     = 2.4          -- "it" runs slightly faster
 TAG_COOLDOWN = 60           -- frames before "it" can tag again (one second)
 
 COL_BG  = 0                 -- black
-COL_IT  = 8                 -- red
-COLORS  = { 12, 11, 10, 14 }-- blue, green, yellow, pink
+COL_IT  = 2                 -- red
+COLORS  = { 11, 13, 4, 6 }  -- light blue, green, yellow, pink
 
 state        = "menu"       -- "menu" | "waiting" | "playing" | "over"
 is_host      = false
@@ -123,8 +123,8 @@ function on_connected()
   end)
 
   net.on("ended", function()
-    state = "over"
-    print("The host closed the session. Press M for the menu.")
+    print("The host closed the session.")
+    _init()
   end)
 
   state = "playing"

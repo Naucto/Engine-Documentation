@@ -10,9 +10,9 @@ BALL_SIZE  = 4
 WIN_SCORE  = 5
 
 COL_BG    = 0    -- black
-COL_LEFT  = 12   -- blue
-COL_RIGHT = 8    -- red
-COL_BALL  = 7    -- white
+COL_LEFT  = 11   -- light blue
+COL_RIGHT = 2    -- red
+COL_BALL  = 5    -- white
 
 state   = "menu"   -- "menu" | "waiting" | "playing" | "over"
 is_host = false
@@ -91,8 +91,8 @@ function on_connected()
   end)
 
   net.on("ended", function()
-    state = "over"
-    print("The host closed the session. Press M for the menu.")
+    print("The host closed the session.")
+    _init()
   end)
 
   state = "playing"

@@ -3,11 +3,8 @@ title: Sound
 functions:
 - name: play_sfx
   signature: sound.play_sfx(slot[, channel, pitch_offset, volume])
-  summary: Play SFX slot 0..15.
-  description: Plays the sound effect kept at that number in the sound editor's bank. Any number will
-    do and an empty one is silent, so a game may spread its effects out however it likes. Sound effects
-    take the last voice first and steal the oldest one when they need another, so music keeps playing
-    underneath.
+  summary: Play a numbered SFX slot.
+  description: 'Play the sound effect kept at that number in the SOUND tab''s bank. Any number will do and an empty one is silent. It plays at priority 1, above the music: it takes the first free voice of the five, and when none is free it takes one from the music, oldest first, so music keeps playing on the others.'
   params:
   - name: slot
     type: number
@@ -15,16 +12,16 @@ functions:
     description: The number the sound editor shows on the slot.
   - name: channel
     type: number
-    required: false
-    description: Force a voice 0..4 instead of letting the mixer choose.
+    optional: true
+    description: 'Force a voice `0` to `4` instead of letting the mixer choose; a number outside is clamped. The whole pattern then plays on that one voice, one note at a time.'
   - name: pitch_offset
     type: number
-    required: false
+    optional: true
     description: Semitones to transpose by.
   - name: volume
     type: number
-    required: false
-    description: 0..1, default 1.
+    optional: true
+    description: 'Multiplies the volume of the pattern''s notes, `1` by default; the result is kept within `0` to `1`.'
   returns: null
   examples:
   - |-
@@ -41,33 +38,32 @@ functions:
 - name: play_note
   signature: sound.play_note(instrument, pitch[, length, volume, channel])
   summary: Play a note now; pitch is MIDI or "C4".
-  description: Plays a single note on an instrument right now, without going through a pattern. Pitch
-    is a MIDI number or a note name like "C4".
+  description: 'Play a single note on an instrument right now, without a pattern. The pitch is a MIDI number or a name like `"C4"`; a name that cannot be read plays C4. The note plays at priority 1, like a sound effect, and `volume` is its velocity.'
   params:
   - name: instrument
-    type: string|number
+    type: string
     required: true
-    description: Instrument id or index from the sound editor.
+    description: 'The instrument''s name exactly as the SOUND tab shows it, case included (a preset is called `"Square lead"`, not `"lead"`), or its id. An unknown name plays nothing.'
   - name: pitch
     type: number|string
     required: true
     description: MIDI note or name such as "C4".
   - name: length
     type: number
-    required: false
-    description: Seconds to hold; omit to sustain until sound.stop_note.
+    optional: true
+    description: 'Seconds to hold; left out, a quarter of a second. `0` holds the note until `sound.stop_note`.'
   - name: volume
     type: number
-    required: false
+    optional: true
     description: 0..1, default 1.
   - name: channel
     type: number
-    required: false
+    optional: true
     description: Force a voice 0..4.
   returns: null
   examples:
   - |-
-    -- a two-note pickup jingle
+    -- a two-note pickup jingle, on an instrument called lead
     sound.play_note("lead", "C5", 0.08)
     sound.play_note("lead", "G5", 0.12)
   notes: []
@@ -79,7 +75,7 @@ functions:
 - name: stop_note
   signature: sound.stop_note(channel)
   summary: Release a voice.
-  description: Releases a voice, letting its envelope fade out. Use it for notes started without a length.
+  description: Releases a voice, letting its envelope fade out. Use it for notes started with a length of `0`; it releases a voice the music is using just the same.
   params:
   - name: channel
     type: number
@@ -88,7 +84,7 @@ functions:
   returns: null
   examples:
   - |-
-    sound.play_note("pad", "A3", nil, 0.6, 2)
+    sound.play_note("pad", "A3", 0, 0.6, 2)  -- held on voice 2
     -- ... later
     sound.stop_note(2)
   notes: []
@@ -98,20 +94,13 @@ functions:
   - sound.is_playing
   since: '2.0'
 - name: play_music
-  signature: sound.play_music(song[, loop, fade_in])
+  signature: sound.play_music([song, loop, fade_in])
   summary: Start song slot 0..15 from the tracker.
-  description: 'Play a music slot from the Sound Editor.
-
-
-    When `song` is omitted, slot `0` plays.
-
-
-    If the project has no sound data, the call is a silent no-op -- nothing plays and no error is raised.'
+  description: 'Play one of the sixteen musics of the SOUND tab, replacing the one playing. A number outside `0` to `15`, or an empty one, plays nothing and raises no error. `loop` overrides the loop setting saved in the tab, but the loop start saved there is kept.'
   params:
   - name: song
     type: number
-    description: Optional zero-based music slot index. `0` plays the first Sound Editor slot, `1` plays
-      the second slot, and so on.
+    description: 'Music number, as the `#` field of the SOUND tab shows it, `0` to `15`; left out, `0`. An empty number plays nothing.'
     optional: true
   - name: loop
     type: boolean
@@ -125,7 +114,7 @@ functions:
   examples:
   - |-
     function _init()
-      sound.play_music(0)  -- play Sound Editor slot 1
+      sound.play_music(0)  -- music number 0, the first
     end
   notes: []
   aliases:
@@ -137,7 +126,7 @@ functions:
 - name: stop_music
   signature: sound.stop_music([fade_out])
   summary: Stop the music.
-  description: Stop the current music playback.
+  description: 'Stop the music, at once or over a fade. During the fade `sound.music_position()` still answers, until the fade ends.'
   params:
   - name: fade_out
     type: number
@@ -146,8 +135,8 @@ functions:
   returns: null
   examples:
   - |-
-    if input.key_pressed(" ") then
-      sound.stop_music()
+    if input.btnp("pause") then
+      sound.stop_music(0.5)
     end
   notes: []
   aliases:
@@ -176,8 +165,7 @@ functions:
 - name: set_volume
   signature: sound.set_volume(master[, music, sfx])
   summary: Mixer levels 0..1.
-  description: Sets the mixer levels, each 0..1. Pass master alone to duck everything, or all three to
-    balance music against effects.
+  description: 'Sets the mixer levels, each `0` to `1`; a level left out keeps its value. Pass `master` alone to duck everything, or all three to balance music against effects. The levels are not clamped, and they survive `sound.stop()`.'
   params:
   - name: master
     type: number
@@ -185,16 +173,17 @@ functions:
     description: Overall level 0..1.
   - name: music
     type: number
-    required: false
+    optional: true
     description: Music level 0..1.
   - name: sfx
     type: number
-    required: false
+    optional: true
     description: Sound effect level 0..1.
   returns: null
   examples:
   - |-
     -- half volume while the pause menu is up
+    local paused = true
     sound.set_volume(paused and 0.5 or 1)
   notes: []
   aliases: []
@@ -205,12 +194,12 @@ functions:
 - name: music_position
   signature: sound.music_position()
   summary: pattern_index, step of the playing song (nil when stopped).
-  description: 'Where the song has got to: the index of the playing pattern and the step inside it. Returns
-    nil when no music is playing - useful for syncing animation to the beat.'
+  description: 'Where the song has got to: the position in the song''s pattern list, counted from `0` (not the pattern''s own number), and the step inside that pattern, rounded up. Returns `nil` when no music is playing. The value comes back from the audio thread a frame or two late, and a step lasts several frames, so a test like `step % 4 == 0` stays true for a few frames in a row.'
   params: []
   returns: pattern_index, step, or nil.
   examples:
   - |-
+    local pulse = 0
     local pattern, step = sound.music_position()
     if step and step % 4 == 0 then pulse = 1 end
   notes: []
@@ -222,7 +211,7 @@ functions:
 - name: is_playing
   signature: sound.is_playing(channel)
   summary: Whether a voice is sounding.
-  description: Whether a given voice is currently sounding.
+  description: 'Whether a voice is currently sounding, music included. The answer comes back from the audio thread a frame or two late: right after `play_sfx` it is still `false`, so do not use it to avoid a double trigger.'
   params:
   - name: channel
     type: number
@@ -231,7 +220,7 @@ functions:
   returns: True while the voice sounds.
   examples:
   - |-
-    if not sound.is_playing(4) then sound.play_sfx(3, 4) end
+    if sound.is_playing(4) then gfx.fill_rect(0, 0, 8, 8, 5) end  -- a light while voice 4 sounds
   notes: []
   aliases: []
   seeAlso:

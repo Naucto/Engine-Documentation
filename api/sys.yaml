@@ -10,6 +10,8 @@ functions:
   returns: 1/60.
   examples:
   - |-
+    local player = { x = 40 }
+    local speed = 60  -- pixels per second
     player.x = player.x + speed * sys.dt()
   notes: []
   aliases: []
@@ -20,13 +22,13 @@ functions:
 - name: frame
   signature: sys.frame()
   summary: Frames since _init.
-  description: How many steps have run since _init. Handy for animation timers and for anything that should
-    happen every n frames.
+  description: 'The number of steps the game has taken: `0` in `_init`, `1` on the first `_update`. It counts fixed steps, not frames shown, and stops while the game is paused.'
   params: []
   returns: Frame count.
   examples:
   - |-
     -- four-frame walk cycle, one frame every 8 steps
+    local player = { sprite = 4 }
     player.sprite = 4 + (sys.frame() // 8) % 4
   notes: []
   aliases: []
@@ -53,13 +55,12 @@ functions:
 - name: fps
   signature: sys.fps()
   summary: Measured frames per second.
-  description: Frames per second actually being drawn, averaged over the last second. The editor shows
-    the same number beside the screen.
+  description: 'Frames per second actually being shown, averaged over the last sixty frames, so a fraction like `59.8`; it is `0` on the very first frames. The editor shows the same number beside the screen.'
   params: []
   returns: Measured frames per second.
   examples:
   - |-
-    gfx.print(sys.fps() .. " FPS", 2, 2, 5)
+    gfx.print(math.floor(sys.fps()) .. " FPS", 2, 2, 5)
   notes: []
   aliases: []
   seeAlso:
@@ -68,21 +69,22 @@ functions:
 - name: log
   signature: sys.log(...)
   summary: Write to the console (same as print).
-  description: "Write text to the engine output panel.\n\nparam ...  \nOne or more values to display.\
-    \ Values are converted to strings and joined with tabs.\n\nEach `print()` call adds a new line to\
-    \ the output panel. The panel keeps the most recent lines and trims older ones automatically.\n\n\
-    This is your primary debugging tool. Use it to inspect positions, state, health, score, or any other\
-    \ value while developing your game."
-  params: []
+  description: 'Write a line to the console under the viewer. Values are turned into text and joined with tabs; a table is written as JSON, with its keys as strings. `print` is the same function. The console keeps the last five hundred lines.'
+  params:
+  - name: '...'
+    type: any
+    description: One or more values to write.
+    required: true
   returns: null
   examples:
   - |-
+    local player = { x = 40, y = 40, hp = 3, on_ground = true }
+    local score = 0
     print("player", player.x, player.y)
     print("health:", player.hp, "score:", score)
     print("on_ground:", player.on_ground)
   notes: []
-  aliases:
-  - print
+  aliases: []
   seeAlso:
   - sys.warn
   - sys.error
@@ -91,10 +93,15 @@ functions:
   signature: sys.warn(...)
   summary: Write a warning to the console.
   description: Writes a warning line to the console, in the warning colour.
-  params: []
+  params:
+  - name: '...'
+    type: any
+    description: One or more values to write.
+    required: true
   returns: null
   examples:
   - |-
+    local enemies = {}
     if #enemies > 64 then sys.warn("too many enemies: ", #enemies) end
   notes: []
   aliases: []
@@ -107,10 +114,16 @@ functions:
   summary: Write an error line to the console.
   description: Writes an error line to the console, in the error colour. It reports a problem; it does
     not stop the game.
-  params: []
+  params:
+  - name: '...'
+    type: any
+    description: One or more values to write.
+    required: true
   returns: null
   examples:
   - |-
+    local n = 3
+    local level = nil
     if not level then sys.error("level ", n, " is missing") end
   notes: []
   aliases: []

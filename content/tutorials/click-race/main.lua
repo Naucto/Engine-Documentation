@@ -11,8 +11,8 @@ WIN_SCORE   = 10
 RESPAWN_DELAY = 120           -- frames (two seconds at 60 FPS)
 
 COL_BG    = 0                 -- black
-COL_COIN  = 10                -- yellow
-COLORS    = { 8, 12, 11, 14 } -- red, blue, green, pink
+COL_COIN  = 4                 -- yellow
+COLORS    = { 2, 11, 13, 6 }  -- red, light blue, green, pink
 
 state         = "menu"        -- "menu" | "waiting" | "playing" | "over"
 is_host       = false
@@ -121,8 +121,8 @@ function on_connected()
   end
 
   net.on("ended", function()
-    state = "over"
-    print("The host closed the session. Press M for the menu.")
+    print("The host closed the session.")
+    _init()
   end)
 
   state = "playing"

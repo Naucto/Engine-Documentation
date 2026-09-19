@@ -243,7 +243,7 @@ function win_game()
   player.vx     = 0
   player.vy     = 0
 
-  -- Announce the win in the output panel
+  -- Announce the win in the Console
   print("You Won")
 end
 
@@ -286,7 +286,7 @@ end
 
 function _draw()
   gfx.camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
-  gfx.clear(12)
+  gfx.clear(11)
   map.draw(0, 0)
   draw_player()
 end

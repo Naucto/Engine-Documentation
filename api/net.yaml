@@ -2,8 +2,8 @@ namespace: net
 title: Networking
 functions:
 - name: host
-  signature: net.host([config], callback)
-  summary: Open the host dialog; callback(session) when ready.
+  signature: net.host([config, callback])
+  summary: 'Open the host dialog; callback() once the session exists.'
   description: 'Ask the player to create (host) a new session by opening the platform''s host dialog.
 
 
@@ -15,8 +15,8 @@ functions:
 
     |----|----|----|
 
-    | `max_players` | number | Session capacity, **including the host**. Defaults to `2`. The player cannot
-    change it -- capacity belongs to the game. |
+    | `max_players` | number | Session capacity, **including the host**. Defaults to `2`, and is neither
+    rounded nor capped by the engine. The player cannot change it -- capacity belongs to the game. |
 
     | `title` | string | Default session title offered in the dialog. The player can edit it. |
 
@@ -27,7 +27,8 @@ functions:
 
 
     Raises `net: already in a session; call net.leave() first` if a session is active. A second call made
-    while a host/join dialog is still open is silently ignored (a no-op), not an error.'
+    while a host/join dialog is still open is silently ignored (a no-op), not an error. Where the game
+    runs without the platform''s network dialogs, the call does nothing at all.'
   params:
   - name: config
     type: table
@@ -40,9 +41,10 @@ functions:
   returns: null
   examples:
   - |-
+    local state = "menu"
     net.host({ max_players = 4, title = "Tag arena" }, function()
       state = "playing"
-      print("session created, id " .. net.id())
+      print("session created, my id is " .. net.id())
     end)
   notes:
   - kind: warning
@@ -64,7 +66,8 @@ functions:
 
     As with [[net.host]], the callback fires only on success: if the player cancels the dialog, nothing
     happens. Like [[net.host]], it raises `net: already in a session; call net.leave() first` when a session
-    is already active, and silently ignores a repeat call made while a dialog is still open.'
+    is already active, and silently ignores a repeat call made while a dialog is still open. Where the game
+    runs without the platform''s network dialogs, the call does nothing at all.'
   params:
   - name: callback
     type: function
@@ -73,9 +76,10 @@ functions:
   returns: null
   examples:
   - |-
+    local state = "menu"
     net.join(function()
       state = "playing"
-      print("joined as player " .. net.id())
+      print("joined, my id is " .. net.id())
     end)
   notes: []
   aliases: []
@@ -86,12 +90,14 @@ functions:
 - name: leave
   signature: net.leave()
   summary: Leave the current session.
-  description: Leave the current session and tear it down. Safe to call when there is no session (it does
-    nothing). After leaving, the game may host or join again.
+  description: 'Leave the current session and tear it down. Safe to call when there is no session (it does
+    nothing). After leaving, the game may host or join again. Your own `"ended"` callback does not fire:
+    only the other players get it, and only when the one leaving is the host.'
   params: []
   returns: null
   examples:
   - |-
+    local game_over = true
     if game_over then
       net.leave()
       state = "menu"
@@ -105,40 +111,40 @@ functions:
 - name: id
   signature: net.id()
   summary: Your player id in the session.
-  description: This is the same id other peers receive in `peer.joined` / `peer.left` notifications and
-    as the `from` argument of custom events, so it is the natural key for per-player data in [[net.state]].
+  description: 'The id of this player''s account, the same id the host receives in `peer.joined` / `peer.left` and every peer gets as the `from` of an event, so it is the natural key for per-player data in [[net.state]]. It is not a seat number from `1` to `max_players`: ids are large, not contiguous, and two windows on one account share one.'
   params: []
   returns: Your own player id in the session, as an integer.
   examples:
   - |-
-    print("I am player " .. net.id())
+    print("my id is " .. net.id())
   notes: []
   aliases: []
   seeAlso:
   - net.on
-  - input.players
+  - net.state
   since: '1.0'
 - name: 'on'
   signature: net.on(pattern, callback)
   summary: React to net.state changes or events.
-  description: 'Register a callback for a network event. What arrives depends on the pattern:
+  description: 'Register a callback for a network event. It needs a session, so call it from the host or
+    join callback, not from `_init`. What arrives depends on the pattern:
 
 
     | Pattern | Callback arguments | Fires when |
 
     |----|----|----|
 
-    | `"peer.joined"` | `(playerId)` | Another player joins the session |
+    | `"peer.joined"` | `(playerId)` | A player joins the session. **Host only**: a guest is not told about the other guests |
 
-    | `"peer.left"` | `(playerId)` | Another player leaves or disconnects |
+    | `"peer.left"` | `(playerId)` | A player leaves or disconnects. **Host only** |
 
     | `"ended"` | *(none)* | The session ends -- in particular when the host leaves |
 
     | `"event:<name>"` | `(from, payload)` | A peer calls `net.emit("<name>", payload)`; `from` is its
     player id |
 
-    | `"error"` | `(path, reason)` | The host rejects (and rolls back) a client write to a permission-protected
-    path |
+    | `"error"` | `(path, reason)` | The host refuses and rolls back one of your writes. **Guest only**; `reason`
+    is `"forbidden"` (the path is not writable by guests) or `"conflict"` (another write got there first) |
 
     | anything else (a state path) | `(path, newValue)` | A matching [[net.state]] key \| changes |
 
@@ -176,11 +182,11 @@ functions:
     end)
 
     net.on("event:serve", function(from, payload)
-      serve_ball(payload.direction)
+      print("serve from " .. from .. " towards " .. payload.direction)
     end)
 
-    net.on("peer.left", function(playerId)
-      net.state.players[playerId] = nil
+    net.on("peer.left", function(playerId)  -- on the host only
+      if net.state.players then net.state.players[playerId] = nil end
     end)
   notes:
   - kind: note
@@ -192,12 +198,9 @@ functions:
   - net.id
   since: '1.0'
 - name: emit
-  signature: net.emit(name, payload)
+  signature: net.emit(name[, payload])
   summary: Broadcast an event.
-  description: "Send a one-shot custom event to the **other** players in the session.\n\nparam payload\
-    \  \nOptional value to send along -- a number, string, boolean, or (nested) table. Functions cannot\
-    \ be sent. Omitted, the receivers get `nil`.\n\nThe sender does **not** receive its own event: if\
-    \ the sender needs the same effect, apply it locally after emitting."
+  description: 'Send a one-shot event to the **other** players in the session. The sender does not receive its own event: if the sender needs the same effect, apply it locally after emitting. A table arrives with its keys as strings, so `{10, 20}` is read back as `payload["1"]`, `payload["2"]`.'
   params:
   - name: name
     type: string
@@ -239,26 +242,24 @@ functions:
     Requests are ordered by the session host, so two peers acquiring "at the same time" are serialized
     -- one runs, then the other. If a peer disconnects while holding locks, its locks are released automatically
     and its pending requests are dropped. A lock stored under a host-only path (see [permissions](/learn/tutorials/permissions))
-    can only be acquired by the host, just like a write to that path.'
+    can only be acquired by the host, just like a write to that path: a guest''s `acquire` there is dropped
+    and its callback never runs.'
   params: []
   returns: A lock handle -- a table with an `acquire` and an `is_locked` function.
   examples:
   - |-
-    net.state.score_lock = net.lock()   -- create the shared lock (host does this once)
-
+    net.state.score_lock = net.lock()   -- the host creates the shared lock once
+    
     net.state.score_lock.acquire(function(release)
-      -- exclusive section: no other peer holds this lock right now, so this
-      -- read-modify-write cannot lose an increment to a simultaneous one
+      -- nobody else holds the lock in here
       net.state.score = (net.state.score or 0) + 1
-      release()   -- always release when done
+      release()
     end)
-
-    if net.state.score_lock.is_locked() then ... end
   notes:
   - kind: note
     text: 'A lock you never assign into `net.state` is a **local** lock: usable without a session, but
-      private to this player and uncontended (it grants immediately). It exists so the same code runs
-      in single-player and multiplayer.'
+      private to this player and uncontended (it grants immediately, even while it is already held). It
+      exists so the same code runs in single-player and multiplayer.'
   - kind: warning
     text: Nothing prevents a peer from writing a lock-protected [[net.state]] key without acquiring the
       lock first. A lock only protects against peers that also use it.
@@ -285,7 +286,11 @@ functions:
     receives `nil`. The callback form exists because the head may live on another peer; treat the value
     as arriving "soon" rather than instantly.
 
-    - `length()` and `peek()` read the local replica synchronously.'
+    - `length()` and `peek()` read the local replica synchronously.
+
+
+    A pushed table arrives with its keys as strings, like an event payload. On a path a guest may not
+    write, its `push` is dropped and its `pop` answers `nil`, as on an empty queue.'
   params: []
   returns: A queue handle -- a table with `push`, `pop`, `length` and `peek`.
   examples:
@@ -295,7 +300,7 @@ functions:
     net.state.respawns.push({ coin = 3 }) -- append a value
     net.state.respawns.pop(function(value)  -- remove the head; nil when empty
       if value then
-        respawn_coin(value.coin)
+        print("respawn coin " .. value.coin)
       end
     end)
     local n = net.state.respawns.length()  -- current number of items
@@ -311,65 +316,27 @@ functions:
   since: '1.0'
 values:
 - name: state
-  signature: net.state()
+  signature: net.state
   summary: A table shared by every player in the session. Writes replicate to all peers automatically;
     reads always return the latest replicated value.
-  description: 'A table shared by every player in the session. Writes replicate to all peers automatically;
-    reads always return the latest replicated value. A player who joins mid-game receives the whole current
-    contents.
-
-
-    `net.state` behaves like a nested Lua table:
-
-
-    Rules and behavior:
-
-
-    - Stored values are **numbers, strings, and booleans**. Nested tables are supported; storing a function
-    raises `net: cannot store a function in net.state`.
-
-    - Assigning a table **replaces** that subtree: existing keys under the path are deleted first, then
-    the table''s contents are written.
-
-    - Assigning `nil` deletes the key, including everything nested below it.
-
-    - Reading an absent key returns `nil`; reading a branch (like `net.state.ball`) returns a table-like
-    view you can index further.
-
-    - **A branch exists only while at least one value lives under it.** Assigning an empty table stores
-    nothing, so the branch still reads back as `nil` -- create nested data by assigning a non-empty table,
-    then update its fields.
-
-    - A slot may also hold a **lock or queue object** (see [[net.lock]] and [[net.queue]]). Its internal
-    state is stored and replicated alongside `net.state` but is hidden from plain reads: the slot reads
-    back as the object''s handle, not as data, and it does not appear as ordinary keys.
-
-    - `#net.state.list` counts consecutive integer keys starting at `1`, like a regular Lua sequence.
-
-    - `pairs(net.state.players)` iterates the branch''s direct children. **Keys come back as strings**
-    (numeric ids included -- use `tonumber` if you need the number back).
-
-
-    Because of the empty-branch rule, adding an entry to a shared collection uses this idiom (the first
-    writer creates the branch, later writers go through it):'
+  description: 'A table shared by every player in the session. Writes replicate to all peers; reads answer the latest replicated value. A player who joins mid-game receives everything they may read. Stored values are numbers, strings, booleans and nested tables; a function raises `net: cannot store a function`. Reading it outside a session raises `net: no active session`.'
   params: []
   returns: null
   examples:
-  - 'net.state.score = 0                          -- write a value
-
+  - |-
+    net.state.score = 0                          -- write a value
     net.state.ball = { x = 160, y = 90, dx = 2 } -- assign a whole table at once
-
-    net.state.ball.x = 42                        -- update a nested value
-
-    local s = net.state.score                    -- read (nil if absent)
-
-    net.state.bonus = nil                        -- delete a key (or a whole subtree)'
-  - "local entry = { x = 24, y = 40 }\nif net.state.players then\n  net.state.players[playerId] = entry\n\
-    else\n  net.state.players = { [playerId] = entry }\nend"
+    net.state.ball.x = 42                        -- update a nested field
+  - |-
+    local me = net.id()
+    local entry = { x = 24, y = 40 }
+    if net.state.players then
+      net.state.players[me] = entry
+    else
+      net.state.players = { [me] = entry }
+    end
   notes:
-  - kind: warning
-    text: 'There is no built-in write protection: any peer can write any key. Keep your game consistent
-      by convention -- each player writes only its own keys, and the host owns everything global. See
-      [multiplayer](/learn/concepts/multiplayer).'
+  - kind: note
+    text: 'What a joined player may read or write is decided per path in the NET tab, and applied by the host: a refused write is undone on the peer that made it, and its `net.on("error")` fires with the reason `"forbidden"`, or `"conflict"` when another write got there first. A guest''s write is applied locally at once and confirmed or undone afterwards.'
   aliases: []
   since: '1.0'
