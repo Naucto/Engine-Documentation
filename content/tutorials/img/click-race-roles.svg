@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 248" role="img" aria-label="A player claims a coin through its lock, checks it is still free, scores, and pushes the coin's index on the respawn queue the host pops">
+  <title>A player claims a coin through its lock, checks it is still free, scores, and pushes the coin's index on the respawn queue the host pops</title>
+  <g class="d-stroke">
+    <line x1="8.5" y1="28.5" x2="264.5" y2="28.5"/>
+    <line x1="296.5" y1="28.5" x2="552.5" y2="28.5"/>
+    <line x1="48.5" y1="76.5" x2="48.5" y2="88.5"/>
+    <line x1="264.5" y1="108.5" x2="288.5" y2="108.5"/>
+    <line x1="48.5" y1="120.5" x2="48.5" y2="128.5"/>
+    <line x1="48.5" y1="192.5" x2="48.5" y2="200.5"/>
+    <line x1="256.5" y1="220.5" x2="288.5" y2="220.5"/>
+  </g>
+  <g class="d-box">
+    <rect x="8.5" y="96.5" width="248" height="24"/>
+    <rect x="8.5" y="136.5" width="248" height="56"/>
+    <rect x="8.5" y="208.5" width="248" height="24"/>
+  </g>
+  <g class="d-head">
+    <polygon points="44.5,88 48.5,96 52.5,88"/>
+    <polygon points="264,104.5 256,108.5 264,112.5"/>
+    <polygon points="288,104.5 296,108.5 288,112.5"/>
+    <polygon points="44.5,128 48.5,136 52.5,128"/>
+    <polygon points="44.5,200 48.5,208 52.5,200"/>
+    <polygon points="288,216.5 296,220.5 288,224.5"/>
+  </g>
+  <g class="d-label">
+    <text x="8" y="20">Any player</text>
+    <text x="304" y="20">Host</text>
+    <text x="8" y="52">moves own</text>
+    <text x="96" y="52" class="d-mono">players.&lt;id&gt;</text>
+    <text x="8" y="68">sees a coin, wants it</text>
+    <text x="56" y="90" class="d-quiet">acquire</text>
+    <text x="132" y="113" text-anchor="middle" class="d-mono d-gold">net.state.coins[i].lock</text>
+    <text x="56" y="132" class="d-quiet">inside the lock</text>
+    <text x="16" y="152">free:</text>
+    <text x="72" y="152" class="d-mono d-gold">taken = true</text>
+    <text x="72" y="168" class="d-mono">score + 1</text>
+    <text x="16" y="184" class="d-quiet">already taken: nothing</text>
+    <text x="132" y="225" text-anchor="middle" class="d-mono">net.state.respawns.push(i)</text>
+    <text x="304" y="52">provisions on</text>
+    <text x="424" y="52" class="d-mono">peer.joined</text>
+    <text x="304" y="68">removes on</text>
+    <text x="424" y="68" class="d-mono">peer.left</text>
+    <text x="304" y="112">grants one claim at a time</text>
+    <text x="304" y="216">pops one index every 2 s</text>
+    <text x="304" y="232">respawns that coin</text>
+  </g>
+</svg>

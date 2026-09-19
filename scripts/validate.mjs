@@ -158,6 +158,16 @@ for (const { file, body, offset } of pages) {
   for (const [, href] of body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g))
     if (!/^(https?:)?\/\//.test(href) && !(await exists(resolve(dirname(file), href))))
       errors.push(`${file}: picture ${href} is not there`);
+  for (const [, href] of body.matchAll(/\{\{svg:([^}\s]+)\}\}/g)) {
+    if (!(await exists(resolve(dirname(file), href)))) {
+      errors.push(`${file}: diagram ${href} is not there`);
+      continue;
+    }
+    const svg = await readFile(resolve(dirname(file), href), 'utf8');
+    if (!/viewBox="0 0 \d+ \d+"/.test(svg)) errors.push(`${file}: diagram ${href} has no viewBox`);
+    if (/(fill|stroke)="#|style="[^"]*#/.test(svg))
+      errors.push(`${file}: diagram ${href} writes a colour; use the d-* classes`);
+  }
   for (const { line, name, use } of legacyCallsIn(body))
     errors.push(`${file}:${line + offset}: lua example calls the v0 global ${name}(), use ${use}()`);
   for (const { line, word } of retiredWordsIn(body))

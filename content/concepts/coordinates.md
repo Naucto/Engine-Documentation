@@ -16,15 +16,7 @@ This page is the map of every number you pass to a drawing function: screen pixe
 
 The screen is **320 × 180 pixels**, which [[gfx.width]] and [[gfx.height]] return. `(0, 0)` is the top-left corner, `x` grows to the right and `y` grows downward, so the bottom-right pixel is `(319, 179)`. Every drawing function takes pixel coordinates, and positions are floored to whole pixels.
 
-```
-(0,0) ---------------------- (319,0)
-  |                            |
-  |                            |
-  |         320 x 180          |
-  |                            |
-  |                            |
-(0,179) --------------------- (319,179)
-```
+{{svg:img/screen.svg}}
 
 The mouse is in the same space: [[input.get_mouse_pos]] returns screen pixels, and `nil` while the pointer is outside the screen.
 
@@ -59,11 +51,7 @@ end
 
 The ART tab edits sprite sheets made of **8 × 8 tiles**. A new game has one sheet of 128 × 128 pixels: 16 sprites per row, 256 sprites numbered `0` to `255`, left to right then top to bottom. Sprite `0` is the top-left cell, sprite `16` the first of the second row.
 
-    Row 0:   [ 0][ 1][ 2][ 3] ... [15]
-    Row 1:   [16][17][18][19] ... [31]
-    Row 2:   [32][33][34][35] ... [47]
-    ...
-    Row 15:  [240] ...           [255]
+{{svg:img/sprite-numbers.svg}}
 
 On that first sheet, the sprite at column `c` and row `r` is `r * 16 + c`. A sheet can be resized to anything from 8 to 256 pixels a side in steps of 8, and a game can have several sheets: the numbers then **run on from one sheet to the next**, so the second sheet starts where the first ended, and `16` in the formula becomes whatever the sheet's own width in sprites is.
 

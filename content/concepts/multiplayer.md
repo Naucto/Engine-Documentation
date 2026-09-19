@@ -70,21 +70,7 @@ Flags inherit from the nearest configured ancestor, and paths you never configur
 
 A robust multiplayer game is a small state machine around the session:
 
-```
-"menu"            player presses a key; the game calls net.host(...) or net.join(...)
-  |
-  v
-"waiting"         a platform dialog is open; the game idles
-  |                 - player cancels: nothing fires; offer the menu again
-  |                 - success: your callback fires
-  v
-"playing"         net.state (values, locks, queues) / net.emit are usable
-  |                 - net.on("peer.joined"): a player arrived (mid-game joins included)
-  |                 - net.on("peer.left"):   a player disconnected; clean up its state
-  |                 - net.on("ended"):       the host left; the session is gone
-  v
-back to "menu"    via net.leave() or the "ended" callback
-```
+{{svg:img/session.svg}}
 
 Points that deserve care:
 

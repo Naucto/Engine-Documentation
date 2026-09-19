@@ -19,15 +19,7 @@ The synth has **five voices, numbered `0` to `4`**, and everything sounding is o
 
 Music plays at priority 0, sound effects and notes at priority 1. A new sound takes the first free voice; when none is free it takes a voice from the music first, oldest first. Forcing a `channel` puts the whole sound on that one voice.
 
-```
-   voices     0       1       2       3       4
-            +-----+ +-----+ +-----+ +-----+ +-----+
-   music    | bass| | lead| | pad | |     | |     |   priority 0
-            +-----+ +-----+ +-----+ +-----+ +-----+
-   play_sfx  ------------------------> 3 is free: it takes 3
-   play_sfx  ---------------------------------> then 4
-   play_sfx  --> none free: the oldest music voice is taken
-```
+{{svg:img/voices.svg}}
 
 > [!IMPORTANT]
 > A browser plays nothing until the player has clicked or pressed a key on the game. Until then the last music command and the last sound effect are kept and start when sound is allowed; a held note is dropped.

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 216" role="img" aria-label="A guest's write is applied at once and sent to the host, which either confirms it and broadcasts it to the other guests, or refuses it and the guest rolls it back">
+  <title>A guest's write is applied at once and sent to the host, which either confirms it and broadcasts it to the other guests, or refuses it and the guest rolls it back</title>
+  <g class="d-stroke">
+    <line x1="88.5" y1="32.5" x2="88.5" y2="208.5"/>
+    <line x1="280.5" y1="32.5" x2="280.5" y2="208.5"/>
+    <line x1="472.5" y1="32.5" x2="472.5" y2="208.5"/>
+    <line x1="88.5" y1="72.5" x2="272.5" y2="72.5"/>
+    <line x1="280.5" y1="144.5" x2="464.5" y2="144.5"/>
+    <line x1="280.5" y1="144.5" x2="96.5" y2="144.5"/>
+    <line x1="280.5" y1="184.5" x2="96.5" y2="184.5" stroke-dasharray="4 3"/>
+  </g>
+  <g class="d-box">
+    <rect x="24.5" y="8.5" width="128" height="24"/>
+    <rect x="216.5" y="8.5" width="128" height="24"/>
+    <rect x="408.5" y="8.5" width="128" height="24"/>
+    <rect x="184.5" y="96.5" width="192" height="24"/>
+  </g>
+  <g class="d-head">
+    <polygon points="272,68.5 280,72.5 272,76.5"/>
+    <polygon points="464,140.5 472,144.5 464,148.5"/>
+    <polygon points="96,140.5 88,144.5 96,148.5"/>
+    <polygon points="96,180.5 88,184.5 96,188.5"/>
+  </g>
+  <g class="d-label">
+    <text x="88" y="25" text-anchor="middle">guest</text>
+    <text x="280" y="25" text-anchor="middle">host</text>
+    <text x="472" y="25" text-anchor="middle">other guests</text>
+    <text x="96" y="64" class="d-mono d-gold">net.state.x = 1</text>
+    <text x="96" y="88" class="d-quiet">applied at once, sent</text>
+    <text x="280" y="113" text-anchor="middle">permission? version?</text>
+    <text x="96" y="136">confirmed</text>
+    <text x="288" y="136">ok: apply, broadcast</text>
+    <text x="288" y="168" class="d-quiet">or</text>
+    <text x="96" y="176" class="d-quiet">refused: rolled back</text>
+    <text x="96" y="200" class="d-mono d-quiet">net.on("error")</text>
+  </g>
+</svg>

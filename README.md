@@ -37,6 +37,18 @@ exists beside it, is shown on the light theme. A capture of the console's own sc
 docs:shots`, from seeded content, so they can be taken again when the app changes; do not retouch
 them by hand.
 
+### Diagrams
+
+A diagram is an SVG file next to the page, put on the page with `{{svg:img/name.svg}}`; the build
+inlines it, so the stylesheet tones it for the theme it is read in. Draw on the 8 px grid, with a
+`viewBox="0 0 W H"` and no `width`/`height`; strokes are 1 px on half-pixel coordinates (`x.5`), in a
+`<g class="d-stroke">` (lines, paths, rects, polylines take the quiet ink); boxes with a filled
+surface go in `<g class="d-box">`; arrowheads in `<g class="d-head">`; text in `<g class="d-label">`
+(`<text>` in the UI face, `class="d-mono"` for an identifier, `class="d-quiet"` for a secondary
+label, `class="d-gold"` for the thing the diagram is about). Flat fills take one of `d-fill-gold`,
+`d-fill-jade`, `d-fill-sky`, `d-fill-hot`, `d-fill-orange`, `d-fill-inset`. Never write a colour in
+the file: the palette is the theme's.
+
 ## API manifest
 
 The engine's `luaApiTable.ts` is the source of truth for names, signatures and one-line summaries;

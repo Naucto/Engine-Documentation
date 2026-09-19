@@ -252,26 +252,12 @@ gfx.camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
 
 `player.x - 160` centers a 320-pixel screen on the player; the clamp stops the view from sliding past either end of the map. Everything drawn afterwards, the map and the player, shifts automatically.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Run to the end tile. Walk frames alternate as you move, the jump sprite shows in the air, the camera follows without ever exposing the void beyond the map edges, and touching the trophy prints "You Won" and freezes the action.
 
 ## How it all fits together
 
-```
-ART                    MAP                     CODE
-----------------       ----------------        --------------------------
-index 0 = idle         Paint sprite 32         map.draw(0, 0) renders
-index 1 = walk 1       wherever the player     the tilemap.
-index 2 = walk 2       should collide.
-index 3 = jump                                 map.get() reads tile
-index 32 = solid       The painted map is      indexes.
-index 33 = deadly      the collision data.     map.flag() checks bits:
-index 34 = end tile                            0 = solid
-flag bits 0, 1, 2                              1 = deadly
-                                               2 = end tile
-```
+{{svg:img/platformer-parts.svg}}
 
 ## Complete code
 

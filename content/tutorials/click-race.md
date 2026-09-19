@@ -169,27 +169,12 @@ end)
 
 Wrap this in `update_respawns()`, gated by `respawn_timer` counting up to `RESPAWN_DELAY`. Only the host calls it: add it to `update_playing()` inside an `is_host` branch, next to `update_movement()` and `update_collect()` which everyone runs. Close the loop like in Pong: when `net.state.winner` appears, announce it and switch to `"over"`, where `m` calls `net.leave()` and restarts.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Park two players on the same coin. The coin disappears, one of the two scores, and the other finds it taken; two seconds later a fresh coin appears elsewhere. The lock does not decide who wins the coin, it decides that the claims run one after the other, and the re-check inside is what makes that order count.
 
 ## How it all fits together
 
-```
-Any player                        Host
-------------------------------    --------------------------------
-moves own players.<id>            provisions players on peer.joined
-sees a coin, wants it             cleans them up on peer.left
-  |
-  v
-net.state.coins[i].lock    ---->  grants requests one at a time
-  winner: taken = true,
-  score + 1,
-  net.state.respawns.push(i) -->  pops one index every 2 s,
-  loser: already taken,              respawns that coin
-  does nothing
-```
+{{svg:img/click-race-roles.svg}}
 
 ## Complete code
 

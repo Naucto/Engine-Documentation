@@ -197,23 +197,12 @@ end
 
 To finish the presentation, extend `_draw()` for the other states: fill the screen with the winner's colour in `"over"`, and draw something for the menu (the complete code shows two idle paddles and a dotted center line). A score display needs no text: draw one small square per point in each side's colour along the top edge.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Play a full match to 5. Then start again and close the host's window mid-rally: the joiner prints "The host closed the session." and lands straight back in the menu. That path, session dies, `"ended"` fires, player recovers, is one your game should never leave untested.
 
 ## How it all fits together
 
-```
-Host machine                          Joiner machine
---------------------------            --------------------------
-net.host{max_players = 2}   ------>   net.join()  (join code)
-owns: ball, score, playing            owns: pads.right only
-writes pads.left                      reads ball, score, pads.left
-simulates the ball          ------>   draws the replicated ball
-net.emit("point", ...)      ------>   net.on("event:point", ...)
-sets net.state.winner       ------>   sees winner, shows "over"
-```
+{{svg:img/pong-roles.svg}}
 
 ## Complete code
 

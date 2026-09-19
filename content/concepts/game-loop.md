@@ -14,21 +14,7 @@ A Naucto game is not a program that runs from top to bottom: the engine loads it
 
 ## Lifecycle overview
 
-```
-code tabs run, in tab order      <-- once, before anything
-        |
-        v
-    _init()                       <-- once
-        |
-        v
-   +-----------+
-   | _update() |  <-- one step, 1/60 s
-   | _draw()   |
-   +-----------+
-        |
-        v
-   screen shown -> next step ...  (error anywhere: --- HALTED ---)
-```
+{{svg:img/game-loop.svg}}
 
 Each of the three functions is optional; a missing one is skipped.
 

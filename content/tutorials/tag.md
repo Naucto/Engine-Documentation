@@ -177,15 +177,7 @@ Wire the remaining glue exactly as in the previous tutorials (winner-less this t
 
 ## How it all fits together
 
-```
-Every player                       Host only
----------------------------        -----------------------------
-writes own players.<id>.x/y        provisions players (join/mid-game)
-net.on("it", ...) announces        removes them on peer.left
-net.emit("taunt")  ------->        checks overlap with "it"
-draws all players,                 writes net.state.it on a tag
-ring around the "it"                 (replicates to everyone)
-```
+{{svg:img/tag-roles.svg}}
 
 ## Complete code
 

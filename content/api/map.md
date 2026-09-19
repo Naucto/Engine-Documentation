@@ -41,16 +41,7 @@ A game chooses its own map size, from 1 to 256 tiles a side, so read it rather t
 
 The map functions count tiles, the drawing functions count pixels. A point at `(37, 50)` sits on the tile `(4, 6)`: divide each coordinate by `8` and floor it. Read that tile's sprite, then the sprite's flags.
 
-```
-   pixel (37, 50)              tile (4, 6)
-        |                          |
-        | math.floor(37 / 8) = 4   |  map.get(4, 6)  -> sprite n
-        | math.floor(50 / 8) = 6   |  map.flag(n, 0) -> solid?
-        v                          v
-   +----+----+----+----+----+    column 4
-   |    |    |    |    |    |
-   +----+----+----+----+-##-+    row 6: the tile under the point
-```
+{{svg:img/pixel-to-tile.svg}}
 
 The usual collision test, with the bounds guarded:
 
