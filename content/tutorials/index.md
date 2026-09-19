@@ -10,7 +10,7 @@ legacy_slugs:
 
 # Tutorials
 
-Seven games built step by step. Each tutorial explains one idea at a time and shows only the lines that carry it; the complete code is folded at the foot of the page, and **Copy to new game** installs it in a fresh project so you can compare your version against it.
+Seven games built step by step. Each tutorial builds its game one step at a time, and every step gives the whole of the functions it adds, so the page can be followed to the letter in a new game; **Copy to new game** installs the finished game in a fresh project when you would rather read it or compare your version against it.
 
 Before any of them, do [Getting started](/learn/getting-started) and read [the game loop](/learn/concepts/game-loop). Every tutorial assumes you can run a game and know what `_init`, `_update` and `_draw` are for.
 
@@ -24,7 +24,7 @@ Before any of them, do [Getting started](/learn/getting-started) and read [the g
 
 ## Then: make it sound
 
-[Make it sound](/learn/tutorials/sound) is the third solo build, and the short one. It visits SOUND for an instrument from a preset, a pattern on the piano roll and a chain of two in the MUSIC grid, then CODE for [[sound.play_sfx]] on a key press, [[sound.play_music]] from the first frame and a beat indicator read off [[sound.music_position]].
+[Make it sound](/learn/tutorials/sound) is the third solo build, and the short one. It visits SOUND for an instrument from a preset, a pattern on the piano roll and a chain of two in the MUSIC grid, then CODE for [[sound.play_sfx]] on a key press, [[sound.play_music]] from the first frame and a beat indicator read off [[sound.music_pos]].
 
 ## Then online, in this order
 
@@ -35,4 +35,4 @@ The four netplay tutorials build on one another, so do them in order. Read the [
 3. [Build a Tag Arena](/learn/tutorials/tag): reacting to a shared key with `net.on`, players joining mid-game, cleaning up after the ones who leave.
 4. [Permissions & authority](/learn/tutorials/permissions): the NET tab's read and write flags, and what to lock so a client cannot declare itself the winner.
 
-To test a netplay game alone, the NET tab's **Test rig** spawns a second client on your machine. That client runs on your account but plays under an id of its own, so `net.id()` differs in the two windows and Coin Rush and Tag, which key everything by it, see two players. A third needs a second browser logged in to another account, or friends.
+To test a netplay game alone, the NET tab's **TEST RIG** spawns a second client: a small screen inside that panel, on your machine. It starts at `_init` like any run and joins through your game's own menu, so click its screen and press your join key. Pop the VIEWER out first, so your own game keeps running while you are on NET, and turn Auto off, since a rerun ends the session. That client runs on your account but plays under an id of its own, so `net.id()` differs in the two clients and Coin Rush and Tag, which key everything by it, see two players. A third needs a second browser logged in to another account, or friends.

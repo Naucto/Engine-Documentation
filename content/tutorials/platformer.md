@@ -15,7 +15,7 @@ legacy_slugs:
 
 This tutorial walks you through building a complete platformer with animated sprites, gravity, jumping, platform collision, and camera scrolling. It is the first big one, after [Your First Game](/learn/tutorials/first-game): it visits ART, MAP and CODE in turn and needs no second player.
 
-Rather than handing you the finished script, each step explains one idea and shows only the lines that carry it; you write the rest. If you get stuck or want to check your work, the [complete code](#complete-code) is one click away, and **Copy to new game** at the head of the page installs the code, the sprites, their flags and the map together, so the copy runs as-is.
+Each step explains one idea and gives the code it adds, whole: a function is always shown from `function` to `end`, so it can be typed or pasted as it stands, and a function shown again replaces the one you had. By Step 7 the script is complete.
 
 ## What you will build
 
@@ -28,13 +28,13 @@ A side-scrolling platformer where the player can:
 - Respawn when touching deadly tiles
 - Win when touching the end tile
 
-The camera follows the player horizontally.
+The camera follows the player horizontally. If you would rather start from the finished game, **Copy to new game** at the head of the page installs the code, the sprites, their flags and the map together.
 
 ## Step 1: Prepare your sprites
 
 ### Draw the seven sprites
 
-Open **ART** and draw these sprites. The number under the preview, such as `SPRITE 032`, tells you which one is selected.
+Open **ART**. A click on a cell of the SHEET map, at the right, selects that sprite, and PREVIEW over the canvas reads its number, such as `SPRITE 032`. Draw these seven:
 
 | Sprite index | Content                            |
 |--------------|------------------------------------|
@@ -46,15 +46,15 @@ Open **ART** and draw these sprites. The number under the preview, such as `SPRI
 | `33`         | Deadly tile, such as spikes        |
 | `34`         | End tile, such as a trophy or door |
 
-The player character is **8 pixels wide and 8 pixels tall** (1 tile wide, 1 tile tall). Each player animation frame fits in a single sprite slot.
+The player character is **8 pixels wide and 8 pixels tall** (1 tile wide, 1 tile tall). Each player animation frame fits in a single sprite slot. The swatches under PALETTE are numbered from `0`, left to right, the top row first; the number shows once a swatch is clicked.
 
-![ART with sprite 32 selected and flag 0 lit](img/platformer-art.png "ART, sprite 032 selected: the ground tile, flag 0 already on")
+![ART with sprite 32 selected and flag 0 lit](img/platformer-art.png "ART, sprite 032 selected on the SHEET map: the ground tile in the canvas, flag 0 already on in the FLAGS panel under it.")
 
 A new game does not start empty: the starter moon sits in sprites `1`, `2`, `17` and `18`, and the starter script in CODE moves it around. Drawing the walk frames over `1` and `2` is intended; clear `17` and `18` too if you like (this game never draws them). The starter script goes as well: Step 3 replaces it from the first line.
 
 ### Set the flags
 
-Under the sprite, the **FLAGS** panel shows eight buttons numbered `0` to `7`. Select each tile sprite and turn on one of them:
+Under the SHEET map, in the right column, the **FLAGS** panel shows eight buttons numbered `0` to `7`. Select each tile sprite and turn on one of them:
 
 - sprite `32` (solid): button `0`
 - sprite `33` (deadly): button `1`
@@ -69,7 +69,7 @@ The engine ignores flags; your code reads them in Step 3 with [[map.flag]], and 
 
 ## Step 2: Paint your level
 
-Open **MAP**. Pick a tile in the TILE PICKER, then paint it with the Stamp tool:
+Open **MAP**. Click a tile in the TILE PICKER of the right column, then paint it with the Stamp tool, the one selected when the tab opens:
 
 - a ground row: a full row of solid tiles across the bottom
 - floating platforms: smaller groups of tiles at different heights
@@ -88,6 +88,8 @@ Row 20 (y=160): end tile at column 50
 Row 21 (y=168): ground spanning columns 0-52
 ```
 
+The map is `128` tiles wide and the window shows its left part only. The wheel scrolls the map up and down; <kbd>Shift</kbd> and the wheel, or a horizontal wheel, scroll it **sideways**, about eight tiles a notch, which is how the columns past the edge come into view. The status line at the bottom of the map reads the tile under the cursor, `TILE 50,20 · SPR 034`: the column, the row and the sprite painted there, so a column is found without counting.
+
 > [!TIP]
 > The **Flags** button of MAP tints every tile by the first flag set on its sprite. Switch it on to check Step 1 at a glance: the ground and platforms in one colour, the spikes in another, the end tile in a third. A tile with no tint carries no flag, and the player will fall through it.
 
@@ -95,11 +97,39 @@ Row 21 (y=168): ground spanning columns 0-52
 
 ## Step 3: Read the map as collision
 
-There is no separate collision data in this game: the painted map is the collision data. Switch to **CODE**, delete the starter script, and start with constants for everything Step 1 and 2 decided: the four player sprite indexes, the player size (`8 x 8`), `TILE_SIZE = 8`, the map size (`MAP_W, MAP_H = 128, 32`, the default), `SPRITE_COUNT = 256`, and one constant per flag bit (`FLAG_SOLID = 0`, `FLAG_KILL = 1`, `FLAG_END = 2`).
+There is no separate collision data in this game: the painted map is the collision data. Switch to **CODE**, delete the starter script, and start with constants for everything Step 1 and 2 decided: the four player sprites, the player size, the tile size, the map size (`128 x 32`, the default), the number of sprites, and one constant per flag bit.
+
+``` lua
+SPRITE_IDLE   = 0
+SPRITE_WALK_1 = 1
+SPRITE_WALK_2 = 2
+SPRITE_JUMP   = 3
+
+PLAYER_W = 8
+PLAYER_H = 8
+
+TILE_SIZE  = 8
+MAP_W      = 128
+MAP_H      = 32
+SPRITE_COUNT = 256
+FLAG_SOLID = 0
+FLAG_KILL  = 1
+FLAG_END   = 2
+```
+
+A helper first, for later: `clamp` keeps a number between two bounds. Step 7 uses it for the camera.
+
+``` lua
+function clamp(v, lo, hi)
+  if v < lo then return lo end
+  if v > hi then return hi end
+  return v
+end
+```
 
 ### One question everything asks
 
-Then write the one function everything else leans on: does the tile at `(tx, ty)` carry this flag?
+Then the one function everything else leans on: does the tile at `(tx, ty)` carry this flag?
 
 ``` lua
 function tile_has_flag(tx, ty, flag)
@@ -126,39 +156,126 @@ The sprite guard is cheaper insurance. Flags live on the first sheet: [[map.flag
 
 ### Two thin helpers
 
-Write them yourself:
-
-- `is_solid_tile(tx, ty)`: shorthand for the `FLAG_SOLID` check.
-- `player_touching_flag(flag)`: convert the player's four corners to tile coordinates (divide by `TILE_SIZE`, `math.floor`, and use `x + PLAYER_W - 1` for the right edge so an 8-pixel body does not overhang into the next tile), then loop the tile rectangle and return `true` on the first hit.
-
-## Step 4: A player made of numbers
-
-The player is one global table created in `_init()`: position (`x, y`, start around `24, 40`), velocity (`vx, vy`), and tuning values. Speeds are per step (1/60 s, see [[sys.dt]]), so the numbers are small: `speed = 1.8`, `gravity = 0.30`, `jump_force = -5.0` (negative is up), `max_fall = 5.5`. Add `on_ground` (start `false`), `facing`, and `anim_frame`, plus globals `anim_timer = 0` and `game_finished = false`.
-
-### Input
-
-Write `handle_input()`: reset `vx` to `0` each frame, set it to `-speed` / `speed` on <kbd>ArrowLeft</kbd> / <kbd>ArrowRight</kbd> (the code accepts `a` / `d` too, and updates `facing`). Jumping is <kbd>ArrowUp</kbd>, `w` or <kbd>Space</kbd>. The only subtle line is the jump:
+`is_solid_tile` is shorthand for the `FLAG_SOLID` check, which the movement code asks many times a frame:
 
 ``` lua
-if wants_jump and player.on_ground then
-  player.vy        = player.jump_force
-  player.on_ground = false
+function is_solid_tile(tx, ty)
+  return tile_has_flag(tx, ty, FLAG_SOLID)
 end
 ```
 
-Gating on `on_ground` is what makes it a **jump rather than a jetpack**; the flag comes back in Step 5.
+`player_touching_flag` converts the player's four corners to tile coordinates, then walks that rectangle of tiles and answers `true` on the first one that carries the flag. The right and bottom edges use `+ PLAYER_W - 1` and `+ PLAYER_H - 1`: an 8-pixel body covers pixels `x` to `x + 7`, and one more would read the tile next door.
+
+``` lua
+function player_touching_flag(flag)
+  local left_tile   = math.floor(player.x / TILE_SIZE)
+  local right_tile  = math.floor((player.x + PLAYER_W - 1) / TILE_SIZE)
+  local top_tile    = math.floor(player.y / TILE_SIZE)
+  local bottom_tile = math.floor((player.y + PLAYER_H - 1) / TILE_SIZE)
+
+  for ty = top_tile, bottom_tile do
+    for tx = left_tile, right_tile do
+      if tile_has_flag(tx, ty, flag) then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+```
+
+Nothing calls these yet, so Play shows an empty screen; the player comes next.
+
+## Step 4: A player made of numbers
+
+The player is one global table, filled in `_init()`: a position, a velocity, and the tuning values. Speeds are per step (1/60 s, see [[sys.dt]]), so the numbers are small: `speed = 1.8`, `gravity = 0.30`, `jump_force = -5.0` (negative is up), `max_fall = 5.5`. `on_ground` starts `false`; `facing` remembers the last direction; `anim_frame` is the sprite drawn. Two more globals live beside it: `anim_timer`, which Step 7 counts, and `game_finished`, which Step 6 sets.
+
+``` lua
+player = {}
+anim_timer = 0
+game_finished = false
+
+function _init()
+  player = {
+    x          = 24,
+    y          = 40,
+    vx         = 0,
+    vy         = 0,
+    speed      = 1.8,
+    gravity    = 0.30,
+    jump_force = -5.0,
+    max_fall   = 5.5,
+    on_ground  = false,
+    facing     = 1,
+    anim_frame = SPRITE_IDLE,
+  }
+  anim_timer = 0
+  game_finished = false
+end
+```
+
+### Input
+
+`handle_input` resets `vx` to `0` each frame, then sets it to `-speed` or `speed` on <kbd>ArrowLeft</kbd> / <kbd>ArrowRight</kbd> (`a` / `d` do the same) and remembers the direction in `facing`. Jumping is <kbd>ArrowUp</kbd>, `w` or <kbd>Space</kbd>. The only subtle line is the jump: gating on `on_ground` is what makes it a **jump rather than a jetpack**, and the flag comes back in Step 5.
+
+``` lua
+function handle_input()
+  player.vx = 0
+
+  if input.key_pressed("ArrowLeft") or input.key_pressed("a") then
+    player.vx    = -player.speed
+    player.facing = -1
+  end
+
+  if input.key_pressed("ArrowRight") or input.key_pressed("d") then
+    player.vx    = player.speed
+    player.facing = 1
+  end
+
+  local wants_jump = input.key_pressed("ArrowUp")
+                  or input.key_pressed("w")
+                  or input.key_pressed(" ")
+  if wants_jump and player.on_ground then
+    player.vy        = player.jump_force
+    player.on_ground = false
+  end
+end
+```
 
 > [!NOTE]
-> The code reads keys by name with [[input.key_pressed]], exactly as `main.lua` does, and `a` / `d` / `w` are QWERTY positions. On another layout the arrow keys and <kbd>Space</kbd> still work; [[input.held]] with `"left"` / `"right"` / `"up"` would follow the player's own bindings instead.
+> The code reads keys by name with [[input.key_pressed]], and `a` / `d` / `w` are QWERTY positions. On another layout the arrow keys and <kbd>Space</kbd> still work; [[input.held]] with `"left"` / `"right"` / `"up"` would follow the player's own bindings instead.
 
 ### A first loop
 
-To see something, write the minimal loop now: `_update()` calls `handle_input()` then applies gravity and velocity (`vy = vy + gravity` capped at `max_fall`; add `vx` to `x` and `vy` to `y`); `_draw()` clears with a sky colour (`11`, the light blue of the default palette), draws `map.draw(0, 0)`, and draws the player: `gfx.draw_sprite(player.anim_frame, player.x, player.y)`.
+To see something, the minimal loop: `_update` reads the input, then applies gravity and the velocity; `_draw` clears with a sky colour (`11`, the light blue of the default palette), draws the map, and draws the player with the sprite `anim_frame` names.
+
+``` lua
+function _update()
+  handle_input()
+
+  player.vy = player.vy + player.gravity
+  if player.vy > player.max_fall then
+    player.vy = player.max_fall
+  end
+
+  player.x = player.x + player.vx
+  player.y = player.y + player.vy
+end
+```
+
+``` lua
+function _draw()
+  gfx.clear(11)
+  map.draw(0, 0)
+  gfx.draw_sprite(player.anim_frame, player.x, player.y, 1, 1)
+end
+```
 
 > [!TRY]
-> Run the game. You can steer left and right while the player falls straight through your level and off the screen. Collision is the next step.
+> Press Play. You can steer left and right while the player falls straight through your level and off the screen. Collision is the next step.
 
-![The game as it starts](img/frames/platformer.png "The first frame: sky, map and the player at 24, 40")
+![The player falling through the level](img/frames/platformer-step4.png "A second into Step 4: the player has fallen past the first platform and keeps going, since nothing stops it yet.")
 
 ## Step 5: Move one axis at a time
 
@@ -166,7 +283,7 @@ Resolving X and Y movement separately is the classic trick that keeps tile colli
 
 ### The X pass
 
-Here is the X pass moving right; the shape is the lesson:
+Move first, test the leading edge, and on a hit snap flush against the tile and zero the velocity. Moving right, the leading edge is the column of tiles under the player's right side; moving left, the column under its left side, and the snap puts the player just past that column.
 
 ``` lua
 function move_x()
@@ -186,32 +303,112 @@ function move_x()
       end
     end
   elseif player.vx < 0 then
-    -- mirror it: check the column at player.x and push out
-    -- to (left_tile + 1) * TILE_SIZE
+    local left_tile = math.floor(player.x / TILE_SIZE)
+
+    for ty = top_tile, bottom_tile do
+      if is_solid_tile(left_tile, ty) then
+        player.x  = (left_tile + 1) * TILE_SIZE
+        player.vx = 0
+        break
+      end
+    end
   end
 end
 ```
 
-Move first, test the leading edge, and on a hit snap flush against the tile and zero the velocity. Fill in the leftward mirror.
-
 ### The Y pass
 
-Then write `move_y()` on the same pattern (gravity and the `max_fall` cap move in here from Step 4) with three extra responsibilities:
+`move_y` follows the same pattern, and gravity with its `max_fall` cap moves in here from Step 4's `_update`. It has three extra responsibilities. `on_ground` is set to `false` right after the move, before the tests. Falling, the row under the player's feet is tested at `y + PLAYER_H` with no `- 1`, since the tile below is what is being probed; on a hit the player snaps on top, `vy` goes to zero and `on_ground` comes back `true`, which is what re-arms the jump. Rising, the row at `player.y` is tested and the player bumps its head. The function closes with the fell-off-the-world check: below `260` (the map is `32 x 8 = 256` pixels tall), the player respawns.
 
-- Set `player.on_ground = false` right after moving, before the tests.
-- Falling (`vy > 0`): test the row under the player's feet (`y + PLAYER_H`, no `- 1`, you are probing the tile below); on a hit, snap on top, zero `vy`, and set `on_ground = true`. That flag is what re-arms the jump.
-- Rising (`vy < 0`): test the row at `player.y` and bump your head (snap below, zero `vy`).
+``` lua
+function move_y()
+  player.vy = player.vy + player.gravity
+  if player.vy > player.max_fall then
+    player.vy = player.max_fall
+  end
 
-Close the function with the fell-off-the-world check: if `player.y` passes below the map (`> 260`; the map is `32 x 8 = 256` pixels tall), call a `respawn_player()` that resets position, velocity, and `on_ground`.
+  player.y         = player.y + player.vy
+  player.on_ground = false
 
-`_update()` becomes: `handle_input()`, `move_x()`, `move_y()`.
+  local left_tile  = math.floor(player.x / TILE_SIZE)
+  local right_tile = math.floor((player.x + PLAYER_W - 1) / TILE_SIZE)
+
+  if player.vy > 0 then
+    local bottom_tile = math.floor((player.y + PLAYER_H) / TILE_SIZE)
+
+    for tx = left_tile, right_tile do
+      if is_solid_tile(tx, bottom_tile) then
+        player.y         = bottom_tile * TILE_SIZE - PLAYER_H
+        player.vy        = 0
+        player.on_ground = true
+        break
+      end
+    end
+  elseif player.vy < 0 then
+    local top_tile = math.floor(player.y / TILE_SIZE)
+
+    for tx = left_tile, right_tile do
+      if is_solid_tile(tx, top_tile) then
+        player.y  = (top_tile + 1) * TILE_SIZE
+        player.vy = 0
+        break
+      end
+    end
+  end
+
+  if player.y > 260 then
+    respawn_player()
+  end
+end
+```
+
+`respawn_player` puts the player back where `_init` did, still, and in the air:
+
+``` lua
+function respawn_player()
+  player.x         = 24
+  player.y         = 40
+  player.vx        = 0
+  player.vy        = 0
+  player.on_ground = false
+  player.anim_frame = SPRITE_IDLE
+end
+```
+
+`_update` becomes the three calls, and the gravity lines it had are gone, since `move_y` now owns them:
+
+``` lua
+function _update()
+  handle_input()
+  move_x()
+  move_y()
+end
+```
 
 > [!TRY]
 > You should be able to land on the ground row, run, jump onto platforms, bump your head, and respawn after walking off a ledge. Tune `gravity` / `jump_force` until the jump arc feels right; this is the moment to do it.
 
+![The player standing on the ground](img/frames/platformer-step5.png "Step 5: the player has landed on the ground row and stands there.")
+
 ## Step 6: Tiles with meaning
 
-The deadly and end tiles reuse the machinery from Step 3. `check_special_tiles()` is just:
+The deadly and end tiles reuse the machinery from Step 3. `win_game` sets `game_finished`, stops the player, and announces the win with `print`, the same call as [[sys.log]], which writes to the console; [[gfx.print]] would put it on the canvas instead, in a 4x6 font. The early return is what makes it **fire once**.
+
+``` lua
+function win_game()
+  if game_finished then
+    return
+  end
+
+  game_finished = true
+  player.vx     = 0
+  player.vy     = 0
+
+  print("You Won")
+end
+```
+
+`check_special_tiles` asks the two questions in order: a deadly tile respawns the player and stops there, an end tile wins.
 
 ``` lua
 function check_special_tiles()
@@ -226,9 +423,25 @@ function check_special_tiles()
 end
 ```
 
-`win_game()` sets `game_finished = true`, zeroes the velocity, and announces the win with [[sys.log]] (`print` is the same call), which writes to the console. [[gfx.print]] would put it on the canvas instead, in a 4x6 font. Guard it with an early return if `game_finished` is already set so it **fires once**.
+`_update` calls it after `move_y`, and does nothing at all once `game_finished` is set. `_draw` keeps running, so the world stays frozen on screen rather than going blank.
 
-Wire it into `_update()` after `move_y()`, and make the whole function a no-op when `game_finished` is set (early return at the top). Once the game is won, `_update()` stops doing anything but `_draw()` keeps running, so the world stays frozen on screen rather than going blank.
+``` lua
+function _update()
+  if game_finished then
+    return
+  end
+
+  handle_input()
+  move_x()
+  move_y()
+  check_special_tiles()
+end
+```
+
+> [!TRY]
+> Walk into the spikes: the player is back at the start. Reach the end tile, past the right edge of the screen until Step 7 brings the camera: the console under the game screen prints `You Won` and the player stops moving.
+
+![The player runs into the spikes and reappears at the start](img/frames/platformer-step6.gif "Step 6: the player runs into the spikes, and the next frame it is back at the start, falling to the ground again.")
 
 ## Step 7: Animation and a camera
 
@@ -236,19 +449,71 @@ Both of these are presentation on top of state you already track.
 
 ### Animation
 
-Animation is picking `player.anim_frame` from what the player is doing: airborne (`not on_ground`) shows `SPRITE_JUMP`; standing still shows `SPRITE_IDLE`; walking alternates the two walk frames by counting `anim_timer` up each frame and flipping frames every 8 ticks (reset the timer when idle). Call `update_animation()` at the end of `_update()`, **after the special-tile check**, so a just-won game does not keep animating.
+Animation is picking `player.anim_frame` from what the player is doing: airborne (`not on_ground`) shows `SPRITE_JUMP`; standing still shows `SPRITE_IDLE`; walking alternates the two walk frames, by counting `anim_timer` up each frame and flipping every 8 ticks. The timer resets when the player stands still.
+
+``` lua
+function update_animation()
+  if not player.on_ground then
+    player.anim_frame = SPRITE_JUMP
+    return
+  end
+
+  if player.vx ~= 0 then
+    anim_timer = anim_timer + 1
+    if anim_timer >= 8 then
+      anim_timer = 0
+      if player.anim_frame == SPRITE_WALK_1 then
+        player.anim_frame = SPRITE_WALK_2
+      else
+        player.anim_frame = SPRITE_WALK_1
+      end
+    end
+  else
+    player.anim_frame = SPRITE_IDLE
+    anim_timer = 0
+  end
+end
+```
+
+It runs at the end of `_update`, **after the special-tile check**, so a game won on this very frame does not keep animating:
+
+``` lua
+function _update()
+  if game_finished then
+    return
+  end
+
+  handle_input()
+  move_x()
+  move_y()
+  check_special_tiles()
+
+  if game_finished then
+    return
+  end
+
+  update_animation()
+end
+```
 
 ![The player running right and jumping twice](img/frames/platformer-run.gif "The finished game: the walk frames alternate while the player runs, the jump frame shows in the air, and the camera follows.")
 
 ### The camera
 
-The camera is one line at the top of `_draw()`, and the clamp is the whole art:
+The camera is one line at the top of `_draw`, and the clamp from Step 3 is the whole art. `player.x - 160` centres a 320-pixel screen on the player; the clamp stops the view from sliding past either end of the map. Everything drawn afterwards, the map and the player, shifts automatically. Drawing the player gets a function of its own, so the loop reads as what it does.
 
 ``` lua
-gfx.camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
-```
+function draw_player()
+  gfx.draw_sprite(player.anim_frame, player.x, player.y, 1, 1)
+end
 
-`player.x - 160` centers a 320-pixel screen on the player; the clamp stops the view from sliding past either end of the map. Everything drawn afterwards, the map and the player, shifts automatically.
+function _draw()
+  gfx.camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
+  gfx.clear(11)
+  map.draw(0, 0)
+  draw_player()
+end
+```
 
 > [!TRY]
 > Run to the end tile. Walk frames alternate as you move, the jump sprite shows in the air, the camera follows without ever exposing the void beyond the map edges, and touching the trophy prints "You Won" and freezes the action.
@@ -256,10 +521,6 @@ gfx.camera(clamp(player.x - 160, 0, MAP_W * TILE_SIZE - 320), 0)
 ## How it all fits together
 
 {{svg:img/platformer-parts.svg}}
-
-## Complete code
-
-{{lua:main.lua}}
 
 ## Extending the example
 
