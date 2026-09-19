@@ -3,11 +3,28 @@ title: Tutorials
 slug: tutorials/index
 section: tutorials
 order: 0
-description: Step-by-step guides to help you build complete games with Naucto.
+description: Five guided builds, from a solo platformer to a host-refereed online game, each teaching one idea of the engine at a time.
 legacy_slugs:
 - tutorials/index.html
 ---
 
 # Tutorials
 
-Step-by-step guides to help you build complete games with Naucto.
+Five games built step by step. Each tutorial explains one idea at a time and shows only the lines that carry it; the complete code is folded at the foot of the page, and **Copy to new game** installs it in a fresh project so you can compare your version against it.
+
+Before any of them, do [Getting started](/learn/getting-started) and read [the game loop](/learn/concepts/game-loop). Every tutorial assumes you can run a game and know what `_init`, `_update` and `_draw` are for.
+
+## Start here: the platformer
+
+[Build a platformer](/learn/tutorials/platformer) is a solo game and the one to start with if the editors are new to you. It uses ART, MAP and CODE in turn, and teaches sprite flags, the painted map as collision data, movement resolved one axis at a time, a small animation state machine and a clamped camera.
+
+## Then online, in this order
+
+The four netplay tutorials build on one another, so do them in order. Read the [multiplayer](/learn/concepts/multiplayer) concepts page first: it explains `net.state`, ownership and events, and the tutorials only apply them.
+
+1. [Build multiplayer Pong](/learn/tutorials/pong): the host/join menu every later game reuses, shared paddles, a host-simulated ball, events for announcements, and what to do when the session ends.
+2. [Build a Coin Rush](/learn/tutorials/click-race): up to four players; the host provisions everyone, a [[net.lock]] per coin settles simultaneous grabs, a [[net.queue]] feeds respawn work to the host.
+3. [Build a Tag Arena](/learn/tutorials/tag): reacting to a shared key with `net.on`, players joining mid-game, cleaning up after the ones who leave.
+4. [Permissions & authority](/learn/tutorials/permissions): the NET tab's read and write flags, and what to lock so a client cannot declare itself the winner.
+
+To test a netplay game alone, the NET tab's **Test rig** spawns a second client on your machine. That client shares your account, so `net.id()` is the same on both; it is enough for Pong, which tells players apart by side. Coin Rush and Tag key everything by `net.id()`, so they need one account per player: a second browser logged in to another account, or friends.

@@ -4,32 +4,30 @@ slug: tutorials/pong
 lua: pong/main.lua
 section: tutorials
 order: 2
-description: 'This tutorial builds a complete two-player online Pong: one player hosts,
-  a friend joins, and each controls a paddle on their own machine. It is the best
-  place to start with the net API -- read the mu'
+description: A complete two-player online Pong, where one player hosts, a friend joins, and each controls a paddle on their own machine; the best first tutorial for the net API.
 legacy_slugs:
 - tutorials/pong.html
 ---
 
 # Build Multiplayer Pong
 
-This tutorial builds a complete two-player online Pong: one player hosts, a friend joins, and each controls a paddle on their own machine. It is the best place to start with the `net` API -- read the [multiplayer](/learn/concepts/multiplayer) concepts page first if you have not.
+This tutorial builds a complete two-player online Pong: one player hosts, a friend joins, and each controls a paddle on their own machine. It is the best place to start with the `net` API; read the [multiplayer](/learn/concepts/multiplayer) concepts page first if you have not.
 
 Rather than handing you the finished script, each step explains one idea and shows only the lines that carry it; you write the rest. If you get stuck or want to check your work, the [complete code](#complete-code) is one click away.
 
 ## What you will build
 
-- A menu where the player chooses to **host** or **join** a session
+- A menu where the player chooses to host or join a session
 - Two paddles, each controlled by its own player, shared through `net.state`
 - A ball simulated by the host and replicated to the other player
 - A score, point announcements via `net.emit`, and a win condition
 - Clean handling of the opponent leaving
 
-No sprites or map are needed -- the whole game is drawn with [[gfx.fill_rect]] and [[gfx.rect]], so you can go straight to the **Code Editor**.
+No sprites or map are needed: the whole game is drawn with [[gfx.fill_rect]] and [[gfx.rect]], so you can go straight to **CODE**.
 
-## Step 1: A game with four states
+## Step 1: Four states
 
-A multiplayer game cannot jump straight into gameplay: the session has to be created first, and that involves a platform dialog the player can cancel. So the game is a small state machine. Keep the current state in a global and dispatch on it every frame:
+A multiplayer game cannot jump straight into gameplay: the session has to be created first, and that involves a platform dialog the player can cancel. So the game is a small **state machine**. Keep the current state in a global and dispatch on it every frame:
 
 ``` lua
 state = "menu"   -- "menu" | "waiting" | "playing" | "over"
@@ -47,19 +45,19 @@ function _update()
 end
 ```
 
-Alongside `state`, declare two more globals you will need throughout: `is_host` (are we the one who created the session?) and `side` (`"left"` or `"right"` -- which paddle is ours). Write an `_init()` that resets all three and prints the menu instructions.
+Alongside `state`, declare two more globals you will need throughout: `is_host` (are we the one who created the session?) and `side` (`"left"` or `"right"`, which paddle is ours). Write an `_init()` that resets all three and prints the menu instructions.
 
-You will also want the usual `clamp(v, lo, hi)` helper, and a handful of constants: the screen size (`320 x 180`), paddle dimensions and speed, ball size, and a winning score. Pick palette colors for each side -- the examples below use `12` (blue) for the left paddle and `8` (red) for the right.
+You will also want the usual `clamp(v, lo, hi)` helper, and a handful of constants: the screen size (`320 x 180`), paddle dimensions and speed, ball size, and a winning score. Pick palette colours for each side; the examples below use `11` (light blue) for the left paddle and `2` (red) for the right.
 
 > [!NOTE]
-> Menus and announcements go to the **output panel** with [[sys.log]] rather than onto the canvas. [[gfx.print]] does draw text, but in a 4x6 font sized for a score, not for a paragraph of instructions.
+> Menus and announcements go to the console with [[sys.log]] rather than onto the canvas. [[gfx.print]] does draw text, but in a 4x6 font sized for a score, not for a paragraph of instructions.
 
 ## Step 2: Hosting and joining
 
 `net.host` and `net.join` open a platform dialog and return immediately; your callback fires only if the session is actually created or joined. That asymmetry drives the whole menu design. Two rules to encode:
 
-1.  **Switch state before calling.** A repeat `net.host` on the next frame while the dialog is still open is silently ignored -- a no-op, not an error (an error is raised only if a session is already active). Moving to `"waiting"` first keeps the game's state clear instead of firing the call unconditionally every frame.
-2.  **Cancel means nothing fires.** The only signal for "the player cancelled" is the absence of your callback, so give `"waiting"` its own inputs -- otherwise a cancel strands the player there. Let them re-open host/join, or press a key to return to the menu.
+1. Switch state before calling. A repeat `net.host` on the next frame while the dialog is still open is silently ignored, a no-op rather than an error (an error is raised only if a session is already active). Moving to `"waiting"` first keeps the game's state clear instead of firing the call unconditionally every frame.
+2. Cancel means nothing fires. The only signal for "the player cancelled" is the absence of your callback, so give `"waiting"` its own inputs; otherwise a cancel strands the player there. Let them re-open host/join, or press a key to return to the menu.
 
 ``` lua
 function update_menu()
@@ -75,16 +73,16 @@ function update_menu()
 end
 ```
 
-Write `update_waiting()` yourself: `m` returns to `"menu"` and reprints the instructions, while `h`/`j` re-open the host/join dialog. Calling `net.host`/`net.join` again from here is safe -- a cancelled attempt fully resets the net state. Without these inputs, a cancel would strand the player in `"waiting"`.
+Write `update_waiting()` yourself: `m` returns to `"menu"` and reprints the instructions, while `h`/`j` re-open the host/join dialog. Calling `net.host`/`net.join` again from here is safe, because a **cancelled attempt fully resets** the net state.
 
 > [!NOTE]
 > Try it
 >
-> Add a placeholder `on_connected` that just prints something, plus empty `update_playing` / `update_over`, and run the game. `H` should open the host dialog (note how the capacity is fixed at 2 -- the game decided that, not the player). Cancel it -- pressing `H`/`J` re-opens the dialog, or `M` takes you back to the menu.
+> Add a placeholder `on_connected` that just prints something, plus empty `update_playing` / `update_over`, and run the game. `H` opens the **Host a session** dialog (note how the capacity is fixed at 2: "The game asked for up to 2 players"; the game decided that, not the player). Cancel it: pressing `H`/`J` re-opens the dialog, or `M` takes you back to the menu.
 
 ## Step 3: The host sets the table
 
-`on_connected` runs once, on success, for both roles -- use `is_host` to split the work. Following the ownership convention from [multiplayer](/learn/concepts/multiplayer), the host creates every piece of shared state the game will ever read, so nobody else has to wonder whether a key exists:
+`on_connected` runs once, on success, for both roles; use `is_host` to split the work. Following the ownership convention from [multiplayer](/learn/concepts/multiplayer), the host creates **every piece of shared state** the game will ever read, so nobody else has to wonder whether a key exists:
 
 ``` lua
 if is_host then
@@ -100,11 +98,14 @@ end
 
 `net.state.playing` is the referee's whistle: the ball only moves while an opponent is connected, and the host flips it from the `peer.joined` / `peer.left` events.
 
-Complete the function for both roles: derive `side` from `is_host`, switch `state` to `"playing"`, and subscribe to `"ended"` (the session dies when the host leaves -- go to `"over"` and tell the player). Then write `reset_ball(direction)`: assign `net.state.ball` a fresh table with a centered `x, y` and a `dx, dy` velocity moving toward `direction`. Assigning a whole table replaces the subtree in one go -- exactly what a reset wants.
+Complete the function for both roles: derive `side` from `is_host`, switch `state` to `"playing"`, and subscribe to `"ended"` (the session dies when the host leaves: tell the player and call `_init()` to return to the menu, because `net.state` is gone with the session and the `"over"` screen reads it). Then write `reset_ball(direction)`: assign `net.state.ball` a fresh table with a centered `x, y` and a `dx, dy` velocity moving toward `direction`. Assigning a whole table replaces the subtree in one go, exactly what a reset wants.
+
+> [!TIP]
+> Open the **NET** tab right after hosting: the Shared state panel lists `pads.left`, `pads.right`, `score.left`, `score.right`, `playing` and `ball.x` / `y` / `dx` / `dy`, all owned by the host. It is the quickest way to see what the code above created.
 
 ## Step 4: Your paddle, their paddle
 
-Each player writes **only its own** paddle key and merely reads the other one -- that is the entire synchronization model, no messages needed. Two things matter in the code:
+Each player writes **only its own** paddle key and merely reads the other one; that is the entire synchronization model, no messages needed. Two things matter in the code:
 
 ``` lua
 function update_paddle()
@@ -119,18 +120,22 @@ function update_paddle()
 end
 ```
 
-The `nil` guard is not paranoia: the joiner's first frames can run *before* the host's state has replicated to it, and indexing a branch that does not exist yet would crash the game. Guard every read of a shared branch this way.
+The `nil` guard is not paranoia: the joiner's first frames can run before the host's state has replicated to it, and indexing a branch that does not exist yet would crash the game. **Guard every read** of a shared branch this way.
 
-Now make it visible. In `_draw()`, clear the screen and (in the `"playing"` state) draw both paddles from `net.state.pads` -- same `nil` guard -- and the ball from `net.state.ball`, but only while `net.state.playing` is true and nobody has won. Draw *everything* from `net.state`, never from local variables: that is what guarantees both screens show the same game.
+Now make it visible. In `_draw()`, clear the screen and (in the `"playing"` state) draw both paddles from `net.state.pads`, with the same `nil` guard, and the ball from `net.state.ball`, but only while `net.state.playing` is true and nobody has won. Draw everything from `net.state`, never from local variables: that is what guarantees both screens show the same game.
+
+### Testing with two clients
+
+Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, use the NET tab's Test rig: **Spawn a second client** opens a second copy of the game on your machine, already pointed at your session, so its `J` lands straight in the room. That client shares your account, so `net.id()` is the same on both; Pong never looks at ids, only at `side`, so it does not mind.
 
 > [!NOTE]
 > Try it
 >
-> Host in one browser window, join from another (invite code). You should see both paddles on both screens, each window controlling its own -- and the ball sitting frozen in the center, because nothing moves it yet.
+> Host, then join from the second client. You should see both paddles on both screens, each controlling its own, and the ball sitting frozen in the center, because nothing moves it yet.
 
-## Step 5: The host simulates the ball
+## Step 5: The host runs the ball
 
-Only the host runs ball physics; the other player just draws the replicated result. One referee means the two screens can never disagree about a bounce. Note what the first line gives you -- `net.state.ball` is a *live view*, so writing `ball.x` goes straight into shared state:
+Only the host runs ball physics; the other player just draws the replicated result. One referee means the two screens can never disagree about a bounce. Note what the first line gives you: `net.state.ball` is a **live view**, so writing `ball.x` goes straight into shared state:
 
 ``` lua
 function update_ball()
@@ -145,13 +150,17 @@ function update_ball()
 end
 ```
 
-Fill in the physics -- it is classic Pong:
+### The physics
 
-- **Walls**: when `ball.y` leaves `0 .. H - BALL_SIZE`, negate `dy`.
-- **Paddles**: when the ball moves left (`dx < 0`), reaches the left paddle's x-plane, and overlaps it vertically, negate `dx`; mirror the test for the right side.
-- **Goals**: when the ball fully exits on the left, the right side scores (and vice versa).
+Fill it in; it is classic Pong:
 
-Scoring is where the host talks to the other player. The sender of an event never receives it, hence the local [[sys.log]] next to the emit:
+- Walls: when `ball.y` leaves `0 .. H - BALL_SIZE`, negate `dy`.
+- Paddles: when the ball moves left (`dx < 0`), reaches the left paddle's x-plane, and overlaps it vertically, negate `dx`; mirror the test for the right side.
+- Goals: when the ball fully exits on the left, the right side scores (and vice versa).
+
+### Scoring
+
+Scoring is where the host talks to the other player. The **sender of an event never receives it**, hence the local [[sys.log]] next to the emit:
 
 ``` lua
 function score_point(scorer, serve_direction)
@@ -167,7 +176,7 @@ function score_point(scorer, serve_direction)
 end
 ```
 
-On the receiving side, subscribe once in `on_connected`: `net.on("event:point", function(from, scorer) ... end)`. Finally, wire it all into `update_playing()`: everyone updates their paddle; **only the host** calls `update_ball()`.
+On the receiving side, subscribe once in `on_connected`: `net.on("event:point", function(from, scorer) ... end)`. Finally, wire it all into `update_playing()`: everyone updates their paddle; only the host calls `update_ball()`.
 
 ## Step 6: Winning and leaving
 
@@ -182,21 +191,23 @@ function update_over()
 end
 ```
 
-`net.leave()` is safe here even when the session already ended (after an `"ended"` event it simply does nothing), so one exit path covers both "we won" and "the host left".
+`"over"` is only ever reached through a win, with the session still alive. The other way out, the host leaving, never gets there: the `"ended"` handler from Step 3 goes **straight back to the menu**, because the `"over"` screen reads `net.state.winner` and the session is gone by then.
 
-To finish the presentation, extend `_draw()` for the other states: fill the screen with the winner's color in `"over"`, and draw something for the menu (the complete code shows two idle paddles and a dotted center line). A score display needs no text: draw one small square per point in each side's color along the top edge.
+### The other screens
+
+To finish the presentation, extend `_draw()` for the other states: fill the screen with the winner's colour in `"over"`, and draw something for the menu (the complete code shows two idle paddles and a dotted center line). A score display needs no text: draw one small square per point in each side's colour along the top edge.
 
 > [!NOTE]
 > Try it
 >
-> Play a full match to 5. Then close the host's window mid-rally: the joiner should get the "host closed the session" message and land back in the menu via `M`. That path -- session dies, `"ended"` fires, player recovers -- is one your game should never leave untested.
+> Play a full match to 5. Then start again and close the host's window mid-rally: the joiner prints "The host closed the session." and lands straight back in the menu. That path, session dies, `"ended"` fires, player recovers, is one your game should never leave untested.
 
 ## How it all fits together
 
 ```
 Host machine                          Joiner machine
 --------------------------            --------------------------
-net.host{max_players = 2}   ------>   net.join()  (invite code)
+net.host{max_players = 2}   ------>   net.join()  (join code)
 owns: ball, score, playing            owns: pads.right only
 writes pads.left                      reads ball, score, pads.left
 simulates the ball          ------>   draws the replicated ball
@@ -210,7 +221,7 @@ sets net.state.winner       ------>   sees winner, shows "over"
 
 ## Extending the example
 
-- **Rematch** -- on the "over" screen, let the host reset the score and ball instead of leaving.
-- **Faster rallies** -- increase `ball.dx` slightly on each paddle bounce.
-- **Spin** -- adjust `ball.dy` based on where the ball hits the paddle.
-- **Sound** -- call [[sound.play_music]] on `event:point` if your project has music slots.
+- Rematch: on the "over" screen, let the host reset the score and ball instead of leaving.
+- Faster rallies: increase `ball.dx` slightly on each paddle bounce.
+- Spin: adjust `ball.dy` based on where the ball hits the paddle.
+- Sound: call [[sound.play_music]] on `event:point` if your project has music slots.

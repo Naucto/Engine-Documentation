@@ -1,111 +1,149 @@
 ---
-title: Sprite Editor
+title: ART
 slug: editors/art
 section: editors
-order: 1
-description: 'The Sprite Editor is where you create all the visual assets for your
-  game: characters, objects, tiles, UI elements, and anything else that appears on
-  screen.'
+order: 3
+description: The ART tab is where you draw the sprites of your game on one or more sheets, set their flags and edit the palette they are drawn with.
 legacy_slugs:
 - editors/sprite-editor.html
 ---
 
-# Sprite Editor
+# ART
 
-The Sprite Editor is where you create all the visual assets for your game: characters, objects, tiles, UI elements, and anything else that appears on screen.
+The ART tab is where you draw the sprites of your game: characters, tiles, objects, everything a call to [[gfx.draw_sprite]] puts on screen. It is written for whoever holds the pen; the Lua side is one short section at the end.
 
-![Sprite Editor](img/art.png "The ART tab: the sprite sheet, its tools and the palette.")
+![The ART tab](img/art.png "The ART tab: the sheet in the middle, the tools above it, and the SHEET, FLAGS and PALETTE panels at the right.")
 
-## Sprite sheet basics
+## The sheet
 
-A new project has a **128 x 128 pixel** sprite sheet, divided into a grid of **8 x 8 pixel** tiles: **256 sprite slots** (16 columns x 16 rows), indexed from `0` to `255`.
+A new game has one sheet of **128 × 128 pixels**, cut into cells of 8 × 8. Each cell is a sprite, numbered from `0` left to right and top to bottom: sixteen per row, 256 in all. That number is what your code hands to [[gfx.draw_sprite]].
 
-![The sheet panel](img/art-sheet.png "The SHEET panel: the whole sheet at a glance, the frame is what the canvas shows, and the + adds a sheet.")
+The canvas in the middle shows the whole sheet. The gold outline on it is the **region**: the cells you are working on, what the preview at the bottom right shows, and what the FLAGS panel writes to. The header names the sheet (`Tileset #1`), then the region's size in cells when it is bigger than one, then its size in pixels. Under PREVIEW, `SPRITE 001` is the number of the region's first cell.
 
-The **W** and **H** fields above the sheet map change that. A sheet is always a whole number of sprites across and down, and may be up to 256 x 256 pixels -- 1024 slots. Making a sheet smaller does not erase what falls outside it: the editor says how much it is about to put out of reach, and growing the sheet again brings it back.
+At the bottom left, `X 000 Y 000 · COL 00` follows the pointer: the sheet pixel under it and the colour it holds.
 
-    128 px wide
-    +--+--+--+--+--+--+-- ... --+
-    | 0| 1| 2| 3| 4| 5|        |15|  <- row 0
-    +--+--+--+--+--+--+-- ... --+
-    |16|17|18|19|20|21|        |31|  <- row 1
-    +--+--+--+--+--+--+-- ... --+
-    ...                          ...
-    +--+--+--+--+--+--+-- ... --+
-    |240|  |  |  |  |  |      |255|  <- row 15
-    +--+--+--+--+--+--+-- ... --+
+### The SHEET panel
 
-## Drawing sprites
+![The SHEET panel](img/art-sheet.png "The SHEET panel: the whole sheet in small, the region on it, a tab per sheet, and the + and gear of the strip.")
 
-1.  **Select a sprite slot** by clicking on it in the sprite sheet grid.
-2.  **Choose a color** from the palette.
-3.  **Paint pixels** by clicking or dragging on the enlarged editing area.
-4.  **Change the editable tile size** with the mouse wheel over either sprite canvas when you want to draw a larger multi-tile sprite at once.
+The small map of the sheet at the top of the right panel is where the region is chosen. **Drag on it** to frame any rectangle of cells: one for a single sprite, 2 × 2 for a character that spans four. With the map focused, the arrow keys move the region one cell at a time and <kbd>Shift</kbd> + arrows resize it. A middle-button drag on the map scrolls the canvas to that spot.
 
-![The drawing tools](img/art-tools.png "The tools: pen, fill, line, rectangle, ellipse, select and bucket, with LOCK to keep a stroke inside the sprite.")
+The strip above the map has a tab per sheet, a `+` that adds one and a gear that opens the Sheet size dialog. Both are covered below.
 
-The editor shows the full sprite sheet on the left and a larger editing canvas for the selected area on the right. The highlighted frame on the sprite sheet follows the selected area, so a `16 x 16` or `32 x 32` editing region stays aligned to the underlying `8 x 8` sprite grid.
+## Looking at the sheet
 
-Only the pen tool is currently enabled. It draws continuous lines while you drag so fast mouse movement does not leave gaps.
+The bar above the panel and the two toggles in the header set how the sheet is shown. None of them changes the drawing.
 
-### The color palette
+| Control | What it does                                                                                                                     |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Grid    | On by default: the cell lines over the canvas                                                                                    |
+| Crop    | Shows only the region, fitted to the panel, once the neighbours stop mattering                                                   |
+| Onion   | Only while Crop is on: ghosts the cells one region's width to the left, so the previous frame of an animation shows under this one |
+| Lock    | On by default: a stroke stops at the region's edge. Hidden while Crop is on, there being nothing outside the region to reach     |
+| Zoom    | `×1` to `×64` with the `−` and `+` buttons, the slider, or <kbd>Ctrl/⌘</kbd> + wheel; the `×N` readout fits the sheet to the panel again |
 
-The engine uses a fixed color palette. Each color has an index number that you can reference in your Lua code with functions like [[gfx.clear]], [[gfx.line]], [[gfx.rect]], and [[gfx.fill_rect]].
+> [!TIP]
+> The wheel on its own scrolls the canvas. Hold <kbd>Ctrl/⌘</kbd> to zoom.
 
-![The palette](img/art-palette.png "The PALETTE panel: sixteen slots, presets, and the sliders of the slot in hand. The header folds it away.")
+## The tools
 
-## Sprite indexes and flags
+![The tools](img/art-tools.png "The tool group in the header: Pen, Fill, Line, Rect, Circle, Select, Pick and Move.")
 
-The metadata panel shows the selected sprite index and its flag value. Sprite flags are an 8-bit value stored per sprite slot:
+Eight tools, each with a one-letter key. Pick a colour in the PALETTE panel, then draw on the canvas.
 
-![The flags](img/art-flags.png "The FLAGS panel: eight bits for the sprite in hand, read back in Lua with map.flag.")
+| Tool   | Key            | What it does                                                        |
+| ------ | -------------- | ------------------------------------------------------------------- |
+| Pen    | <kbd>P</kbd>   | Paints pixels; a drag draws a continuous stroke                     |
+| Fill   | <kbd>F</kbd>   | Floods a patch of one colour                                        |
+| Line   | <kbd>L</kbd>   | Drag from one end to the other                                      |
+| Rect   | <kbd>R</kbd>   | Drag a rectangle outline                                            |
+| Circle | <kbd>C</kbd>   | Drag an ellipse outline                                             |
+| Select | <kbd>S</kbd>   | Drag a rectangle of pixels to transform, copy or move               |
+| Pick   | <kbd>I</kbd>   | Takes the colour under the pointer as the current colour            |
+| Move   | <kbd>M</kbd>   | Drags the selection, or the whole region when nothing is selected   |
 
-- Use the numeric input to set a full flag value from `0` to `255`.
-- Use the bit buttons `0` through `7` to toggle individual flags.
-- Read flags in Lua with [[map.flag]].
+Whatever the tool, the **right button paints colour 0**, which is how you erase: colour 0 is the transparent one when the sprite is drawn.
 
-Flags are useful for gameplay metadata that belongs to a sprite. For example, you can mark which map tiles are solid, dangerous, collectible, or decorative without maintaining a separate lookup table in your script.
+## Selection and clipboard
+
+### Selection
+
+With Select, drag a rectangle on the canvas. A transform bar appears at the top right of the canvas with four buttons: flip horizontally, flip vertically, rotate clockwise, rotate counter-clockwise. The same four are <kbd>Shift</kbd>+<kbd>H</kbd>, <kbd>Shift</kbd>+<kbd>V</kbd>, <kbd>]</kbd> and <kbd>[</kbd>. <kbd>Delete</kbd> or <kbd>Backspace</kbd> clears the selected pixels to colour 0.
+
+### Clipboard
+
+<kbd>Ctrl/⌘</kbd>+<kbd>C</kbd> copies the selection, or the **whole region** when nothing is selected. <kbd>Ctrl/⌘</kbd>+<kbd>X</kbd> cuts, and needs a selection. <kbd>Ctrl/⌘</kbd>+<kbd>V</kbd> pastes as a floating block and switches to Move: drag it where it goes, then <kbd>Enter</kbd> settles it and <kbd>Esc</kbd> discards it. Starting any other stroke settles it too. The Copy and Paste buttons at the right of the header do the same.
+
+### Undo
+
+The two arrows in the header, <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> and <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> or <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd>. The history covers pixels, flags and the palette, and also adding, renaming and deleting a sheet.
+
+## Sheet size
+
+The gear of the SHEET strip opens the **Sheet size** dialog: a width and a height from 8 to 256 pixels, in steps of 8. A sheet is always a whole number of cells across and down.
+
+![The Sheet size dialog](img/art-size-dialog.png "The Sheet size dialog. The costs of a change are listed above the buttons before it is made.")
+
+Changing the width is not a small thing. The picture stays where it is, but the grid of numbers reflows over it, so a sprite number comes to mean a different cell, and so does every number on every sheet after this one. The editor follows through: the dialog counts what it will move (`N map tiles follow`, `N calls in your code are rewritten`) and the button is called **Renumber**. A call that names a sprite with something other than a plain number cannot be followed, and the dialog says how many of those there are so you can check them yourself.
+
+Making a sheet smaller does not delete what falls outside it. The dialog counts the drawn sprites that would go out of reach; they stay in the file and come back if the sheet grows again.
+
+> [!WARNING]
+> After a resize, reread any code that computes a sprite number (`base + frame`, a table of numbers built in a loop): the renumbering rewrites literals only.
+
+## Several sheets
+
+The `+` of the SHEET strip adds a sheet at the same size as the first one. Each tab in the strip is a sheet: double-click it, or click its pencil, to give it a **name and a colour**; its cross deletes it after a confirmation, and its art goes with it.
+
+Sprite numbers run on from one sheet to the next. With a first sheet of 128 × 128, the first cell of the second sheet is sprite `256`, and the header of ART shows that number under PREVIEW when you select it. Deleting a sheet shifts the numbers after it down, so code that named one of them will point at the next sprite along.
+
+The MAP tab stamps tiles from any sheet. [[gfx.draw_region]], which copies a rectangle of pixels rather than whole sprites, reads the first sheet only.
+
+## Flags
+
+![The FLAGS panel](img/art-flags.png "The FLAGS panel: eight bits, written on every cell of the region.")
+
+Every sprite carries **eight bits**, numbered 0 to 7, and the FLAGS panel shows the ones set on the region's first cell. Clicking a bit toggles it on every cell of the region, so a sprite that spans several cells keeps one set of flags. There is no numeric field: the eight buttons are the whole panel.
+
+The engine gives the bits no meaning. Your game reads them with [[map.flag]] and decides that bit 0 means solid, bit 2 means water, and so on. The MAP tab can tint tiles by their first flag, which is the quickest way to check a level's collision.
 
 ``` lua
--- Test bit 0 on the tile's sprite index.
-if map.flag(tile_sprite, 0) then
-  -- solid tile
+-- bit 0 of sprite 17, true or false
+if map.flag(17, 0) then
+  -- solid
 end
 
--- Read the full 8-bit flag value.
-flags = map.flag(tile_sprite)
+-- all eight bits at once, as a number from 0 to 255
+local bits = map.flag(17)
 ```
 
-## Tips for organizing your sprites
+## Palette
 
-- **Group related sprites together** -- put all player frames in a row, all enemy frames in another row
+![The PALETTE panel](img/art-palette.png "The PALETTE panel: the sixteen slots, the Presets menu, Reset, and the hex and R/G/B of the slot in hand.")
 
-- **Use consistent indexes** -- define sprite constants at the top of your Lua script:
+The palette is **sixteen colours for the whole game**, shared by every sheet and every map. Click a slot to draw with it; below the grid, the slot's number, its hex value and three R/G/B sliders let you change the colour itself. Every pixel drawn with that slot changes with it, on every sheet.
 
-  ``` lua
-  SPRITE_PLAYER_IDLE = 0
-  SPRITE_PLAYER_WALK1 = 1
-  SPRITE_PLAYER_WALK2 = 2
-  SPRITE_PLAYER_JUMP = 3
-  ```
+The default is Bubblegum 16. The **Presets** menu applies Bubblegum 16 or PICO-8 to the sixteen slots, and Reset puts Bubblegum 16 back. Both are undoable, like any edit to a slot.
 
-- **Plan for multi-tile sprites** -- a 16 x 16 character uses a 2 x 2 block of tiles. Place these in adjacent slots so the [[gfx.draw_sprite]] function can draw them as one unit.
+The section folds from its header, and the editor remembers whether it is open.
 
-- **Reserve rows for tilesets** -- dedicate one or two rows for map tiles (ground, walls, platforms) and other rows for characters and objects.
+> [!NOTE]
+> What a game does with [[gfx.set_color]] while it runs lasts for that run only. The palette the editor shows is the one the next run starts from.
 
-## Using sprites in Lua
+## Sprites in Lua
 
-Once you have drawn your sprites, reference them by index in your code:
+Sprites are named by number. A block of cells is one call with a width and a height in cells:
 
 ``` lua
--- Single 8x8 sprite
-gfx.draw_sprite(0, player.x, player.y, 1, 1)
+local player = { x = 40, y = 40 }
 
--- 8x16 character (1 tile wide, 2 tiles tall)
-gfx.draw_sprite(0, player.x, player.y, 1, 2)
-
--- 16x16 character (2 tiles wide, 2 tiles tall)
-gfx.draw_sprite(0, player.x, player.y, 2, 2)
+function _draw()
+  gfx.clear(0)
+  gfx.draw_sprite(0, player.x, player.y)          -- one 8×8 sprite
+  gfx.draw_sprite(16, 80, 40, 2, 2)               -- a 16×16 block: cells 16, 17, 32, 33
+  gfx.draw_sprite(256, 120, 40)                   -- the first sprite of the second sheet
+  gfx.draw_region(0, 8, 24, 8, 160, 40, 48, 16)   -- 24×8 pixels of the first sheet, doubled
+end
 ```
 
-See [[gfx.draw_sprite]] in the API reference for full details.
+Give the numbers names at the top of a tab (`SPRITE_IDLE = 0`) rather than repeating them, and keep the frames of one animation side by side so a loop can step through them. See [[gfx.draw_sprite]] and [[gfx.draw_region]] for every argument.
