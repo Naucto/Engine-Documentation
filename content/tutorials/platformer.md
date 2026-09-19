@@ -206,9 +206,7 @@ Close the function with the fell-off-the-world check: if `player.y` passes below
 
 `_update()` becomes: `handle_input()`, `move_x()`, `move_y()`.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > You should be able to land on the ground row, run, jump onto platforms, bump your head, and respawn after walking off a ledge. Tune `gravity` / `jump_force` until the jump arc feels right; this is the moment to do it.
 
 ## Step 6: Tiles with meaning

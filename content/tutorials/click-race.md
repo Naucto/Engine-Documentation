@@ -111,9 +111,7 @@ Draw the untaken coins the same way (skip entries with `taken` set), and later a
 
 This game keys everything by `net.id()`, so every client needs an id of its own. The NET tab's Test rig gives its second client one: it runs on your account, but the host's `peer.joined` sees a new id, provisions a second entry, and each window steers **its own square**. To go past two players, add a second browser logged in to another account, or friends.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Host plus one or two joiners: every window should show every square moving live, each with a white ring around its own. Join a third player after moving around a bit: the newcomer sees everyone in the right place. That is the state snapshot at work.
 
 ## Step 4: Coins behind a lock

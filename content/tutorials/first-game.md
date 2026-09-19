@@ -116,9 +116,7 @@ end
   map.draw(0, 0)
 ```
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Run the game. The player walks around the room and stops flush against every wall, inner walls included. If it walks through one, check Step 1: the flag is on the sprite, not on the map.
 
 ![The game as it starts](img/frames/first-game.png "The first frame: the room, the player in the top-left corner, five coins and SCORE 0.")
@@ -178,9 +176,7 @@ In `_draw`, draw the coins that are still there, between the map and the player,
   gfx.print("SCORE " .. score, 10, 10, 5)
 ```
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Walk over a coin: it vanishes and the score goes up by one. Walk back over the spot: nothing happens.
 
 ## Step 5: Win
@@ -210,9 +206,7 @@ Then make it the first thing `_update` checks, so the player freezes where it st
   end
 ```
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Take all five coins. The score reads `SCORE 5`, the player stops, and `YOU WIN` appears in the middle of the room.
 
 ## Complete code

@@ -64,9 +64,7 @@ Play in the pattern bar, or <kbd>Space</kbd>, plays the pattern from where the h
 
 ![The transport](../editors/img/sound-transport.png "The transport: Play, Back to the start, Stop.")
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Press <kbd>Space</kbd> with Loop on. The bar plays round, the head sweeps the roll and the VOICES lane under it lights one voice per note. A note that sounds wrong can be dragged to another row while it plays.
 
 ## Step 3: A second pattern, and a music
@@ -91,9 +89,7 @@ An empty box with music after it is a hole, drawn in **orange**, and the music s
 
 The section has a transport of its own. Play the music plays `00`, then `01`, then stops; the box that is sounding lights up in pink, and the head runs on the roll only while the roll shows the pattern that is sounding. Whether the chain goes round again is the game's decision, in Step 5.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Play the music. The first bar, the second, silence. Switch the roll to pattern `01` and play it again: the head appears on the roll when the second box turns pink.
 
 ## Step 4: A sound effect
@@ -134,9 +130,7 @@ For now `_draw` only clears the screen with `gfx.clear(0)`.
 > [!TIP]
 > The third argument of [[sound.play_sfx]] transposes: `sound.play_sfx(SFX_ZAP, nil, 7)` is the same zap a fifth higher, so one pattern gives several sounds.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Run the game and press <kbd>X</kbd>. One zap per press, however long the key is held. An empty slot plays nothing and raises no error, so a silent press means the number in the code and the slot in SOUND do not match.
 
 ## Step 5: Music from the first frame
@@ -200,9 +194,7 @@ end
 > [!IMPORTANT]
 > The position comes back from the audio thread a frame or two late, and a step lasts several frames, so a test like `step % 4 == 0` stays true for a few frames in a row. Fine for a light; for something that must happen once per beat, compare against the beat you saw last frame.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Run the game. The four boxes light in turn, one per beat, and `PATTERN` reads `0` for the first bar, `1` for the second, then `0` again: the music loops. <kbd>Enter</kbd>: the music fades over half a second, and `NO MUSIC` appears once the fade is over, not before. <kbd>Enter</kbd> again brings it back from the top.
 
 ## Complete code

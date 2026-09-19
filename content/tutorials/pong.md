@@ -75,9 +75,7 @@ end
 
 Write `update_waiting()` yourself: `m` returns to `"menu"` and reprints the instructions, while `h`/`j` re-open the host/join dialog. Calling `net.host`/`net.join` again from here is safe, because a **cancelled attempt fully resets** the net state.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Add a placeholder `on_connected` that just prints something, plus empty `update_playing` / `update_over`, and run the game. `H` opens the **Host a session** dialog (note how the capacity is fixed at 2: "The game asked for up to 2 players"; the game decided that, not the player). Cancel it: pressing `H`/`J` re-opens the dialog, or `M` takes you back to the menu.
 
 ## Step 3: The host sets the table
@@ -128,9 +126,7 @@ Now make it visible. In `_draw()`, clear the screen and (in the `"playing"` stat
 
 Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, use the NET tab's Test rig: **Spawn a second client** opens a second copy of the game on your machine, already pointed at your session, so its `J` lands straight in the room. That client runs on your account but plays under an id of its own; Pong never looks at ids anyway, only at `side`.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Host, then join from the second client. You should see both paddles on both screens, each controlling its own, and the ball sitting frozen in the center, because nothing moves it yet.
 
 ## Step 5: The host runs the ball

@@ -114,9 +114,7 @@ end)
 
 Only the host registers this (it owns the players branch); both roles subscribe to `"ended"` as usual.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Make "it" visible before testing: in `draw_players()`, ring the entry whose `tonumber(id)` equals `net.state.it` with a red [[gfx.rect]], and draw a red border around the whole arena when it is you. Then run two or three clients: every square moves, and every screen agrees on who wears the ring.
 
 ## Step 3: The host referees tags
