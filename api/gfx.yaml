@@ -532,7 +532,7 @@ functions:
 - name: reset_col
   signature: gfx.reset_col()
   summary: Clear the draw palette remap.
-  description: 'Undo every `set_col` remap. Without it the remap stays on for the frames that follow, which is the usual way a whole game turns white by accident. It does not touch `set_color`, `screen_col` or the palette rows.'
+  description: 'Undo every `set_col` remap. Without it the remap stays on for the frames that follow, which is the usual way a whole game turns white by accident. It does not touch `set_color` or `screen_col`, which change what is shown rather than what is drawn.'
   params: []
   returns: null
   examples:
@@ -546,10 +546,13 @@ functions:
   since: '1.0'
 - name: set_color
   signature: gfx.set_color(index, hex | r, g, b)
-  summary: Change a screen colour at runtime.
+  summary: 'Change a screen colour: for the frame, or from this line on inside `_scanline`.'
   picture: img/frames/gfx-palette.png
   caption: 'The sixteen palette entries; colour 4 redefined to a cyan by set_color, so the row and the box both change; colour 9 drawn as colour 2 by set_col.'
-  description: 'Change what one of the sixteen colours shows while the game runs, as `"#rrggbb"` (the `#` may be left out) or as three components `0` to `255`. Only the base palette row changes, so a scanline drawn through another row does not see it. The change applies when the frame is shown, to everything already drawn in it, and stays until `gfx.reset_palette()`. The game''s saved palette is untouched.'
+  description: |-
+    Change what one of the sixteen colours shows, as `"#rrggbb"` (the `#` may be left out) or as three components `0` to `255`. The change applies when the frame is shown, to everything drawn in it; the game's saved palette is untouched.
+
+    Called anywhere but `_scanline`, it changes the **frame palette**: what every line shows, kept from frame to frame until `gfx.reset_palette()`. Called inside `_scanline(y)`, it changes the **line palette**: what line `y` shows, and every line below it until another call changes it, for this frame only. The next frame's beam starts from the frame palette again.
   params:
   - name: index
     type: number
@@ -570,21 +573,34 @@ functions:
   returns: null
   examples:
   - |-
-    gfx.set_color(4, "#00ffcc")    -- colour 4 is now a cyan
+    gfx.set_color(4, "#00ffcc")    -- colour 4 is now a cyan, for the whole frame
     gfx.set_color(4, 255, 209, 0)  -- and back to the default yellow
+  - |-
+    -- a sky gradient: the scene draws colour 0, the beam repaints it on every line
+    function _draw()
+      gfx.clear(0)
+      gfx.fill_rect(0, 120, 320, 60, 3)
+    end
+
+    function _scanline(y)
+      gfx.set_color(0, 20, 40 + y // 2, 90 + y // 2)
+    end
   notes:
   - kind: note
     text: 'An unreadable string gives black, without an error.'
+  - kind: tip
+    text: 'The beam calls `_scanline` 180 times per frame, on the same instruction budget as `_draw`; keep the work per line small, and do the arithmetic once in `_init` where you can.'
   aliases: []
   seeAlso:
   - gfx.get_color
   - gfx.reset_palette
-  - gfx.set_palette_row
+  - gfx.screen_col
+  - gfx.shift
   since: '2.0'
 - name: get_color
   signature: gfx.get_color(index)
-  summary: Current screen colour as "#rrggbb".
-  description: 'The colour currently shown for a palette index in the base row, as lowercase `"#rrggbb"`. It reflects `set_color` and `screen_col`, not the other palette rows.'
+  summary: Current screen colour as "#rrggbb", of the frame or of the line being scanned.
+  description: 'The colour currently shown for a palette index, as lowercase `"#rrggbb"`: the **frame palette**, or, inside `_scanline`, the line palette as the lines above have left it on this pass. It reflects `set_color` and `screen_col`, not `set_col`.'
   params:
   - name: index
     type: number
@@ -594,6 +610,11 @@ functions:
   examples:
   - |-
     local sky = gfx.get_color(12)
+  - |-
+    -- read from inside the beam: what colour 0 shows on this line
+    function _scanline(y)
+      if y == 90 then print(gfx.get_color(0)) end
+    end
   notes: []
   aliases: []
   seeAlso:
@@ -601,8 +622,8 @@ functions:
   since: '2.0'
 - name: reset_palette
   signature: gfx.reset_palette()
-  summary: Restore the game palette and clear extra rows.
-  description: 'Put the game''s own palette back: every `set_color` is undone, every palette row is a copy of the base palette again, and `screen_col` remaps are gone. It leaves `set_col` and the scanline effects alone. The game stopping does this on its own.'
+  summary: Restore the game palette; inside `_scanline`, put the line back to the frame palette.
+  description: 'Called anywhere but `_scanline`, put the game''s own palette back: every `set_color` and `screen_col` of the **frame** is undone. Called inside `_scanline(y)`, put line `y` and the lines below it back to the frame palette as it was when this pass began. Neither touches `set_col` or the shift. The game stopping does the first on its own.'
   params: []
   returns: null
   examples:
@@ -612,40 +633,22 @@ functions:
     if fade == 0 then
       gfx.reset_palette()
     end
+  - |-
+    -- a tinted band: the frame palette above and below, a warmer colour 0 in between
+    function _scanline(y)
+      if y == 60 then gfx.set_color(0, "#402010") end
+      if y == 120 then gfx.reset_palette() end
+    end
   notes: []
   aliases: []
   seeAlso:
   - gfx.set_color
-  - gfx.set_palette_row
-  since: '2.0'
-- name: set_palette_row
-  signature: gfx.set_palette_row(row, colours)
-  summary: Define a screen palette row 0..15 (16 hex strings).
-  description: 'Fill one of the sixteen palette rows. Rows `1` to `15` start as copies of the base palette, and a scanline effect picks a row per screen line, a sky gradient or a tinted water band without redrawing anything. Row `0` is the base palette itself.'
-  params:
-  - name: row
-    type: number
-    required: true
-    description: 'Row `0` to `15`; `0` is the palette everything is drawn with.'
-  - name: colours
-    type: table
-    required: true
-    description: 'Up to sixteen `"#rrggbb"` strings; the entries not given keep their colour, extra ones are ignored, and an unreadable string gives black.'
-  returns: null
-  examples:
-  - |-
-    gfx.set_palette_row(1, { "#000000", "#1a0810", "#2c1015", "#402512", "#4a3a10", "#606060", "#5a2a3a", "#5a1030", "#301020", "#180028", "#0c1a2a", "#254050", "#405a18", "#0a4a2a", "#003040", "#001020" })
-    gfx.scanline_range(0, 60, { palette = 1 })  -- dusk over the top third
-  notes: []
-  aliases: []
-  seeAlso:
-  - gfx.scanline
   - gfx.screen_col
   since: '2.0'
 - name: screen_col
-  signature: gfx.screen_col(from, to[, row])
-  summary: Screen palette remap applied at display time.
-  description: 'Show one colour as another on the finished frame, after everything is drawn: the colour currently at `to` is copied over `from` in the palette row, and a later change of `to` does not follow. Unlike `set_col` it costs nothing per draw call, and unlike it **it stays** until the row is written again or `gfx.reset_palette()`.'
+  signature: gfx.screen_col(from, to)
+  summary: Screen palette remap applied at display time, for the frame or from this line on.
+  description: 'Show one colour as another on the finished frame, after everything is drawn: the colour currently shown at `to` is copied over `from`, and a later change of `to` does not follow. Unlike `set_col` it costs nothing per draw call, and unlike it **it stays**: for the frame, until `gfx.reset_palette()` or a `set_color` of `from`; inside `_scanline(y)`, for line `y` and the lines below it, for this frame.'
   params:
   - name: from
     type: number
@@ -655,10 +658,6 @@ functions:
     type: number
     required: true
     description: Palette index shown.
-  - name: row
-    type: number
-    optional: true
-    description: Palette row to affect; defaults to the base row.
   returns: null
   examples:
   - |-
@@ -669,127 +668,102 @@ functions:
     else
       gfx.reset_palette()
     end
+  - |-
+    -- the lower half in silhouette: every colour shows as colour 1 from line 90 down
+    function _scanline(y)
+      if y == 90 then
+        for i = 2, 15 do gfx.screen_col(i, 1) end
+      end
+    end
   notes: []
   aliases: []
   seeAlso:
   - gfx.set_col
-  - gfx.set_palette_row
+  - gfx.set_color
+  - gfx.reset_palette
   since: '2.0'
-- name: scanline
-  signature: gfx.scanline(y, {shift_x=, shift_y=, palette=, wrap=, blank=})
-  summary: Per-row display effect.
+- name: shift
+  signature: gfx.shift(dx[, dy][, wrap])
+  summary: 'Shift the display by whole pixels: the frame in `_draw`, this line on in `_scanline`.'
   picture: img/frames/gfx-scanline.png
-  caption: 'Every row shifted by a sine of its position: the map and the sprite wave.'
-  description: 'Set the display effect of one screen row: `shift_x` moves it sideways (positive to the right), `shift_y` up or down, `palette` draws it through another palette row, `wrap` makes a sideways shift loop around instead of uncovering colour `0`, `blank` shows it pure black. Options left out keep what the row already had this frame; a row outside `0` to `179` is ignored. The effect applies to the shown frame, HUD included. The effects last one frame, they are forgotten when the frame is shown, unless `gfx.persist_effects(true)`.'
+  caption: 'The lower third shifted by a sine of its line, and colour 0 set on every line so the sky is a gradient.'
+  description: |-
+    Move the finished picture when it is shown, without redrawing anything: `dx` to the right and `dy` down, in whole pixels, negative the other way. What a shift uncovers shows colour `0`, or, with `wrap`, the pixels pushed off the other side; `dy` never wraps.
+
+    Called anywhere but `_scanline`, it shifts the **whole frame**, and stays from frame to frame until `gfx.shift(0, 0)`: a screenshake is a shift set every frame from a fading amplitude. Called inside `_scanline(y)`, it shifts **line `y` and the lines below it** for this frame, until another call changes it: a wave is a shift of a sine of `y`.
   params:
-  - name: y
+  - name: dx
     type: number
     required: true
-    description: Screen row 0..179.
-  - name: opts
-    type: table
-    required: true
-    description: 'A table with any of `shift_x`, `shift_y` (pixels), `palette` (row `0` to `15`), `wrap`, `blank` (booleans).'
+    description: Pixels to the right; negative to the left.
+  - name: dy
+    type: number
+    optional: true
+    description: Pixels down; negative up. `0` when left out.
+  - name: wrap
+    type: boolean
+    optional: true
+    description: '`true` to bring back on the other side what the sideways shift pushes off the screen. `false` when left out.'
   returns: null
   examples:
   - |-
-    -- heat haze along the horizon
-    local t = sys.frame()
-    for y = 90, 120 do
-      gfx.scanline(y, { shift_x = math.sin((y + t) / 6) * 3, wrap = true })
+    -- a screenshake that restarts every second
+    function _draw()
+      gfx.clear(1)
+      gfx.fill_rect(140, 70, 40, 40, 4)
+      local left = 60 - sys.frame() % 60
+      local amount = left // 12
+      gfx.shift(math.random(-amount, amount), math.random(-amount, amount))
     end
-  notes: []
-  aliases: []
-  seeAlso:
-  - gfx.scanline_range
-  - gfx.scanline_fn
-  - gfx.reset_scanlines
-  since: '2.0'
-- name: scanline_range
-  signature: gfx.scanline_range(y0, y1, opts)
-  summary: Apply the same effect to rows y0..y1.
-  description: 'Apply the same effect to every row from `y0` to `y1`, both included: the cheap way to tint or shift a band of the screen. Rows off the screen are skipped, and `y1` below `y0` does nothing.'
-  params:
-  - name: y0
-    type: number
-    required: true
-    description: First row.
-  - name: y1
-    type: number
-    required: true
-    description: Last row.
-  - name: opts
-    type: table
-    required: true
-    description: Same options as gfx.scanline.
-  returns: null
-  examples:
   - |-
-    gfx.set_palette_row(2, { "#000000", "#0a1a3a", "#1a2a4a", "#2a3a5a", "#3a4a6a", "#8aa0c0" })
-    gfx.scanline_range(120, 179, { palette = 2, shift_x = 1 })  -- an underwater band
-  notes: []
+    -- a heat haze on the lower third
+    function _draw()
+      gfx.clear(12)
+      gfx.fill_rect(0, 120, 320, 60, 3)
+    end
+
+    function _scanline(y)
+      if y >= 120 then
+        gfx.shift(math.sin((y + sys.frame()) / 6) * 3, 0, true)
+      end
+    end
+  notes:
+  - kind: note
+    text: 'A shift is whole pixels: a fraction is rounded to the nearest one.'
   aliases: []
   seeAlso:
-  - gfx.scanline
-  - gfx.set_palette_row
+  - gfx.blank
+  - gfx.set_color
+  - gfx.camera
   since: '2.0'
-- name: scanline_fn
-  signature: gfx.scanline_fn(fn)
-  summary: Call fn(y) for every row once and apply the returned effect.
-  description: 'Call a function for every row, `0` to `179`, and apply what it returns as that row''s effect. It runs 180 times per call, so a game that calls it every frame pays for it every frame. Anything but a function is ignored.'
-  params:
-  - name: fn
-    type: function
-    required: true
-    description: fn(y) -> table|nil, called once per row.
-  returns: null
-  examples:
-  - |-
-    local t = sys.frame()
-    gfx.scanline_fn(function(y)
-      return { shift_x = math.sin((y + t) / 8) * 2 }
-    end)
-  notes: []
-  aliases: []
-  seeAlso:
-  - gfx.scanline
-  - gfx.persist_effects
-  since: '2.0'
-- name: reset_scanlines
-  signature: gfx.reset_scanlines()
-  summary: Clear all row effects.
-  description: 'Clear every row effect now. Only needed with `gfx.persist_effects(true)`: otherwise the effects go on their own when the frame is shown.'
-  params: []
-  returns: null
-  examples:
-  - |-
-    gfx.reset_scanlines()
-  notes: []
-  aliases: []
-  seeAlso:
-  - gfx.scanline
-  since: '2.0'
-- name: persist_effects
-  signature: gfx.persist_effects(on)
-  summary: Keep row effects from one frame to the next.
-  description: 'Keep the row effects from one frame to the next instead of forgetting them when each frame is shown. Off by default, so a frame that sets no effects costs nothing. Turning it off does not clear the effects already set: they go when the next frame is shown. `0` counts as off.'
+- name: blank
+  signature: gfx.blank([on])
+  summary: 'Show black instead: the whole frame in `_draw`, this line on in `_scanline`.'
+  description: 'Show black in place of the picture, which stays drawn underneath. Called anywhere but `_scanline`, it blanks the **whole frame** and stays until `gfx.blank(false)`: a cut to black that costs nothing to draw. Called inside `_scanline(y)`, it blanks **line `y` and the lines below it** for this frame, until `gfx.blank(false)` on a later line: a letterbox is a `blank()` on the first line and a `blank(false)` where the picture starts.'
   params:
   - name: 'on'
     type: boolean
-    required: true
-    description: '`true` to keep the effects; left out, `true`.'
+    optional: true
+    description: '`false` to show the picture again; left out, `true`.'
   returns: null
   examples:
   - |-
-    function _init()
-      gfx.persist_effects(true)
-      gfx.scanline_range(0, 40, { palette = 1 })
+    -- a letterbox: black above line 20 and from line 160 down
+    function _draw()
+      gfx.clear(12)
+      gfx.fill_circle(160, 90, 30, 4)
+    end
+
+    function _scanline(y)
+      if y == 0 then gfx.blank() end
+      if y == 20 then gfx.blank(false) end
+      if y == 160 then gfx.blank() end
     end
   notes: []
   aliases: []
   seeAlso:
-  - gfx.scanline
-  - gfx.reset_scanlines
+  - gfx.shift
+  - gfx.clear
   since: '2.0'
 - name: width
   signature: gfx.width()

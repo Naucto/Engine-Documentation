@@ -100,7 +100,7 @@ The **permissions** are the R and W flags on each path of `net.state`, set in th
 
 ## Palette
 
-The **palette** is the sixteen colours of the whole game, slots `0` to `15`, shared by every sheet and every map; the screen holds slot numbers, not colours. Bubblegum 16 is the default and the PALETTE panel of ART edits any slot. In code, [[gfx.set_color]] changes a colour for the run and [[gfx.set_col]] draws one slot as another. See [Palette](/learn/api/gfx-palette).
+The **palette** is the sixteen colours of the whole game, slots `0` to `15`, shared by every sheet and every map; the screen holds slot numbers, not colours. Bubblegum 16 is the default and the PALETTE panel of ART edits any slot. In code, [[gfx.set_color]] changes a colour for the run and [[gfx.set_col]] draws one slot as another. See [Colours](/learn/api/gfx#colours).
 
 ## Camera
 

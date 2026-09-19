@@ -33,16 +33,12 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 | [[gfx.clip]] | Restrict drawing to a rectangle; no arguments resets |
 | [[gfx.set_col]] | Draw palette remap: pixels of colour `from` are drawn as `to` |
 | [[gfx.reset_col]] | Clear the draw palette remap |
-| [[gfx.set_color]] | Change a screen colour at runtime |
-| [[gfx.get_color]] | Current screen colour as "#rrggbb" |
-| [[gfx.reset_palette]] | Restore the game palette and clear extra rows |
-| [[gfx.set_palette_row]] | Define screen palette row 1..15 (16 hex strings) |
-| [[gfx.screen_col]] | Screen palette remap applied at display time |
-| [[gfx.scanline]] | Per-row display effect |
-| [[gfx.scanline_range]] | Apply the same effect to rows y0..y1 |
-| [[gfx.scanline_fn]] | Call fn(y) for every row once and apply the returned effect |
-| [[gfx.reset_scanlines]] | Clear all row effects |
-| [[gfx.persist_effects]] | Keep row effects from one frame to the next |
+| [[gfx.set_color]] | Change a screen colour: for the frame, or from this line on inside `_scanline` |
+| [[gfx.get_color]] | Current screen colour as "#rrggbb", of the frame or of the line being scanned |
+| [[gfx.reset_palette]] | Restore the game palette; inside `_scanline`, put the line back to the frame palette |
+| [[gfx.screen_col]] | Screen palette remap applied at display time, for the frame or from this line on |
+| [[gfx.shift]] | Shift the display by whole pixels: the frame in `_draw`, this line on in `_scanline` |
+| [[gfx.blank]] | Show black instead: the whole frame in `_draw`, this line on in `_scanline` |
 | [[gfx.width]] | Screen width (320) |
 | [[gfx.height]] | Screen height (180) |
 
@@ -61,15 +57,14 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 
 | Function | What it does |
 | --- | --- |
-| [[input.btn]] | True while an action (left right up down a b x y pause) is held |
-| [[input.btnp]] | True on the step an action was pressed |
-| [[input.btnr]] | True on the step an action was released |
+| [[input.held]] | True while an action (left right up down a b x y pause) is held |
+| [[input.pressed]] | True on the step an action was pressed |
+| [[input.released]] | True on the step an action was released |
 | [[input.key_pressed]] | True while a keyboard key (event.key name) is held |
 | [[input.key_down]] | True on the step a key went down |
 | [[input.get_mouse_pos]] | Mouse x, y in screen pixels (nil when outside) |
 | [[input.mouse_pressed]] | True while a mouse button is held |
 | [[input.mouse_down]] | True on the step a mouse button was pressed |
-| [[input.declare]] | Name the actions this game uses, e.g. { a = "jump", x = "action" } |
 | [[input.players]] | Number of connected players (keyboard counts as one) |
 
 ## sound · Sound

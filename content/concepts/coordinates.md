@@ -87,4 +87,4 @@ A map is a grid of sprite numbers, one per **8 × 8 tile**. Tile coordinates cou
 
 The screen is not a picture but an array of **palette indices**, one per pixel, from `0` to `15`. Drawing functions write indices; the palette turns them into colours only at display time, which is why [[gfx.set_col]] can recolour what is already drawn and why a colour index above 15 wraps around (17 draws as 1).
 
-Nothing erases the array for you: what `_draw` does not overwrite stays from the previous frame, so a frame usually opens with [[gfx.clear]]. Between the array and the display sit the per-row effects of [[gfx.scanline]], which shift, tint or swap palette rows for one frame. The [Palette](/learn/api/gfx-palette) page covers the rest.
+Nothing erases the array for you: what `_draw` does not overwrite stays from the previous frame, so a frame usually opens with [[gfx.clear]]. Between the array and the display sits the beam: `_scanline(y)` can give each line its own palette or shift, for one frame. [The display beam](/learn/api/gfx#the-display-beam) covers it.
