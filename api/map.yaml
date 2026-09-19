@@ -124,7 +124,7 @@ functions:
 - name: flag
   signature: map.flag(n[, bit])
   summary: Flags byte of sprite n, or one bit of it.
-  description: 'Read the flags the ART tab stores on a sprite: eight bits the engine never reads, whose meaning is yours (bit `0` solid, bit `2` water). Without `bit` it is the whole byte, `0` to `255`; with it, `true` or `false`. Only the first sprite sheet has flags: a sprite on another sheet, or past the end, answers `0` (`false`), without an error. The usual pattern reads a tile with [[map.get]] and asks its sprite.'
+  description: 'Read the flags the ART tab stores on a sprite: eight bits the engine never reads, whose meaning is yours (bit `0` solid, bit `2` water). Without `bit` it is the whole byte, `0` to `255`; with it, `true` or `false`. Only the first sheet''s flags are read: a sprite on another sheet, or past the end, answers `0` (`false` with `bit`), without an error. The usual pattern reads a tile with [[map.get]] and asks its sprite.'
   params:
   - name: n
     type: number

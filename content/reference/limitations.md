@@ -23,7 +23,7 @@ The Naucto API is small on purpose. This page lists what a game cannot exceed an
 | Code | 10 million Lua instructions per call; a tab name of at most 24 characters |
 | Publishing | 1 MB for the whole game (code, art, maps, sound); a name and a one-line summary |
 
-Two small ones that bite: sprite **flags** are read on the first sheet only, so [[map.flag]] returns `0` for any sprite of another sheet; and tile `0` is always drawn empty, so sprite `0` never appears on a map.
+Two small ones that bite: only the first sheet's sprite **flags** are read, so [[map.flag]] answers `false` (`0` with no bit) for any sprite of another sheet; and tile `0` is always drawn empty, so sprite `0` never appears on a map.
 
 ## No saved data
 
@@ -60,7 +60,7 @@ Normal game logic never gets close; it trips on a `while` loop whose exit condit
 
 An uncaught error in `_init`, `_update` or `_draw` **halts the game**: the screen freezes on the last frame and the music stops until you fix the error and rerun ([Debugging](/learn/reference/debugging) shows the message). Errors inside `net` callbacks are the exception: they are printed and the game goes on.
 
-Out-of-range arguments are not errors. A colour index is taken modulo 16, [[map.get]] and [[map.flag]] return `0` outside the map, and a sprite number no sheet holds is drawn from the first sheet.
+Out-of-range arguments are not errors. A colour index is taken modulo 16, [[map.get]] answers `0` outside the map, [[map.flag]] takes a sprite number, not a cell, and answers `false` for a bit the sprite does not have (and `0` with no bit), and a sprite number no sheet holds is drawn from the first sheet.
 
 ## Tabs, not modules
 

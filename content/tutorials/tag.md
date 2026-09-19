@@ -29,7 +29,24 @@ Everything is drawn with [[gfx.fill_rect]] and [[gfx.rect]]; no sprites needed. 
 
 ### The menu
 
-The state machine is Pong's: `"menu" | "waiting" | "playing" | "over"`, dispatched from `_update()` the way Coin Rush does it, with `m` leaving the session straight from `"over"`. The menu differs only in seats and title:
+The state machine is Pong's: `"menu" | "waiting" | "playing" | "over"`, and `m` leaves the session straight from `"over"`, without an `update_over()`:
+
+``` lua
+function _update()
+  if state == "menu" then
+    update_menu()
+  elseif state == "waiting" then
+    update_waiting()
+  elseif state == "playing" then
+    update_playing()
+  elseif state == "over" and input.key_pressed("m") then
+    net.leave()
+    _init()
+  end
+end
+```
+
+The menu differs only in seats and title, in **both** functions:
 
 ``` lua
 function update_menu()
@@ -43,9 +60,30 @@ function update_menu()
     net.join(on_connected)
   end
 end
+
+function update_waiting()
+  -- Cancelling a dialog fires no callback, so the game stays here. Let the
+  -- player re-open host/join directly, or press M to return to the menu.
+  if input.key_pressed("m") then
+    state = "menu"
+    print("Press H to host a game, J to join one")
+  elseif input.key_pressed("h") then
+    is_host = true
+    net.host({ max_players = 4, title = "Tag arena" }, on_connected)
+  elseif input.key_pressed("j") then
+    is_host = false
+    net.join(on_connected)
+  end
+end
 ```
 
-`update_waiting()` is the same as in Pong with the same host line, and `on_connected()` starts as a placeholder that prints, until Step 2.
+`on_connected()` starts as a placeholder that prints, until Step 2:
+
+``` lua
+function on_connected()
+  print("Connected!")
+end
+```
 
 ### The players
 
@@ -282,6 +320,11 @@ function update_playing()
 end
 ```
 
+> [!TRY]
+> Run into someone. The ring jumps to their square on every screen, your border goes out, and theirs comes on; for one second the host ignores the next touch, so the tag does not bounce straight back.
+
+![Three squares in the arena, the red ring on another player's square, no border](../../api/img/frames/tut-tag-runner.png "Step 3 on a runner's screen just after a tag: the ring marks the chaser, another player, and the border is absent because it is not you.")
+
 ## Step 4: A taunt event
 
 Not everything belongs in `net.state`. A taunt is a one-shot moment with no lasting truth, exactly what `net.emit` is for. On <kbd>Space</kbd>, with a one-second local cooldown so holding the key does not spam; the timer counts down every frame, so `update_taunt()` runs from `update_playing()` for everyone:
@@ -309,15 +352,14 @@ function update_playing()
 end
 ```
 
-The `"event:taunt"` listener from Step 2 prints who taunted you (the `from` argument). The local `print` next to the emit is the usual reminder that **senders never receive** their own events.
+The `"event:taunt"` listener from Step 2 prints who taunted you (the `from` argument). The local `print` next to the emit is the usual reminder that **senders never receive** their own events. Nothing changes on the screen: a taunt shows up in the console of the other players, under their game.
 
-![Three squares in the arena, the red ring on another player's square, no border](../../api/img/frames/tut-tag-runner.png "Step 4 on a runner's screen: the ring marks the chaser, and the border is absent because it is someone else; a taunt shows up in the console, not on the screen.")
 
 ## Step 5: Play with three or four
 
 Like Coin Rush, Tag keys players by `net.id()`, and the NET tab's Test rig joins under an id of its own, so host plus rig is a **two-player game** on one machine. For three or four, use other browsers logged in as other accounts, or friends.
 
-1. Host, and in the Host a session dialog switch on **Listed in browse** (it is off by default). The session then appears under PUBLIC in the others' Join a session dialog; without it they need the JOIN CODE.
+1. Host, then switch on **Listed in browse**, which appears once START HOSTING has been pressed (it is off by default). The session then appears under PUBLIC in the others' Join a session dialog; without it they need the JOIN CODE.
 2. Let one player join after the game has been running: they appear instantly with the right positions and the right "it", the state snapshot doing its job.
 3. Close the tab of the player who is "it": the host's `peer.left` removes their square and takes the "it" role back.
 4. Close the host's tab instead: everyone else prints "The host closed the session." and returns to the menu.

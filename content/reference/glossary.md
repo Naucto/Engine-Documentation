@@ -44,7 +44,7 @@ A **pattern** is one page of the piano roll, numbered `00` to `99`, with a tempo
 
 ## Step and frame
 
-On the piano roll a **step** is one column of the grid, a quarter of a beat: a pattern has 16 to 64 of them, and the default snap places a note on one.
+On the piano roll a **step** is one column of the grid, a quarter of a beat: a pattern has 16 to 64 of them in the SOUND tab (code accepts 1 to 64), and the default snap places a note on one.
 
 The game loop has a step too: 1/60 s of game time, one `_update` followed by one `_draw`, which is what the Step button of the transport runs once. A **frame** is one picture shown on the screen. The two usually go together, but a browser that fell behind runs several steps before showing one picture, so a step can run without its frame ever being seen. [[sys.frame]] counts steps. See [Game loop](/learn/concepts/game-loop).
 

@@ -27,7 +27,7 @@ Everything is drawn with [[gfx.fill_rect]] and [[gfx.rect]]; no sprites needed. 
 
 ## Step 1: Reuse the session menu
 
-Start from the state machine and menu you built in Pong (Steps 1 and 2 there): the same `"menu" | "waiting" | "playing" | "over"` dispatch, the same `update_menu` / `update_waiting` pair. Only the host call changes, with more seats and a different title, in both functions:
+Start from the state machine and menu you built in Pong (Steps 1 and 2 there): the same `"menu" | "waiting" | "playing" | "over"` dispatch, the same `update_menu` / `update_waiting` pair. Only the host call changes, with **four seats and a different title**; both functions, whole:
 
 ``` lua
 function update_menu()
@@ -37,6 +37,21 @@ function update_menu()
     net.host({ max_players = 4, title = "Coin rush" }, on_connected)
   elseif input.key_pressed("j") then
     state   = "waiting"
+    is_host = false
+    net.join(on_connected)
+  end
+end
+
+function update_waiting()
+  -- Cancelling a dialog fires no callback, so the game stays here. Let the
+  -- player re-open host/join directly, or press M to return to the menu.
+  if input.key_pressed("m") then
+    state = "menu"
+    print("Press H to host a game, J to join one")
+  elseif input.key_pressed("h") then
+    is_host = true
+    net.host({ max_players = 4, title = "Coin rush" }, on_connected)
+  elseif input.key_pressed("j") then
     is_host = false
     net.join(on_connected)
   end
@@ -81,9 +96,16 @@ function clamp(v, lo, hi)
 end
 ```
 
-The dispatch is Pong's, with one shortcut: `"over"` needs no function of its own, because all it does is wait for `m` to leave the session and restart. Give `update_playing()` an empty body and `on_connected()` a placeholder that prints, as in Pong's Step 2; Step 2 here replaces it:
+The dispatch is Pong's, with one shortcut: `"over"` needs no function of its own, because all it does is wait for `m` to leave the session and restart. `update_playing()` starts with an empty body and `on_connected()` as a placeholder that prints, as in Pong's Step 2; Step 2 here replaces the placeholder, and each later step gives `update_playing()` again as it grows:
 
 ``` lua
+function on_connected()
+  print("Connected!")
+end
+
+function update_playing()
+end
+
 function _update()
   if state == "menu" then
     update_menu()
@@ -342,6 +364,11 @@ function update_playing()
 end
 ```
 
+> [!TRY]
+> Walk onto a coin. It disappears on every screen at once and a square in your colour appears at the top left; nothing brings it back yet, since nobody pops the queue until Step 5.
+
+![Four coins left, a gap where the fifth was, and one score square at the top left](../../api/img/frames/tut-click-race-taken.png "Step 4 after one grab: the taken coin is gone, the first score square sits at the top left in the collector's colour, and the coin stays gone because the respawn queue has no popper yet.")
+
 ## Step 5: Respawns from a queue
 
 Collectors push the coin's index onto the `net.state.respawns` queue (already done in Step 4); the host pops one every couple of seconds and refreshes that coin. A queue fits perfectly: pushes from all players line up in order, each index is delivered to **exactly one popper**, and popping an empty queue just hands the callback `nil`. The `respawn_timer` counts up to `RESPAWN_DELAY` between pops:
@@ -387,7 +414,7 @@ end
 > [!TRY]
 > Park two players on the same coin. The coin disappears, one of the two scores, and the other finds it taken; two seconds later a fresh coin appears elsewhere. The lock does not decide who wins the coin, it decides that the claims run one after the other, and the re-check inside is what makes that order count.
 
-![Four coins left, a gap where the fifth was, and two score rows at the top left](../../api/img/frames/tut-click-race-taken.png "Step 5, a few grabs in: one coin is gone until the host pops its respawn, and the rows at the top left count each player's points in its own colour.")
+![The field with one player's score row full and the words You win in the console](../../api/img/frames/tut-click-race-win.png "Step 5 at the end of a match: a player has reached ten, its score row at the top left is full, net.state.winner is set and every screen has switched to the over state; the winner's console says You win.")
 
 ## How it all fits together
 

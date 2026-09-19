@@ -26,7 +26,7 @@ At the bottom left, `X 000 Y 000 · COL 00` follows the pointer: the sheet pixel
 
 ![The SHEET panel](img/art-sheet.png "The SHEET panel: the whole sheet in small, the region on it, a tab per sheet, and the + and gear of the strip.")
 
-The small map of the sheet at the top of the right panel is where the region is chosen. **Drag on it** to frame any rectangle of cells: one for a single sprite, 2 × 2 for a character that spans four. With the map focused, the arrow keys move the region one cell at a time and <kbd>Shift</kbd> + arrows resize it. A middle-button drag on the map scrolls the canvas to that spot.
+The small map of the sheet at the top of the right panel is where the region is chosen: **click a cell** on the SHEET map, or drag to frame several, 2 × 2 for a character that spans four. With the map focused, the arrow keys move the region one cell at a time and <kbd>Shift</kbd> + arrows resize it. A middle-button drag on the map scrolls the canvas to that spot.
 
 The strip above the map has a tab per sheet, a `+` that adds one and a gear that opens the Sheet size dialog. Both are covered below.
 
@@ -103,14 +103,14 @@ The MAP tab stamps tiles from any sheet. [[gfx.draw_region]], which copies a rec
 
 ## Flags
 
-![The FLAGS panel](img/art-flags.png "The FLAGS panel: the eight bits, 0 to 7, as buttons; bit 0 is lit, in the green MAP's Flags overlay gives it.")
+![The FLAGS panel](img/art-flags.png "The FLAGS panel: the eight bits, 0 to 7, as buttons; bit 0 is lit, in the green the MAP tab's Flags overlay gives that bit.")
 
 Every sprite carries **eight bits**, numbered 0 to 7, and the FLAGS panel shows the ones set on the region's first cell. Clicking a bit toggles it on every cell of the region, so a sprite that spans several cells keeps one set of flags. There is no numeric field: the eight buttons are the whole panel.
 
 The engine gives the bits no meaning. Your game reads them with [[map.flag]] and decides that bit 0 means solid, bit 2 means water, and so on. The MAP tab can tint tiles by their first flag, which is the quickest way to check a level's collision.
 
 > [!WARNING]
-> The panel writes bits on a sprite of any sheet, but [[map.flag]] reads the **first sheet only**: for a sprite of a second sheet it answers `0` whatever the panel shows. Keep the sprites whose flags matter, the solid tiles, on the first sheet.
+> The panel writes bits on a sprite of any sheet, but only the **first sheet's flags are read**: for a sprite of a second sheet [[map.flag]] answers `false` for any bit (and `0` with no bit) whatever the panel shows. Keep the sprites whose flags matter, the solid tiles, on the first sheet. It takes a sprite number, not a cell: [[map.get]] turns a cell into its sprite first.
 
 ``` lua
 -- bit 0 of sprite 17, true or false

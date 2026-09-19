@@ -93,6 +93,8 @@ functions:
 - name: draw_region
   signature: gfx.draw_region(sx, sy, sw, sh, dx, dy[, dw, dh, flip_h, flip_v, transparent])
   summary: Draw a pixel rectangle of the sprite sheet, optionally scaled.
+  picture: img/frames/gfx-draw-region.png
+  caption: 'The moon of a new game as one 16 × 16 region of the sheet, at its own size on the left and stretched to 32 × 32 by dw and dh on the right.'
   description: 'Copy any rectangle of pixels out of the sheet, rather than whole 8 × 8 sprites. Give `dw`/`dh` to stretch it; leave them out and it lands at its own size. Reads the first sheet only. A region past the sheet''s edge repeats the edge pixels.'
   params:
   - name: sx

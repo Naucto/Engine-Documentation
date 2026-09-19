@@ -33,7 +33,7 @@ The permissions live in the game, so they travel with it. Set a path up here bef
 
 The column's head says `hosting`, `joined` or `not in a session`.
 
-![The SESSION column](img/net-session.png "The SESSION column: who can join, the join code, and the players.")
+![The SESSION column](img/net-session.png "The SESSION column outside a session: NOT IN A SESSION at its head, WHO CAN JOIN with the people of this work session, two open slots under PLAYERS, and the TEST RIG waiting for a session; the join code and the players fill in once one runs.")
 
 WHO CAN JOIN lists the people in this work session first: everyone here can take a player slot, and a row says `in game · P1` once they have one. Anyone else needs the **code**, shown under the list with Copy while a session runs. The button under it is End session for the host and Leave session for a client; either way the game restarts.
 

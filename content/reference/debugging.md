@@ -96,4 +96,4 @@ gfx.reset_col()
 
 ## The map reads as empty
 
-[[map.get]] and [[map.flag]] return `0` outside the map, without an error: a collision test that reads past an edge sees empty tiles. Asking for a map number the game does not have returns `0` too, with one warning in the Console: `? map.get: this game has 1 map(s), there is no map 2`. Flags are read on the first sheet only, so a sprite from a second sheet always has flag `0`.
+[[map.get]] answers `0` outside the map, without an error: a collision test that reads past an edge sees empty tiles. [[map.flag]] takes a sprite number, not a cell, and answers `false` for a bit the sprite does not have (and `0` with no bit). Asking for a map number the game does not have returns `0` too, with one warning in the Console: `? map.get: this game has 1 map(s), there is no map 2`. Only the first sheet's flags are read, so a sprite from a second sheet always answers `false` (`0` with no bit).

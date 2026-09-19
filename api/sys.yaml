@@ -4,15 +4,16 @@ functions:
 - name: dt
   signature: sys.dt()
   summary: Fixed step length in seconds (1/60).
-  description: Length of one fixed step in seconds - always 1/60. The console runs _update at a fixed
-    rate, so this is a constant; multiply speeds by it to keep them in units per second.
+  description: 'Length of one fixed step in seconds, always 1/60. The console runs `_update` at a fixed rate, so there is nothing to scale by: speeds are written per step. `sys.dt` tells you how long a step is, for a clock or a timer that counts in seconds.'
   params: []
   returns: 1/60.
   examples:
   - |-
-    local player = { x = 40 }
-    local speed = 60  -- pixels per second
-    player.x = player.x + speed * sys.dt()
+    -- a ten-second countdown, one step's worth per _update
+    local time_left = 10
+    function _update()
+      time_left = time_left - sys.dt()
+    end
   notes: []
   aliases: []
   seeAlso:
@@ -69,7 +70,7 @@ functions:
 - name: log
   signature: sys.log(...)
   summary: Write to the console (same as print).
-  description: 'Write a line to the console under the viewer. Values are turned into text and joined with tabs: `nil` prints `nil`, a boolean `true` or `false`, a function `function`, and a table is written as JSON, with its keys as strings. `print` is the same function. The console keeps the last five hundred lines.'
+  description: 'Write a line to the console under the viewer. Values are turned into text and joined with tabs: `nil` prints `nil`, a boolean `true` or `false`, a function `function`, and a table is written as JSON, with its keys as strings. `print` is the same function. The console keeps the last 2000 lines.'
   params:
   - name: '...'
     type: any

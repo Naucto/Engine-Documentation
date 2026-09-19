@@ -16,7 +16,7 @@ Host or join a session, share a state every player reads, and send events betwee
 Sessions are created through the platform's own dialogs: [[net.host]] and [[net.join]] open them for the player. The platform handles the session title, visibility (public or invite code), invite codes and session browsing; your game only decides the player capacity, an optional default title, and when to host, join or leave. Players connect peer to peer with an automatic relay fallback, and your code never has to care which one is in use.
 
 > [!NOTE]
-> [[net.host]], [[net.join]] and [[net.leave]] work at any time, and [[net.lock]] and [[net.queue]] make local objects that work without a session. Everything else, [[net.on]] included, needs an active session and raises `net: no active session` otherwise: register your listeners inside the host or join callback, not in `_init`.
+> [[net.host]] and [[net.join]] work outside a session (inside one they raise `net: already in a session`), [[net.leave]] at any time, and [[net.lock]] and [[net.queue]] make local objects that work without a session. Everything else, [[net.on]] included, needs an active session and raises `net: no active session` otherwise: register your listeners inside the host or join callback, not in `_init`.
 
 Every example on this page that says "inside the callback" sits in this frame:
 
@@ -37,7 +37,7 @@ The host keeps the one true copy of [[net.state]]. **`peer.joined` and `peer.lef
 
 {{svg:img/host-guests.svg}}
 
-Writes leave in a batch at the end of the game step they were made in, once per step, with no fixed send rate and no interpolation: a value that moves every frame arrives every frame, as a series of steps.
+Writes leave in batches: the writes made since the last `emit`, lock or queue call of the step leave together, and a batch the host refuses is refused as a whole. There is no fixed send rate and no interpolation: a value that moves every frame arrives every frame, as a series of steps.
 
 ## Permissions
 

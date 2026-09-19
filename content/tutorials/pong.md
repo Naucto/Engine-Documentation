@@ -204,8 +204,7 @@ function reset_ball(direction)
 end
 ```
 
-> [!TIP]
-> Open the **NET** tab right after hosting: the Shared state panel lists `pads.left`, `pads.right`, `score.left`, `score.right`, `playing` and `ball.x` / `y` / `dx` / `dy`, all owned by the host. It is the quickest way to see what the code above created.
+Nothing is drawn yet, so the place to see this step is the **NET** tab: once hosted, its SHARED STATE panel lists `pads`, `score`, `playing` and `ball`, every one of them owned by the host.
 
 ## Step 4: Your paddle, their paddle
 
@@ -352,7 +351,7 @@ function update_playing()
 end
 ```
 
-![A rally in progress, the left side ahead two points to one](../../api/img/frames/tut-pong.png "Step 5: the ball crossing the court between the two paddles, and the score along the top edge, two squares for the left side and one for the right.")
+![A rally in progress between the two paddles, nothing along the top edge yet](../../api/img/frames/tut-pong-rally.png "Step 5 on either screen: the two paddles and the ball mid-court, moved by the host; the points are counted in net.state.score but nothing draws them until Step 6.")
 
 ## Step 6: Winning and leaving
 
@@ -424,6 +423,8 @@ end
 
 > [!TRY]
 > Play a full match to 5. Then start again and, mid-rally, press **End session** in the NET tab's SESSION column: your own game restarts, and the second client prints "The host closed the session." and lands straight back in its menu. That path, session dies, `"ended"` fires, player recovers, is one your game should never leave untested.
+
+![A rally in progress, the left side ahead two points to one](../../api/img/frames/tut-pong.png "Step 6 mid-match: the ball crossing the court between the two paddles, and the score along the top edge that draw_score adds, two squares for the left side and one for the right.")
 
 ## How it all fits together
 

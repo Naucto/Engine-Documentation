@@ -42,7 +42,7 @@ The roll is there now: pitches down the side from C1 to B6, steps across, and a 
 
 ### Length and tempo
 
-Set **STEPS** to `16` and BPM to `120`. At four steps to the beat, sixteen steps are one bar of four beats, which is what the ruler over the roll numbers `1` to `4`; Step 5 counts on it. The defaults are 32 steps at 124 BPM. Both numbers belong to the pattern, not to the game: the next pattern has its own.
+Set **STEPS** to `16` and BPM to `120`. At four steps to the beat, sixteen steps are one bar of four beats, which is what the ruler over the roll numbers `1` to `4`; Step 5 counts on it. The defaults are 32 steps at 124 BPM, and the roll scrolls sideways when the pattern is wider than the column. Both numbers belong to the pattern, not to the game: the next pattern has its own.
 
 ### Notes
 
@@ -197,7 +197,7 @@ function _draw()
     gfx.fill_rect(10 + i * 20, 50, 16, 16, colour)
   end
 
-  gfx.print("PATTERN " .. place .. "  STEP " .. step, 10, 30, 5)
+  gfx.print("PLACE " .. place .. "  STEP " .. step, 10, 30, 5)
 end
 ```
 
@@ -205,7 +205,7 @@ end
 > The position comes back from the audio thread a frame or two late, and a step lasts several frames, so a test like `step % 4 == 0` stays true for a few frames in a row. Fine for a light; for something that must happen once per beat, compare against the beat you saw last frame.
 
 > [!TRY]
-> Press Play. The four boxes light in turn, one per beat, and `PATTERN` reads `0` for the first bar, `1` for the second, then `0` again: the music loops. <kbd>Enter</kbd>: the music fades over half a second, and `NO MUSIC` appears once the fade is over, not before. <kbd>Enter</kbd> again brings it back from the top.
+> Press Play. The four boxes light in turn, one per beat, and `PLACE` reads `0` for the first bar, `1` for the second, then `0` again: the music loops. <kbd>Enter</kbd>: the music fades over half a second, and `NO MUSIC` appears once the fade is over, not before. <kbd>Enter</kbd> again brings it back from the top.
 
 ![The beat indicator](img/frames/sound-step5.png "The finished game a moment after Play: the music is on its first bar, one of the four boxes lit for the beat that is sounding, and the line reads which place and step the music is at.")
 

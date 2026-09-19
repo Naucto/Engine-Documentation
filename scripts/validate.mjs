@@ -43,6 +43,17 @@ const exists = (p) =>
     () => false,
   );
 
+/**
+ * Every picture a page, an api card or a diagram names, so a file nobody names is reported.
+ *
+ * A capture is taken again by `docs:shots` whenever the app changes; one that no page shows is
+ * retaken forever and reviewed by nobody, and the list of pictures stops saying what the docs
+ * show. The `.light.png` beside a referenced `.png` is the same picture in the other theme, and
+ * `img/src/` holds a picture's source with its credit, so those two are not orphans.
+ */
+const referenced = new Set();
+const refer = (from, href) => referenced.add(resolve(dirname(from), href));
+
 const known = new Set();
 const legacyGlobals = new Map();
 for (const file of (await readdir(resolve(root, 'api'))).filter((f) => f.endsWith('.yaml'))) {
@@ -57,8 +68,10 @@ for (const file of (await readdir(resolve(root, 'api'))).filter((f) => f.endsWit
         if (!REAL_GLOBALS.has(a)) legacyGlobals.set(a, full);
       }
       if (!f.signature) errors.push(`${full}: missing signature`);
-      if (f.picture && !(await exists(resolve(root, 'api', f.picture))))
-        errors.push(`${full}: picture ${f.picture} is not there`);
+      if (f.picture) {
+        refer(resolve(root, 'api', file), f.picture);
+        if (!(await exists(resolve(root, 'api', f.picture)))) errors.push(`${full}: picture ${f.picture} is not there`);
+      }
       if (!f.summary) errors.push(`${full}: missing summary`);
       const declared = declaredParams(f.signature);
       const documented = (f.params ?? []).map((p) => p.name);
@@ -232,17 +245,75 @@ async function checkSteps(file, body, meta) {
     errors.push(`${file}: ${meta.lua} is not byte-identical to the last step, ${relative(dirname(file), last)}`);
 }
 
+/**
+ * The staged scenes the network tutorials are pictured with, against the step each one copies.
+ *
+ * A Pong or Tag game needs a session to draw anything, so the frame under a step is taken from a
+ * scene in the Frontend's `e2e/docs/lua/` that fills `net.state` by hand and calls the step's own
+ * draw functions. The scene's first line says which step (`-- scene of: pong/steps/5.lua`), and
+ * every `function draw_…` in the scene has to be in that file line for line, under the same
+ * normalisation as the step blocks: otherwise the picture is of code the page never gave.
+ *
+ * The scenes live beside the app, not in this repository, so a checkout of the docs alone skips
+ * this; `DOCS_SCENES` points elsewhere when they are not at the default path.
+ */
+const SCENES = process.env.DOCS_SCENES ?? resolve(root, '..', 'e2e', 'docs', 'lua');
+
+function drawFunctionsIn(scene) {
+  const blocks = [];
+  let block = null;
+  for (const line of scene.split('\n')) {
+    if (/^function draw_\w*\(/.test(line)) block = [];
+    if (block) block.push(line);
+    if (block && /^end\b/.test(line)) {
+      blocks.push(block.join('\n'));
+      block = null;
+    }
+  }
+  return blocks;
+}
+
+async function checkScenes() {
+  if (!(await exists(SCENES))) return;
+  for (const name of (await readdir(SCENES)).filter((f) => /^tut-.*\.lua$/.test(f))) {
+    const scene = await readFile(resolve(SCENES, name), 'utf8');
+    const head = /^-- scene of: ([\w-]+)\/steps\/(\d+)\.lua\s*$/m.exec(scene.split('\n')[0] ?? '');
+    if (!head) {
+      errors.push(`${name}: a tutorial scene starts with "-- scene of: <tutorial>/steps/<n>.lua"`);
+      continue;
+    }
+    const stepFile = resolve(root, 'content', 'tutorials', head[1], 'steps', `${head[2]}.lua`);
+    if (!(await exists(stepFile))) {
+      errors.push(`${name}: scene of ${head[1]}/steps/${head[2]}.lua, which is not there`);
+      continue;
+    }
+    const fileLines = codeLines(await readFile(stepFile, 'utf8'));
+    for (const block of drawFunctionsIn(scene)) {
+      const want = codeLines(block);
+      const found = fileLines.some((_, i) => want.every((l, j) => fileLines[i + j] === l));
+      if (!found)
+        errors.push(`${name}: ${want[0].trim()} is not verbatim in ${head[1]}/steps/${head[2]}.lua`);
+    }
+  }
+}
+
+await checkScenes();
+
 for (const { file, body, offset, meta } of pages) {
   await checkSteps(file, body, meta);
-  for (const [, href] of body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g))
-    if (!/^(https?:)?\/\//.test(href) && !(await exists(resolve(dirname(file), href))))
-      errors.push(`${file}: picture ${href} is not there`);
+  for (const [, href] of body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)) {
+    if (/^(https?:)?\/\//.test(href)) continue;
+    refer(file, href);
+    if (!(await exists(resolve(dirname(file), href)))) errors.push(`${file}: picture ${href} is not there`);
+  }
   for (const [, href] of body.matchAll(/\{\{svg:([^}\s]+)\}\}/g)) {
+    refer(file, href);
     if (!(await exists(resolve(dirname(file), href)))) {
       errors.push(`${file}: diagram ${href} is not there`);
       continue;
     }
     const svg = await readFile(resolve(dirname(file), href), 'utf8');
+    for (const [, target] of svg.matchAll(/\bhref="([^"#:]+)"/g)) refer(resolve(dirname(file), href), target);
     if (!/viewBox="0 0 \d+ \d+"/.test(svg)) errors.push(`${file}: diagram ${href} has no viewBox`);
     if (/(fill|stroke)="#|style="[^"]*#/.test(svg))
       errors.push(`${file}: diagram ${href} writes a colour; use the d-* classes`);
@@ -255,6 +326,15 @@ for (const { file, body, offset, meta } of pages) {
   for (const [, ref] of body.matchAll(/\{\{api:([a-z]+\.[a-z_]+)\}\}/g)) if (!known.has(ref)) errors.push(`${file}: unknown api card {{api:${ref}}}`);
   for (const [, target] of body.matchAll(/\]\(\/learn\/([^)#]+)/g)) if (!slugs.has(target)) errors.push(`${file}: broken link /learn/${target}`);
 }
+
+for (const dir of ['content', 'api'])
+  for await (const file of walk(resolve(root, dir))) {
+    const inside = relative(root, file).split('\\').join('/');
+    if (!/(^|\/)img\//.test(inside) || /\/img\/src\//.test(inside)) continue;
+    const theme = /^(.*)\.light(\.[a-z0-9]+)$/i.exec(file);
+    if (referenced.has(file) || (theme && referenced.has(theme[1] + theme[2]))) continue;
+    errors.push(`${inside}: no page, api card or diagram shows it`);
+  }
 
 if (errors.length) {
   console.error(errors.join('\n'));

@@ -15,7 +15,7 @@ namespace: gfx
 
 Everything the screen shows goes through `gfx`: the console is **320 × 180 pixels with 16 palette colours**, drawn inside `_draw()` on a frame that keeps what was drawn until the next [[gfx.clear]], then shown line by line by a display beam that a `_scanline(y)` function can steer.
 
-The pictures on this page use the Platformer Tutorial's sheet and map.
+The pictures on this page come from a demo game: a new game's sheet with a small ship drawn on sprite 0, and a demo map, a floor and three platforms drawn with a brick tile on sprite 32.
 
 The origin is the top-left corner, `x` grows to the right and `y` downwards, and every position is floored to a whole pixel before it is drawn. The [coordinates](/learn/concepts/coordinates) page has the full model.
 

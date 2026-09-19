@@ -496,7 +496,7 @@ function _update()
 end
 ```
 
-![The player running right and jumping twice](img/frames/platformer-run.gif "The finished game: the walk frames alternate while the player runs, the jump frame shows in the air, and the camera follows.")
+![The player running right and jumping twice near the start of the level](img/frames/platformer-run.gif "The finished game near the start: the walk frames alternate while the player runs, and the jump frame shows in the air. The camera has not moved yet, since the player is still in the first screen of the map.")
 
 ### The camera
 
@@ -517,6 +517,8 @@ end
 
 > [!TRY]
 > Run to the end tile. Walk frames alternate as you move, the jump sprite shows in the air, the camera follows without ever exposing the void beyond the map edges, and touching the trophy prints "You Won" and freezes the action.
+
+![The player far to the right of the level, the view scrolled with it](img/frames/platformer-camera.png "Step 7 near the end of the level: the player is far to the right of the map and the camera has scrolled with it, so the start of the level is off screen to the left and the view stops at the map's edge.")
 
 ## How it all fits together
 

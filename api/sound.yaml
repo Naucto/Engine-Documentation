@@ -95,7 +95,7 @@ functions:
   since: '2.0'
 - name: play_music
   signature: sound.play_music([song, loop, fade_in])
-  summary: Start song slot 0..15 from the tracker.
+  summary: Start music 0..15; loops from its start unless told otherwise.
   description: 'Play one of the sixteen musics of the SOUND tab, replacing the one playing. A number outside `0` to `15`, or an empty one, plays nothing and raises no error. A music loops from its start unless the code says otherwise: `loop` here, or `sound.set_music` for that music.'
   params:
   - name: song
@@ -104,7 +104,7 @@ functions:
     optional: true
   - name: loop
     type: boolean
-    description: 'Whether the music restarts when it reaches its end. Left out, it loops, unless `sound.set_music` said otherwise for this music. Lua truth applies: only `false` (and `nil`) means no, so `0` loops.'
+    description: 'Whether the music restarts when it reaches its end. Left out, it loops, unless `sound.set_music` said otherwise for this music. Lua truth applies: only `false` means no, so `0` loops; a `nil` is the same as leaving it out.'
     optional: true
   - name: fade_in
     type: number
@@ -323,7 +323,7 @@ functions:
   signature: sound.set_music(n, fields)
   summary: Change whether a music loops for this run.
   description: |-
-    Set whether a music restarts when it reaches its end, **for this run only**. A music loops from its start unless the code says otherwise, and this is one way of saying so. On the music playing it takes effect at once, so a loop can be let out at its next end; on any other it is what `sound.play_music` does for that music when it is not given a `loop` of its own. Lua truth applies: only `false` (and `nil`) means no.
+    Set whether a music restarts when it reaches its end, **for this run only**. A music loops from its start unless the code says otherwise, and this is one way of saying so. On the music playing it takes effect at once, so a loop can be let out at its next end; on any other it is what `sound.play_music` does for that music when it is not given a `loop` of its own. Lua truth applies: only `false` means no; a `nil` is the same as leaving it out, and the music loops.
 
     | Field | What it is |
     | --- | --- |

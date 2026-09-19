@@ -29,7 +29,7 @@ A new game opens with the region on sprite 1, the moon. Click the top-left cell 
 
 Colours are picked in PALETTE at the bottom right. The swatches count from `0`, left to right, top row first; click one and its number shows under the grid, as `SLOT 04`.
 
-![The ART tab](editors/img/art.png "The ART tab of a new game: the starter moon on sprites 1, 2, 17 and 18, the gold outline on the second cell is the region, Lock is off, and PREVIEW at the bottom right reads SPRITE 001. SHEET, FLAGS and PALETTE are the panels at the right.")
+![The ART tab with a stroke drawn on sprite 0](img/getting-started-art.png "The ART tab after Step 1: the region on sprite 0, the first cell, with a stroke drawn in it, and PREVIEW at the bottom right showing that cell at its real size. The starter moon stays on the cells beside it.")
 
 > [!WARNING]
 > Colour 0, the near-black at the start of the palette, is the transparent colour of a sprite. Pixels left in colour 0 are not drawn, so pick any other colour for your character.
@@ -62,7 +62,7 @@ Line by line: `{ x = 156, y = 86 }` is a **table**, a box with named slots, and 
 
 The game screen is in the column at the right of the code, with a small transport bar under it. If that column shows REFERENCE instead, press <kbd>F1</kbd>, or click the ⇄ button on the column's edge, to swap the screen back. Press the **▶** button (Play). Your sprite appears on the dark background, and the arrow keys move it.
 
-![The CODE tab with the game screen](editors/img/code.png "The CODE tab of a new game after one ▶: the starter code on the left, the moon on the game screen at the top right with the transport under it, and the Console showing the game's greeting.")
+![The CODE tab with the game screen](img/getting-started-code.png "The CODE tab after ▶: the code of Step 2 on the left, and on the game screen at the top right the sprite drawn in Step 1, with the transport under it.")
 
 The `Auto` switch beside the transport is on by default. With Auto on, an edit reruns the game while it runs, and after an error once you fix it; a paused game gets the new code and stays paused. The Console tab under the screen shows what `print` writes, and any error.
 

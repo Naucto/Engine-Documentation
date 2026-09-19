@@ -28,6 +28,8 @@ Two toggles sit above the right panel. **Grid**, on by default, draws a fine lin
 
 **Flags** tints every tile by the first flag set on its sprite, in the colour that bit has in the FLAGS panel of ART: bit 0 green, 1 blue, 2 orange, 3 pink, 4 hot pink, 5 gold, 6 lime, 7 magenta. It is the quickest way to see a level's collision: turn it on, and every solid tile lights up, every tile you forgot stays dark.
 
+![MAP with the Flags overlay on](img/map-flags.png "The MAP tab with Flags on: the tiles whose sprite carries flag 0 are tinted green, and a tile painted with a sprite that has no flag stays as it is.")
+
 ## The WHOLE MAP panel
 
 ![The WHOLE MAP panel](img/map-minimap.png "The WHOLE MAP panel: every tile at three pixels, the frame is what the canvas shows, and the strip above has a tab per map.")

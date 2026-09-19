@@ -41,5 +41,5 @@ function _draw()
     gfx.fill_rect(10 + i * 20, 50, 16, 16, colour)
   end
 
-  gfx.print("PATTERN " .. place .. "  STEP " .. step, 10, 30, 5)
+  gfx.print("PLACE " .. place .. "  STEP " .. step, 10, 30, 5)
 end

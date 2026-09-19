@@ -11,11 +11,11 @@ namespace: sound
 
 # sound · Sound effects, notes and music
 
-The SOUND tab writes instruments and patterns; the game plays them. A sound effect is a numbered slot the SFX bank points at a pattern; a music is a numbered song, a grid of patterns; a note is one pitch on one instrument, played from code. `set_volume` balances the three.
+The SOUND tab writes instruments and patterns; the game plays them. A sound effect is a numbered slot the SFX bank points at a pattern; a music is a numbered grid of patterns; a note is one pitch on one instrument, played from code. `set_volume` balances the three.
 
 ## The audio model
 
-The synth has **five voices, numbered `0` to `4`**, and everything sounding is on one of them. Songs are numbered `0` to `15`, sound effect slots from `0` with no last one, and an instrument is named by the name the SOUND tab shows.
+The synth has **five voices, numbered `0` to `4`**, and everything sounding is on one of them. Musics are numbered `0` to `15`, sound effect slots from `0` with no last one, and an instrument is named by the name the SOUND tab shows.
 
 Music plays at priority 0, sound effects and notes at priority 1. A new sound takes the first free voice; when none is free it takes a voice from the music first, oldest first. Forcing a `channel` puts the whole sound on that one voice.
 

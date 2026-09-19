@@ -85,9 +85,9 @@ The keyboard at the left of the roll plays the selected instrument for as long a
 
 ### Transport
 
-![The transport](img/sound-transport.png "The pattern bar: PATTERN and its trash, Play, Back to the start, Stop, Loop and Click, then BPM, STEPS and undo.")
+![The transport](img/sound-transport.png "The three transport buttons of the pattern bar: Play, Back to the start and Stop. PATTERN, Loop, Click, BPM and STEPS sit around them on the same bar.")
 
-Play starts the pattern in front of you from wherever the head stands, and becomes Pause while it runs; Pause keeps the head where it was. **Back to the start** rewinds and Stop ends the take, so the head goes out. Loop repeats the pattern; Click is a metronome that ticks on every beat, louder on the **downbeat**, the first beat of each bar, and never writes into the pattern. In a window narrower than 1440 px the bar keeps the icons of Loop and Click but drops their words.
+Play starts the pattern in front of you from wherever the head stands, and becomes Pause while it runs; Pause keeps the head where it was. **Back to the start** rewinds and Stop ends the take, so the head goes out. Loop repeats the pattern; Click is a metronome that ticks on every beat, louder on the **downbeat**, the first beat of each bar, and never writes into the pattern. Loop and Click keep their icons and lose their words when the middle column is narrower than 900 px; under 780 px the bar takes a second row for BPM, STEPS, undo and redo, and on a narrow laptop window the pattern field loses its printed name too. BPM and STEPS keep theirs at every width.
 
 The ruler at the top of the roll places the head: click it, or drag along it. This works during playback too. The take pauses for the length of the drag and picks up again where you let go.
 

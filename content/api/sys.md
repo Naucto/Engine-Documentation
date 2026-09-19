@@ -15,7 +15,7 @@ What the game cannot get from drawing or input: the clock, and a way to say some
 
 ## Time
 
-The game runs `_update` at a fixed 60 steps per second (see the [game loop](/learn/concepts/game-loop)), so `dt` is the same number every step; multiply a speed by it all the same, and count in `frame` or `time` for anything that must stay in step with the game.
+The game runs `_update` at a fixed 60 steps per second (see the [game loop](/learn/concepts/game-loop)), so `dt` is the same number every step. Speeds are written per step, not scaled by it; `dt` tells you how long a step is, for a clock or a timer, and `frame` and `time` count for anything that must stay in step with the game.
 
 {{api:sys.dt}}
 

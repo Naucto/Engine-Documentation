@@ -76,7 +76,7 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 | [[sound.play_sfx]] | Play a numbered SFX slot |
 | [[sound.play_note]] | Play a note now; pitch is MIDI or "C4" |
 | [[sound.stop_note]] | Release a voice |
-| [[sound.play_music]] | Start song slot 0..15 from the tracker |
+| [[sound.play_music]] | Start music 0..15; loops from its start unless told otherwise |
 | [[sound.stop_music]] | Stop the music |
 | [[sound.stop]] | Stop everything |
 | [[sound.set_volume]] | Mixer levels 0..1 |

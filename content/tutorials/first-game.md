@@ -48,7 +48,7 @@ Open **MAP**. In the TILE PICKER of the right column, click sprite `32`, the fir
 - a border: row `0`, row `21`, column `0` and column `39`, all the way across
 - a few inner walls, for instance row `6` from column `6` to `13`, row `15` from column `26` to `33`, and column `20` from row `8` to `13`
 
-The status line at the bottom of the map reads the tile under the cursor, `TILE 6,15 · SPR 032`: the column, the row, and the sprite painted there. It is how you find row `6` or column `39` without counting.
+The status line at the bottom of the map reads the tile under the cursor, `TILE 39,21 · SPR 032 · flags 0` on the room's bottom-right corner: the column, the row, the sprite painted there and the flag bits set on it. It is how you find row `6` or column `39` without counting.
 
 The screen is `320 x 180` pixels, which is `40` tiles across and `22` and a half down. The map is bigger than that (`128 x 32` tiles), but the game never moves the camera, so **only the top-left `40 x 22` tiles are ever on screen**: keep everything inside rows `0` to `21` and columns `0` to `39`, and if the map has scrolled, scroll it back with the wheel.
 

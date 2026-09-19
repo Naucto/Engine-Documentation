@@ -91,7 +91,7 @@ end
 
 ### Lock the key
 
-In the NET tab, click **Declare a path** and enter `winner` (with a session running, Add child node on `<root>` does the same). Switch off its `W` and leave `R` on: everyone still needs to see who won. You can do this before running anything; the flags live in the game, not in the session. Run and host, and the game plays exactly as before, because only the host writes `winner` now.
+In the NET tab, click **Declare a path** and enter `winner` (once a path is declared, the `+` on its row, Add child node, does the same). Switch off its `W` and leave `R` on: everyone still needs to see who won. You can do this before running anything; the flags live in the game, not in the session. Run and host, and the game plays exactly as before, because only the host writes `winner` now.
 
 ### See the rule bite
 
@@ -100,7 +100,7 @@ In the NET tab, click **Declare a path** and enter `winner` (with a session runn
 Temporarily add `net.state.winner = net.id()` to a client path (say, on a key press) and press it from a joined client; the Test rig's second client is one, so its screen is where to press. On every other screen nothing happens: the host rejects the write and it never reaches them. On the cheater's own screen the write is applied for a moment, so `update_playing` sees `net.state.winner`, switches to `"over"` and prints "You win!"; then the rejection snaps `winner` back to `nil`, and a `net.on("winner", ...)` listener sees it flip and flip back. The permission rolls back the **value**, not the game's own state machine: the cheater's game stays on its "over" screen, alone.
 
 > [!NOTE]
-> A client write that batches several keys in one frame is rejected as a whole if any of them is protected, so a forbidden write never lands partially. In practice clients only write their own open keys, so this rarely comes up.
+> A client's writes leave in batches: the writes made since the last `emit`, lock or queue call of the step leave together, and a batch the host refuses is refused as a whole, so a forbidden write never lands partially, and neither do the allowed writes that left with it. In practice clients only write their own open keys, so this rarely comes up.
 
 ## Keeping state host-private
 
