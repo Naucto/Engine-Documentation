@@ -36,6 +36,8 @@ Music plays at priority 0, sound effects and notes at priority 1. A new sound ta
 
 {{api:sound.play_sfx}}
 
+![SFX SLOTS in the SOUND tab](../editors/img/sound-sfx.png "SFX SLOTS: the numbered slots, counted from 00; sound.play_sfx(1) plays the pattern kept in slot 01, the one drawn as current here.")
+
 ## Notes
 
 A note plays on one of the five voices; name a channel to stop it or to keep two notes apart.
@@ -47,6 +49,8 @@ A note plays on one of the five voices; name a channel to stop it or to keep two
 ## Music
 
 {{api:sound.play_music}}
+
+![MUSIC in the SOUND tab](../editors/img/sound-music.png "MUSIC: the # field picks the music, 0 here, and the grid holds the pattern numbers sound.play_music(0) plays left to right, then top to bottom.")
 
 {{api:sound.stop_music}}
 

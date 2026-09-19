@@ -16,6 +16,8 @@ This page is for the moment a game does something you did not write. It starts w
 
 The column beside the screen has a **Console** tab. It is emptied at every run, keeps the last 2000 lines, and prefixes each one: `> ` for a `print` or [[sys.log]], `? ` in orange for [[sys.warn]], `! ` in red for [[sys.error]] and for the engine's own errors. `print` and `sys.log` are the same function: arguments are separated by a tab, and a table is written out as JSON.
 
+![The console column of CODE](../editors/img/code-console.png "The column beside the screen: the transport under the game, then the Console and Perf tabs. Before the first run the Console says so.")
+
 ``` lua
 local player = { x = 40, y = 40, vx = 0, on_ground = false }
 
@@ -41,6 +43,8 @@ An error in `_init`, `_update` or `_draw` halts the game: the screen freezes on 
 ```
 
 The line reads: the phase (`load`, `init`, `update` or `draw`), then the **tab** the error came from and the line number counted in that tab. The CODE tab highlights that line and its status bar shows "1 error". With the Auto toggle on, saving a fix reruns the game by itself; otherwise press Restart.
+
+![A runtime error in CODE](../editors/img/code-error.png "A runtime error: line 3 of main is marked and underlined, the status bar reads 1 error, and the Console shows the red line and --- HALTED ---.")
 
 A syntax error is reported in the `load` phase before `_init` runs. The instruction budget (see [Limitations](/learn/reference/limitations)) halts the game the same way, with `execution aborted: possible infinite loop or recursion`.
 

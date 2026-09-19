@@ -22,6 +22,8 @@ A new game is not empty. Its `main` tab already holds a starter program, a moon 
 
 Open the **ART** tab, select sprite `0` (the top-left cell of the sheet, which the starter game leaves empty) and draw a small character in it. Each sprite is an 8 × 8 tile.
 
+![The ART tab](editors/img/art.png "The ART tab: you draw on the canvas in the middle, with the pen and the colour picked in PALETTE at the bottom right; the gold outline is the sprite in hand, and PREVIEW shows it at its real size.")
+
 > [!WARNING]
 > Colour 0, the near-black at the start of the palette, is the transparent colour of a sprite. Pixels left in colour 0 are not drawn, so pick any other colour for your character.
 
@@ -50,6 +52,8 @@ end
 ## Step 3: Play
 
 The game screen is in the column to the right of the code, with a small transport bar under it. Press the **▶** button (Play). Your sprite appears on the dark background, and the arrow keys move it.
+
+![The CODE tab with the game screen](editors/img/code.png "The CODE tab: the code on the left, the game screen at the top right, and under the screen the ▶ that plays it, with the Auto switch beside it and the Console below.")
 
 The `Auto` toggle beside the transport is on by default: once the game has run, every edit to the code reruns it a moment later, so you do not need to press Play again. The Console tab under the screen shows what `print` writes, and any error.
 

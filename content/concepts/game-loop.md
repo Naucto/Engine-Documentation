@@ -81,3 +81,5 @@ Because the step is fixed, speeds are written per step, not per second: a `speed
 An error in `_init`, `_update` or `_draw` halts the game: the screen freezes on the last frame, the Console prints the error and "--- HALTED ---", and the music stops. [Debugging](/learn/reference/debugging) shows what that looks like; on the page of a published game the screen says so itself, with a Restart button. The game is also paused while the browser tab is hidden, and in the editor while the screen column is collapsed on the ART and MAP tabs; it resumes when you come back.
 
 The transport bar under the screen has **Pause, Step and Restart**. Step runs one `_update` and one `_draw`, pausing the game first if it was running. Restart reloads the tabs and runs `_init` again from scratch; with the Auto toggle on, so does every edit you make to the code.
+
+![The console column of CODE](../editors/img/code-console.png "The transport under the screen: Play, Restart and Step, then the Auto switch; the Console under it is where --- HALTED --- appears.")

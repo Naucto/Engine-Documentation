@@ -12,6 +12,8 @@ legacy_slugs:
 
 A Naucto game is made in one window with six tabs down its left edge. This page says what each tab is for and what they all share; each tab has a page of its own.
 
+![The editor on the CODE tab](img/code.png "The editor on CODE: the rail of six tabs down the left edge, the workspace in the middle, and the console column with the running game on the right.")
+
 ## The six tabs
 
 In the order of the rail:

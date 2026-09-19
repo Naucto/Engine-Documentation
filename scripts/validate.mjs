@@ -1,6 +1,6 @@
 // Checks every page has front-matter, every [[ref]] resolves, every picture exists, every api
 // entry has a signature, every signature's parameters are documented and say whether they are
-// required, and no Lua example calls a v0 global.
+// required, no Lua example calls a v0 global, and no prose uses a word the docs have retired.
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 
@@ -96,7 +96,7 @@ for await (const file of walk(resolve(root, 'content'))) {
       errors.push(`${file}: assets file ${meta.assets} does not parse: ${e.message}`);
     }
   }
-  pages.push({ file, body: src.slice(m[0].length) });
+  pages.push({ file, body: src.slice(m[0].length), offset: m[0].split('\n').length - 1 });
 }
 /**
  * The one thing a reader copies verbatim.
@@ -120,12 +120,38 @@ function legacyCallsIn(body) {
   return found;
 }
 
-for (const { file, body } of pages) {
+/**
+ * Words a page must not say, as prose. Each names an implementation the reader never sees, a panel
+ * by a name the app does not use, or an em-dash, which the house writes as a full stop or a colon.
+ * The names are matched as written: `CODE editor` is the tab's own label and passes.
+ * Code is exempt: a fenced block quotes what the app prints, and an inline chip quotes a label.
+ */
+const RETIRED = ['Tone.js', 'Monaco', 'PICO-8 set', 'Sprite Editor', 'Code Editor', 'Map Editor', 'Sound Editor', 'output panel', '\u2014'];
+const RETIRED_RE = new RegExp(RETIRED.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
+
+/** The retired words a body uses, outside fenced blocks and inline code, by line of the body. */
+function retiredWordsIn(body) {
+  const found = [];
+  let fenced = false;
+  body.split('\n').forEach((line, i) => {
+    if (/^\s*```/.test(line)) {
+      fenced = !fenced;
+      return;
+    }
+    if (fenced) return;
+    for (const [word] of line.replace(/`[^`]*`/g, '').matchAll(RETIRED_RE)) found.push({ line: i + 1, word });
+  });
+  return found;
+}
+
+for (const { file, body, offset } of pages) {
   for (const [, href] of body.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g))
     if (!/^(https?:)?\/\//.test(href) && !(await exists(resolve(dirname(file), href))))
       errors.push(`${file}: picture ${href} is not there`);
   for (const { line, name, use } of legacyCallsIn(body))
-    errors.push(`${file}:${line}: lua example calls the v0 global ${name}(), use ${use}()`);
+    errors.push(`${file}:${line + offset}: lua example calls the v0 global ${name}(), use ${use}()`);
+  for (const { line, word } of retiredWordsIn(body))
+    errors.push(`${file}:${line + offset}: prose says "${word === '\u2014' ? 'an em-dash' : word}", which the docs do not use`);
   for (const [, ref] of body.matchAll(/\[\[([a-z]+\.[a-z_]+)\]\]/g)) if (!known.has(ref)) errors.push(`${file}: unknown api ref [[${ref}]]`);
   for (const [, ref] of body.matchAll(/\{\{api:([a-z]+\.[a-z_]+)\}\}/g)) if (!known.has(ref)) errors.push(`${file}: unknown api card {{api:${ref}}}`);
   for (const [, target] of body.matchAll(/\]\(\/learn\/([^)#]+)/g)) if (!slugs.has(target)) errors.push(`${file}: broken link /learn/${target}`);
