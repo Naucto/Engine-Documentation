@@ -275,7 +275,7 @@ end
 > [!TRY]
 > Press Play. You can steer left and right while the player falls straight through your level and off the screen. Collision is the next step.
 
-![The player falling through the level](img/frames/platformer-step4.png "A second into Step 4: the player has fallen past the first platform and keeps going, since nothing stops it yet.")
+![The player falling through the level](img/frames/platformer-step4.png "Under half a second into Step 4: the player, still at its start column, has fallen level with the first platform and keeps going, since nothing stops it yet; a second later it is off the screen.")
 
 ## Step 5: Move one axis at a time
 

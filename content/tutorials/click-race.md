@@ -414,7 +414,7 @@ end
 > [!TRY]
 > Park two players on the same coin. The coin disappears, one of the two scores, and the other finds it taken; two seconds later a fresh coin appears elsewhere. The lock does not decide who wins the coin, it decides that the claims run one after the other, and the re-check inside is what makes that order count.
 
-![The field with one player's score row full and the words You win in the console](../../api/img/frames/tut-click-race-win.png "Step 5 at the end of a match: a player has reached ten, its score row at the top left is full, net.state.winner is set and every screen has switched to the over state; the winner's console says You win.")
+![The field with one player's score row full](../../api/img/frames/tut-click-race-win.png "Step 5 at the end of a match: a player has reached ten and its score row at the top left is full; net.state.winner is set, every screen switches to the over state, and the winner's console prints You win.")
 
 ## How it all fits together
 

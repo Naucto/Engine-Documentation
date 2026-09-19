@@ -37,7 +37,7 @@ The host keeps the one true copy of [[net.state]]. **`peer.joined` and `peer.lef
 
 {{svg:img/host-guests.svg}}
 
-Writes leave in batches: the writes made since the last `emit`, lock or queue call of the step leave together, and a batch the host refuses is refused as a whole. There is no fixed send rate and no interpolation: a value that moves every frame arrives every frame, as a series of steps.
+Writes leave in batches: the writes made since the last `emit`, or the last call on a lock or a queue, of the step leave together, and a batch the host refuses is refused as a whole. There is no fixed send rate and no interpolation: a value that moves every frame arrives every frame, as a series of steps.
 
 ## Permissions
 
