@@ -143,8 +143,9 @@ functions:
     | `"event:<name>"` | `(from, payload)` | A peer calls `net.emit("<name>", payload)`; `from` is its
     player id |
 
-    | `"error"` | `(path, reason)` | The host refuses and rolls back one of your writes. **Guest only**; `reason`
-    is `"forbidden"` (the path is not writable by guests) or `"conflict"` (another write got there first) |
+    | `"error"` | `(path, reason)` | The host refuses one of your writes and rolls it back, or refuses a lock
+    acquire, a queue push or a queue pop. **Guest only**; `reason` is `"forbidden"` (the path is not writable
+    by guests) or `"conflict"` (another write got there first) |
 
     | anything else (a state path) | `(path, newValue)` | A matching [[net.state]] key \| changes |
 
@@ -155,7 +156,9 @@ functions:
     `net.on("error", ...)` always registers the rejection listener, so it never observes a [[net.state]]
     key literally named `error`. Listening for `"error"` is the intended way to detect a write the host
     rolled back; the [permissions](/learn/tutorials/permissions) tutorial shows that rejected-write behavior
-    in action, there observed via the protected value flipping back.'
+    in action, there observed via the protected value flipping back. A lock acquire, a queue push or a queue
+    pop refused by the permissions fires `"error"` too, with the path and `"forbidden"`: a refused acquire''s
+    callback never runs, and a refused pop''s callback gets `nil`.'
   params:
   - name: pattern
     type: string
@@ -242,8 +245,8 @@ functions:
     Requests are ordered by the session host, so two peers acquiring "at the same time" are serialized
     -- one runs, then the other. If a peer disconnects while holding locks, its locks are released automatically
     and its pending requests are dropped. A lock stored under a host-only path (see [permissions](/learn/tutorials/permissions))
-    can only be acquired by the host, just like a write to that path: a guest''s `acquire` there is dropped
-    and its callback never runs.'
+    can only be acquired by the host, just like a write to that path: a guest''s `acquire` there is refused,
+    its callback never runs, and `net.on("error")` fires with the path and `"forbidden"`.'
   params: []
   returns: A lock handle -- a table with an `acquire` and an `is_locked` function.
   examples:
@@ -290,7 +293,8 @@ functions:
 
 
     A pushed table arrives with its keys as strings, like an event payload. On a path a guest may not
-    write, its `push` is dropped and its `pop` answers `nil`, as on an empty queue.'
+    write, its `push` and its `pop` are refused: `net.on("error")` fires with the path and `"forbidden"`,
+    and the `pop` callback still gets `nil`, as on an empty queue.'
   params: []
   returns: A queue handle -- a table with `push`, `pop`, `length` and `peek`.
   examples:

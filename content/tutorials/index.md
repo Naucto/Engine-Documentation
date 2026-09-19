@@ -27,4 +27,4 @@ The four netplay tutorials build on one another, so do them in order. Read the [
 3. [Build a Tag Arena](/learn/tutorials/tag): reacting to a shared key with `net.on`, players joining mid-game, cleaning up after the ones who leave.
 4. [Permissions & authority](/learn/tutorials/permissions): the NET tab's read and write flags, and what to lock so a client cannot declare itself the winner.
 
-To test a netplay game alone, the NET tab's **Test rig** spawns a second client on your machine. That client shares your account, so `net.id()` is the same on both; it is enough for Pong, which tells players apart by side. Coin Rush and Tag key everything by `net.id()`, so they need one account per player: a second browser logged in to another account, or friends.
+To test a netplay game alone, the NET tab's **Test rig** spawns a second client on your machine. That client runs on your account but plays under an id of its own, so `net.id()` differs in the two windows and Coin Rush and Tag, which key everything by it, see two players. A third needs a second browser logged in to another account, or friends.

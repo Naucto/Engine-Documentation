@@ -109,7 +109,7 @@ Draw the untaken coins the same way (skip entries with `taken` set), and later a
 
 ### One account per player
 
-`net.id()` is the account id, and this game keys everything by it. The NET tab's Test rig spawns a second client under **your own account**: the host's `peer.joined` would then provision your id again, overwriting your entry, and both windows would steer the same square. Test Coin Rush with a second browser logged in to another account, or with friends; the rig is fine for Pong, which never looks at ids.
+This game keys everything by `net.id()`, so every client needs an id of its own. The NET tab's Test rig gives its second client one: it runs on your account, but the host's `peer.joined` sees a new id, provisions a second entry, and each window steers **its own square**. To go past two players, add a second browser logged in to another account, or friends.
 
 > [!NOTE]
 > Try it

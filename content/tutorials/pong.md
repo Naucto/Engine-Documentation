@@ -126,7 +126,7 @@ Now make it visible. In `_draw()`, clear the screen and (in the `"playing"` stat
 
 ### Testing with two clients
 
-Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, use the NET tab's Test rig: **Spawn a second client** opens a second copy of the game on your machine, already pointed at your session, so its `J` lands straight in the room. That client shares your account, so `net.id()` is the same on both; Pong never looks at ids, only at `side`, so it does not mind.
+Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, use the NET tab's Test rig: **Spawn a second client** opens a second copy of the game on your machine, already pointed at your session, so its `J` lands straight in the room. That client runs on your account but plays under an id of its own; Pong never looks at ids anyway, only at `side`.
 
 > [!NOTE]
 > Try it

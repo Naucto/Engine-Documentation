@@ -48,6 +48,6 @@ PLAYERS is `Players · n / max`, where the maximum is what the game asked for in
 Latency, 0 to 400 ms, and Loss, 0 to 30 %, are applied to that client's outgoing frames, not to yours. They are live while the rig is open.
 
 > [!NOTE]
-> The second client runs on your account. [[net.id]] is not a seat number, so it answers the same id in both windows; tell the two apart by their seat in PLAYERS.
+> The second client runs on your account but plays under an id of its own, so [[net.id]] answers a different number in each window. PLAYERS lists it as **you (test client)**, and a game that keys its players by id treats it as a second player.
 
 **Force a relay** refuses the direct path, to measure what a relayed session costs. It sends real traffic through the provider, so it spends the allowance, and it applies to the next session, not the one running.

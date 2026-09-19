@@ -20,7 +20,7 @@ Sessions are created through the platform's own dialogs: [[net.host]] and [[net.
 
 ## Host and guests
 
-The host keeps the one true copy of [[net.state]]. **`peer.joined` and `peer.left` fire on the host only**: a guest only ever talks to the host and is not told about the other guests. A guest's write is applied locally at once, sent to the host, and either confirmed or undone; `"error"` therefore fires only on the guest whose write was refused, with the reason `"forbidden"` (the path is not writable by guests) or `"conflict"` (another write got there first). The host's own writes are never refused.
+The host keeps the one true copy of [[net.state]]. **`peer.joined` and `peer.left` fire on the host only**: a guest only ever talks to the host and is not told about the other guests. A guest's write is applied locally at once, sent to the host, and either confirmed or undone; `"error"` therefore fires only on the guest whose write was refused, with the reason `"forbidden"` (the path is not writable by guests) or `"conflict"` (another write got there first). The same `"error"` fires with `"forbidden"` when the permissions refuse a guest's lock acquire, queue push or queue pop. The host's own writes are never refused.
 
 ```
    guest                         host                        other guests

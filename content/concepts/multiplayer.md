@@ -64,7 +64,7 @@ From then on, each frame, a player writes only its own keys: `net.state.players[
 
 Convention is enough for a cooperative game, but you can make it a rule. The **NET** tab gives every `net.state` path two flags, enforced by the host at runtime. With W off, only the host may write the path: a client's write is rejected and rolled back, so a player cannot set its own `score` or declare itself the `winner`. With R off, the host keeps the path private and never sends it to clients, in snapshots or live updates, which is what a shuffled deck wants.
 
-Flags inherit from the nearest configured ancestor, and paths you never configure stay open. The host is always the authority. The only way a game learns that a write was refused is `net.on("error", function(path, reason) … end)`, where `reason` is `"forbidden"` for a permission and `"conflict"` for a write that raced another. See [Permissions](/learn/tutorials/permissions) for a worked example.
+Flags inherit from the nearest configured ancestor, and paths you never configure stay open. The host is always the authority. The only way a game learns that a write was refused is `net.on("error", function(path, reason) … end)`, where `reason` is `"forbidden"` for a permission and `"conflict"` for a write that raced another. A lock acquire, a queue push or a queue pop that the permissions refuse fires the same `"error"` with `"forbidden"`. See [Permissions](/learn/tutorials/permissions) for a worked example.
 
 ## Session lifecycle
 

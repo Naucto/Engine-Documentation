@@ -168,7 +168,7 @@ Receivers subscribe to `"event:taunt"` in `on_connected` and print who taunted t
 
 ## Step 5: Play with three or four
 
-Wire the remaining glue exactly as in the previous tutorials (winner-less this time: the game just runs), then put the multi-peer claims to the test. Like Coin Rush, Tag keys players by `net.id()`, the account id, so each client needs **its own account**; the NET tab's Test rig would join under yours and share your square. Use other browsers logged in as other accounts, or friends.
+Wire the remaining glue exactly as in the previous tutorials (winner-less this time: the game just runs), then put the multi-peer claims to the test. Like Coin Rush, Tag keys players by `net.id()`, and the NET tab's Test rig joins under an id of its own, so host plus rig is a **two-player game** on one machine. For three or four, use other browsers logged in as other accounts, or friends.
 
 1. Host, and in the Host a session dialog switch on **Listed in browse** (it is off by default). The session then appears under PUBLIC in the others' Join a session dialog; without it they need the JOIN CODE.
 2. Let one player join after the game has been running: they appear instantly with the right positions and the right "it", the state snapshot doing its job.
