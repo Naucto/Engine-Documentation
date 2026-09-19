@@ -92,14 +92,14 @@ end
 
 ### Move, then check
 
-`_init` creates the player where Getting started did, only closer to the corner. `_update` reads the four directions with [[input.btn]] into a step `dx, dy`, then applies each axis only if the player can stand there. Testing the two axes **separately** is what lets the player slide along a wall instead of sticking to it:
+`_init` creates the player where Getting started did, only closer to the corner. `_update` reads the four directions with [[input.held]] into a step `dx, dy`, then applies each axis only if the player can stand there. Testing the two axes **separately** is what lets the player slide along a wall instead of sticking to it:
 
 ``` lua
   local dx, dy = 0, 0
-  if input.btn("left")  then dx = -SPEED end
-  if input.btn("right") then dx = SPEED end
-  if input.btn("up")    then dy = -SPEED end
-  if input.btn("down")  then dy = SPEED end
+  if input.held("left")  then dx = -SPEED end
+  if input.held("right") then dx = SPEED end
+  if input.held("up")    then dy = -SPEED end
+  if input.held("down")  then dy = SPEED end
 
   if can_stand(player.x + dx, player.y) then
     player.x = player.x + dx

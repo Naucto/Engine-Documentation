@@ -23,8 +23,8 @@ local player = { x = 40, y = 40, vx = 0, on_ground = false }
 
 function _update()
   player.x = player.x + player.vx
-  if input.btnp("a") then print("pos:", player.x, player.y) end
-  if input.btnp("b") then print(player) end   -- {"x":40,"y":40,"vx":0,"on_ground":false}
+  if input.pressed("a") then print("pos:", player.x, player.y) end
+  if input.pressed("b") then print(player) end   -- {"x":40,"y":40,"vx":0,"on_ground":false}
 end
 ```
 
@@ -65,7 +65,7 @@ Check these first:
 
 ## Input does not work
 
-The action functions [[input.btn]] and [[input.btnp]] take an action name: `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`. They answer to the arrows, WASD and ZQSD, a gamepad and the touch controls, which is why the tutorials use them.
+The action functions [[input.held]] and [[input.pressed]] take an action name: `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`. They answer to the arrows, WASD and ZQSD, a gamepad and the touch controls, which is why the tutorials use them.
 
 [[input.key_pressed]] takes the browser's `event.key` name, which is **case-sensitive**: `"ArrowLeft"`, not `"arrowleft"`; `" "` for the space bar, not `"space"`; `"a"` for the key as typed. `"A"` matches only when the key produces an upper-case letter, with Shift held or Caps Lock on.
 

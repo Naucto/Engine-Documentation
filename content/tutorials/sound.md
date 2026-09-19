@@ -119,11 +119,11 @@ SFX_ZAP    = 0   -- the SFX slot that holds the zap
 MUSIC_MAIN = 0   -- the music, as the # field shows it
 ```
 
-[[sound.play_sfx]] plays a slot by number, once, on the first free voice. Ask for it on the frame the button goes down with [[input.btnp]], which is true once per press. [[input.btn]] would be true on every frame the key is held and start the zap sixty times a second.
+[[sound.play_sfx]] plays a slot by number, once, on the first free voice. Ask for it on the frame the button goes down with [[input.pressed]], which is true once per press. [[input.held]] would be true on every frame the key is held and start the zap sixty times a second.
 
 ``` lua
 function _update()
-  if input.btnp("a") then
+  if input.pressed("a") then
     sound.play_sfx(SFX_ZAP)
   end
 end
@@ -160,7 +160,7 @@ end
 [[sound.stop_music]] stops the music at once, or over a fade when given seconds. On the `pause` action (<kbd>Enter</kbd> on the keyboard, Start on a gamepad) fade it out over half a second; on the next press start it again from its first pattern. Add to `_update`:
 
 ``` lua
-  if input.btnp("pause") then
+  if input.pressed("pause") then
     if music_on then
       sound.stop_music(0.5)
     else

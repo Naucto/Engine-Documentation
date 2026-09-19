@@ -104,7 +104,7 @@ The bank under the instruments is the sound effects the game plays with [[sound.
 
 ``` lua
 function _update()
-  if input.btnp("a") then
+  if input.pressed("a") then
     sound.play_sfx(1) -- the pattern kept in slot 01
   end
 end
@@ -128,7 +128,7 @@ function _init()
 end
 
 function _update()
-  if input.btnp("b") then
+  if input.pressed("b") then
     sound.stop_music(0.5)      -- fades out over half a second
   end
 end

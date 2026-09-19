@@ -129,11 +129,21 @@ function legacyCallsIn(body) {
 const RETIRED = ['Tone.js', 'Monaco', 'PICO-8 set', 'Sprite Editor', 'Code Editor', 'Map Editor', 'Sound Editor', 'output panel', '\u2014'];
 const RETIRED_RE = new RegExp(RETIRED.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
 
+/**
+ * Names the engine no longer answers to, which a reader would copy from prose and code alike.
+ *
+ * The input readers and `input.declare` went with schema v2, the row effects with the virtual beam;
+ * the migration rewrites a game, and nothing rewrites a page.
+ */
+const RETIRED_CALLS = ['input.btn(', 'input.btnp(', 'input.btnr(', 'input.declare', 'gfx.scanline', 'set_palette_row', 'persist_effects'];
+const RETIRED_CALLS_RE = new RegExp(RETIRED_CALLS.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
+
 /** The retired words a body uses, outside fenced blocks and inline code, by line of the body. */
 function retiredWordsIn(body) {
   const found = [];
   let fenced = false;
   body.split('\n').forEach((line, i) => {
+    for (const [word] of line.matchAll(RETIRED_CALLS_RE)) found.push({ line: i + 1, word });
     if (/^\s*```/.test(line)) {
       fenced = !fenced;
       return;

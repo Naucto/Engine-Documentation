@@ -16,7 +16,7 @@ This page takes you from an empty account to a sprite you can move around the sc
 
 On the My games page, press **+ New game**. The screen says "> creating a new game…" for a moment, then the editor opens on the GAME tab, where the game is called "Untitled game" until you name it.
 
-A new game is not empty. Its `main` tab already holds a starter program, a moon driven with [[input.btn]], and the moon itself is drawn in sprites 1, 2, 17 and 18 of the sheet. Run it once to see the console at work, then replace it.
+A new game is not empty. Its `main` tab already holds a starter program, a moon driven with [[input.held]], and the moon itself is drawn in sprites 1, 2, 17 and 18 of the sheet. Run it once to see the console at work, then replace it.
 
 ## Step 1: Draw a sprite
 
@@ -35,10 +35,10 @@ Open the **CODE** tab and replace the contents of the `main` tab with this:
 local player = { x = 156, y = 86 }
 
 function _update()
-  if input.btn("left") then player.x = player.x - 2 end
-  if input.btn("right") then player.x = player.x + 2 end
-  if input.btn("up") then player.y = player.y - 2 end
-  if input.btn("down") then player.y = player.y + 2 end
+  if input.held("left") then player.x = player.x - 2 end
+  if input.held("right") then player.x = player.x + 2 end
+  if input.held("up") then player.y = player.y - 2 end
+  if input.held("down") then player.y = player.y + 2 end
 end
 
 function _draw()
@@ -47,7 +47,7 @@ function _draw()
 end
 ```
 
-`_update` runs sixty times a second and moves the player; `_draw` clears the screen and draws sprite `0` where the player is. [[input.btn]] asks for an **action**, not a key: "left" answers to the left arrow, to A or Q, to a gamepad and to the touch controls alike.
+`_update` runs sixty times a second and moves the player; `_draw` clears the screen and draws sprite `0` where the player is. [[input.held]] asks for an **action**, not a key: "left" answers to the left arrow, to A or Q, to a gamepad and to the touch controls alike.
 
 ## Step 3: Play
 

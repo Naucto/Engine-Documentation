@@ -15,7 +15,7 @@ Two ways to read the player. **Actions** (left, right, up, down, a, b, x, y, pau
 
 ## Actions
 
-`btn` is true while the action is held, `btnp` on the step it is pressed, `btnr` on the step it is released. `declare` names the actions the game uses, so the controls table and the game's "how to play" panel show the right words.
+`held` is true while the action is held, `pressed` on the step it is pressed, `released` on the step it is released. The words the controls table and the game's "how to play" panel show for each action are typed in the [GAME tab](/learn/editors/game), under Controls, not in code.
 
 The default bindings, which the player can change in Settings → Controls:
 
@@ -38,20 +38,18 @@ A jump reads the press, not the hold, or the player flies while the key is down:
 local player = { x = 40, y = 40, vy = 0, on_ground = true }
 
 function _update()
-  if input.btnp("a") and player.on_ground then
+  if input.pressed("a") and player.on_ground then
     player.vy = -6
     player.on_ground = false
   end
 end
 ```
 
-{{api:input.btn}}
+{{api:input.held}}
 
-{{api:input.btnp}}
+{{api:input.pressed}}
 
-{{api:input.btnr}}
-
-{{api:input.declare}}
+{{api:input.released}}
 
 {{api:input.players}}
 

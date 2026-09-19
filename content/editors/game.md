@@ -25,6 +25,12 @@ The name is 25 characters at most, the summary 50, the description 300 and there
 > [!IMPORTANT]
 > A game needs a name and one line of summary before it can be published. The panel says so with a band until both are there.
 
+### Controls
+
+The console has nine actions, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, and the code reads them by those names with `input.held`, `input.pressed` and `input.released` (see [input](/learn/api/input)). The Controls block is one row per action with a field for **the word your game gives it**, 25 characters at most: `Jump` beside `a`, `Walk` beside `left`. Leave empty the actions the game does not read.
+
+The names are part of the game document, so they are saved and published with it and need no code. Two places show them: the **How to play** panel on the game's page, which lists only the actions you named, and Settings › Controls, where the label column reads them beside each binding while that game is on screen. A game that names nothing gets the console's own words instead.
+
 ## PUBLISHING
 
 The panel on the right. Its head carries two actions, Export and Delete; the sections under them are the game's status, who is here, and where it comes from.

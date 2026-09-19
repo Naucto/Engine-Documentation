@@ -89,8 +89,8 @@ function init_player()
 end
 
 function update_player()
-  if input.btn("left") then player.x = player.x - PLAYER_SPEED end
-  if input.btn("right") then player.x = player.x + PLAYER_SPEED end
+  if input.held("left") then player.x = player.x - PLAYER_SPEED end
+  if input.held("right") then player.x = player.x + PLAYER_SPEED end
 end
 
 function draw_player()
@@ -107,12 +107,12 @@ state = "menu"
 
 function _update()
   if state == "menu" then
-    if input.btnp("a") then state = "play" end
+    if input.pressed("a") then state = "play" end
   elseif state == "play" then
     update_game()
     if player.y > 180 then state = "gameover" end
   elseif state == "gameover" then
-    if input.btnp("a") then state = "menu" end
+    if input.pressed("a") then state = "menu" end
   end
 end
 

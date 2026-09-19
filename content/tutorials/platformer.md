@@ -149,15 +149,13 @@ end
 Gating on `on_ground` is what makes it a **jump rather than a jetpack**; the flag comes back in Step 5.
 
 > [!NOTE]
-> The code reads keys by name with [[input.key_pressed]], exactly as `main.lua` does, and `a` / `d` / `w` are QWERTY positions. On another layout the arrow keys and <kbd>Space</kbd> still work; [[input.btn]] with `"left"` / `"right"` / `"up"` would follow the player's own bindings instead.
+> The code reads keys by name with [[input.key_pressed]], exactly as `main.lua` does, and `a` / `d` / `w` are QWERTY positions. On another layout the arrow keys and <kbd>Space</kbd> still work; [[input.held]] with `"left"` / `"right"` / `"up"` would follow the player's own bindings instead.
 
 ### A first loop
 
 To see something, write the minimal loop now: `_update()` calls `handle_input()` then applies gravity and velocity (`vy = vy + gravity` capped at `max_fall`; add `vx` to `x` and `vy` to `y`); `_draw()` clears with a sky colour (`11`, the light blue of the default palette), draws `map.draw(0, 0)`, and draws the player: `gfx.draw_sprite(player.anim_frame, player.x, player.y)`.
 
-> [!NOTE]
-> Try it
->
+> [!TRY]
 > Run the game. You can steer left and right while the player falls straight through your level and off the screen. Collision is the next step.
 
 ![The game as it starts](img/frames/platformer.png "The first frame: sky, map and the player at 24, 40")

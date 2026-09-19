@@ -59,10 +59,10 @@ function _update()
   end
 
   local dx, dy = 0, 0
-  if input.btn("left")  then dx = -SPEED end
-  if input.btn("right") then dx = SPEED end
-  if input.btn("up")    then dy = -SPEED end
-  if input.btn("down")  then dy = SPEED end
+  if input.held("left")  then dx = -SPEED end
+  if input.held("right") then dx = SPEED end
+  if input.held("up")    then dy = -SPEED end
+  if input.held("down")  then dy = SPEED end
 
   if can_stand(player.x + dx, player.y) then
     player.x = player.x + dx

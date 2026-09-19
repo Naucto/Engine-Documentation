@@ -10,11 +10,11 @@ function _init()
 end
 
 function _update()
-  if input.btnp("a") then
+  if input.pressed("a") then
     sound.play_sfx(SFX_ZAP)
   end
 
-  if input.btnp("pause") then
+  if input.pressed("pause") then
     if music_on then
       sound.stop_music(0.5)         -- fades out over half a second
     else
