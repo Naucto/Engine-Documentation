@@ -63,3 +63,13 @@ A note plays on one of the five voices; name a channel to stop it or to keep two
 {{api:sound.is_playing}}
 
 {{api:sound.stop}}
+
+## Changing sounds from code
+
+The SOUND tab decides what an instrument, a pattern and a music are; a game may bend them while it runs. These three functions **change the sound for this run only**: the document is never written, and the next run starts from the tab's settings again, the way [[map.set]] changes a tile without touching the map. An instrument change lands from the next note on, a tempo or length change at the next step, a loop change at the music's next end.
+
+{{api:sound.set_instrument}}
+
+{{api:sound.set_pattern}}
+
+{{api:sound.set_music}}

@@ -170,6 +170,8 @@ end
   end
 ```
 
+What SOUND decided is not final: [[sound.set_pattern]] can raise the tempo of a pattern from code, and [[sound.set_instrument]] change how an instrument sounds, **for this run only**; the document keeps what you drew.
+
 ### A beat indicator
 
 [[sound.music_position]] answers two numbers while a music plays: the **place in the chain**, counted from `0`, which is not the pattern's own number, and the step inside that pattern, rounded up. When nothing plays it answers `nil`. With four steps to a beat, `step // 4` is the beat. The step is rounded up, so at the very end of a bar it reads `16`; `math.min` keeps the fourth box lit until the next bar begins.
@@ -214,3 +216,4 @@ end
 - A zap on the beat: only play it when the beat has just changed, and see how the fade in [[sound.play_music]] sounds under it.
 - A pause screen: [[sound.set_volume]] halves everything while it is up, without stopping the music.
 - A note without a pattern: [[sound.play_note]] plays an instrument by name, from code, for a pickup jingle.
+- A faster last lap: `sound.set_pattern(0, { bpm = 160 })` and the same for `1` when the timer runs low. The music picks up the tempo on its next step, and the patterns in SOUND still say 120.

@@ -25,7 +25,7 @@ functions:
   returns: null
   examples:
   - |-
-    if input.btnp("a") then sound.play_sfx(0) end
+    if input.pressed("a") then sound.play_sfx(0) end
     -- same jump, a fifth higher
     sound.play_sfx(0, nil, 7)
   notes: []
@@ -104,7 +104,7 @@ functions:
     optional: true
   - name: loop
     type: boolean
-    description: Whether the song restarts when it reaches the end. Defaults to `true`.
+    description: 'Whether the song restarts when it reaches the end. Left out, what `sound.set_music` set for this music, else `true`.'
     optional: true
   - name: fade_in
     type: number
@@ -135,7 +135,7 @@ functions:
   returns: null
   examples:
   - |-
-    if input.btnp("pause") then
+    if input.pressed("pause") then
       sound.stop_music(0.5)
     end
   notes: []
@@ -226,5 +226,123 @@ functions:
   seeAlso:
   - sound.play_note
   - sound.music_position
+  since: '2.0'
+- name: set_instrument
+  signature: sound.set_instrument(name, fields)
+  summary: Change an instrument for this run.
+  description: |-
+    Change some settings of an instrument **for this run only**: the SOUND tab and the saved game keep theirs, and the next run starts from them again. A note already sounding keeps the instrument it started with; the change lands from the next note on, in music, in a sound effect or from `sound.play_note` alike. Calling it again adds to what it set before, and a value outside its range is kept at the nearest end.
+
+    | Field | What it is | Range |
+    | --- | --- | --- |
+    | `osc` | Waveform: `"square"`, `"sine"`, `"triangle"`, `"saw"`, `"noise"` or `"sample"` | |
+    | `duty` | Width of the square wave, `0.5` is even | `0.05` to `0.95` |
+    | `detune` | Semitones added to every note | `-12` to `12` |
+    | `glide` | Seconds the pitch takes to reach a new note, `0` is none | `0` to `0.5` |
+    | `attack`, `decay`, `release` | Envelope times, in seconds | `0` to `3` |
+    | `sustain` | Level held after the decay | `0` to `1` |
+    | `vibrato_rate` | Wobbles a second | `1` to `20` |
+    | `vibrato_depth` | Depth of the wobble | `0` to `1` |
+    | `vibrato_delay` | Seconds before it starts | `0` to `1` |
+    | `arp_rate` | Chord notes walked a second, `0` sounds them together | `0` to `30` |
+    | `filter` | `"off"`, `"lp"`, `"hp"` or `"bp"` | |
+    | `cutoff` | Filter frequency, in Hz | `100` to `12000` |
+    | `resonance` | Filter peak | `0` to `1` |
+    | `volume` | Level | `0` to `1` |
+    | `pan` | Left to right | `-1` to `1` |
+
+    A field it does not know, or a value of the wrong kind, is skipped with one warning in the console.
+  params:
+  - name: name
+    type: string
+    required: true
+    description: 'The instrument''s name exactly as the SOUND tab shows it, case included. A name no instrument has warns once and changes nothing.'
+  - name: fields
+    type: table
+    required: true
+    description: The settings to change, any of the table above; the others keep their value.
+  returns: null
+  examples:
+  - |-
+    -- the lead thins out as health drops
+    local hp = 3
+    function _update()
+      sound.set_instrument("lead", { cutoff = 400 + hp * 2000, resonance = 0.6 })
+    end
+  - |-
+    -- one chorus of the same lead: called once, in _init
+    sound.set_instrument("lead", { osc = "saw", detune = 0.1, vibrato_depth = 0.2, filter = "lp" })
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_note
+  - sound.set_pattern
+  since: '2.0'
+- name: set_pattern
+  signature: sound.set_pattern(n, fields)
+  summary: Change the tempo or length of a pattern for this run.
+  description: |-
+    Change the tempo or the length of a pattern **for this run only**: the SOUND tab and the saved game keep theirs. It takes effect at once, even while the pattern plays: the next step comes at the new tempo, and a pattern past its new end goes on to the next one. Calling it again adds to what it set before.
+
+    | Field | What it is | Range |
+    | --- | --- | --- |
+    | `bpm` | Beats a minute | `40` to `240` |
+    | `steps` | Length, in steps; notes past it are not played | `1` to `64` |
+  params:
+  - name: n
+    type: number
+    required: true
+    description: 'The pattern''s number, as the PATTERN field of the SOUND tab shows it. A number no pattern has warns once and changes nothing.'
+  - name: fields
+    type: table
+    required: true
+    description: '`bpm`, `steps`, or both; the other keeps its value.'
+  returns: null
+  examples:
+  - |-
+    -- the music speeds up as the timer runs out
+    local left = 60
+    function _update()
+      left = left - sys.dt()
+      sound.set_pattern(0, { bpm = left < 10 and 180 or 124 })
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_music
+  - sound.set_instrument
+  - sound.set_music
+  since: '2.0'
+- name: set_music
+  signature: sound.set_music(n, fields)
+  summary: Change whether a music loops for this run.
+  description: |-
+    Set whether a music restarts when it reaches its end, **for this run only**: the SOUND tab and the saved game keep theirs. On the music playing it takes effect at once, so a loop can be let out at its next end; on any other it is what `sound.play_music` does for that music when it is not given a `loop` of its own.
+
+    | Field | What it is |
+    | --- | --- |
+    | `loop` | `true` to start over at the end, `false` to stop there |
+  params:
+  - name: n
+    type: number
+    required: true
+    description: 'Music number, as the `#` field of the SOUND tab shows it, `0` to `15`. An empty number warns once and changes nothing.'
+  - name: fields
+    type: table
+    required: true
+    description: '`loop`, `true` or `false`.'
+  returns: null
+  examples:
+  - |-
+    -- the music plays out to its end, then the ending shows
+    function game_over()
+      sound.set_music(0, { loop = false })
+    end
+  notes: []
+  aliases: []
+  seeAlso:
+  - sound.play_music
+  - sound.stop_music
+  - sound.set_pattern
   since: '2.0'
 values: []
