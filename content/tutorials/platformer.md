@@ -4,7 +4,7 @@ slug: tutorials/platformer
 lua: platformer/main.lua
 assets: platformer/assets.json
 section: tutorials
-order: 1
+order: 2
 description: This tutorial walks you through building a complete platformer with animated
   sprites, gravity, jumping, platform collision, and camera scrolling.
 legacy_slugs:
@@ -13,7 +13,7 @@ legacy_slugs:
 
 # Build a Platformer Game
 
-This tutorial walks you through building a complete platformer with animated sprites, gravity, jumping, platform collision, and camera scrolling. It is the first tutorial to do: it visits ART, MAP and CODE in turn and needs no second player.
+This tutorial walks you through building a complete platformer with animated sprites, gravity, jumping, platform collision, and camera scrolling. It is the first big one, after [Your First Game](/learn/tutorials/first-game): it visits ART, MAP and CODE in turn and needs no second player.
 
 Rather than handing you the finished script, each step explains one idea and shows only the lines that carry it; you write the rest. If you get stuck or want to check your work, the [complete code](#complete-code) is one click away, and **Copy to new game** at the head of the page installs the code, the sprites, their flags and the map together, so the copy runs as-is.
 
@@ -241,6 +241,8 @@ Both of these are presentation on top of state you already track.
 ### Animation
 
 Animation is picking `player.anim_frame` from what the player is doing: airborne (`not on_ground`) shows `SPRITE_JUMP`; standing still shows `SPRITE_IDLE`; walking alternates the two walk frames by counting `anim_timer` up each frame and flipping frames every 8 ticks (reset the timer when idle). Call `update_animation()` at the end of `_update()`, **after the special-tile check**, so a just-won game does not keep animating.
+
+![The player running right and jumping twice](img/frames/platformer-run.gif "The finished game: the walk frames alternate while the player runs, the jump frame shows in the air, and the camera follows.")
 
 ### The camera
 
