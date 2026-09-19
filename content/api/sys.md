@@ -29,6 +29,8 @@ The game runs `_update` at a fixed 60 steps per second (see the [game loop](/lea
 
 `print` is the same function as `log`. `warn` and `error` only colour the line: neither stops the game. A Lua error raised by `error(...)` or a bug does stop it, and shows here too.
 
+![The console column of the editor, with a print, a warning and an error line under the running game](../../api/img/sys-console.png "The console under the viewer after one print, one warn and one error: the values are joined with tabs, and only the colour and the mark at the left tell the three apart.")
+
 {{api:sys.log}}
 
 {{api:sys.warn}}

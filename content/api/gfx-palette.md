@@ -36,6 +36,8 @@ Every colour name in the examples of this documentation ("white", "yellow") is r
 | `14`  | teal       | `#007899` |
 | `15`  | dark blue  | `#002859` |
 
+![The sixteen colours of Bubblegum 16 as bands, numbered 0 to 15](../../api/img/frames/gfx-swatches.png "The sixteen colours of Bubblegum 16 as bands, numbered 0 to 15: colour 0 is the near-black of the clear behind them, outlined so it still shows.")
+
 > [!NOTE]
 > Games made before the palette became editable were drawn on PICO-8's colours, and keep them: an old game's `12` is still that game's sky blue.
 
@@ -75,6 +77,8 @@ function _draw()
   end
 end
 ```
+
+![The seed sprite plain, drawn as white after set_col, and plain again after reset_col](../../api/img/frames/gfx-set-col.png "The same sprite three times: plain, with its yellow drawn as white by set_col(4, 5), and plain again once reset_col has been called.")
 
 {{api:gfx.set_col}}
 

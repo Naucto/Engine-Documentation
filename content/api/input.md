@@ -19,6 +19,8 @@ Two ways to read the player. **Actions** (left, right, up, down, a, b, x, y, pau
 
 The default bindings, which the player can change in Settings → Controls:
 
+![Settings › Controls](../editors/img/settings-controls.png "Settings › Controls: each action with its keys and its gamepad button, per player, and the touch pad layout.")
+
 | Action | Player 1 keyboard | Player 2 keyboard | Gamepad |
 | --- | --- | --- | --- |
 | `left` `right` `up` `down` | Arrow keys, <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> and <kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd> | <kbd>I</kbd> <kbd>J</kbd> <kbd>K</kbd> <kbd>L</kbd> | D-pad or left stick |

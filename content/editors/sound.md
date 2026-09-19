@@ -116,7 +116,7 @@ A sound effect takes the first free voice of the five. When none is free it take
 
 A music is a chain of patterns. The `#` field picks which of the **16 musics**, `0` to `15`, the grid shows; the game starts one with [[sound.play_music]] and the same number.
 
-![The music panel](img/sound-music.png "MUSIC: a numbered music, its own transport, and the grid of pattern numbers it plays.")
+![The music panel](img/sound-music.png "MUSIC: a numbered music, its own transport, and the grid of pattern numbers it plays; the empty box before more patterns is the orange hole the music stops at.")
 
 The grid is filled with pattern numbers, played left to right, then top to bottom. Each pattern keeps its own tempo and length, so a chain can change speed halfway. An empty box with music after it is a hole, drawn in **orange**: playing stops before it. Naming a pattern here is one of the ways an empty one becomes real.
 

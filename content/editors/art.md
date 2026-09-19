@@ -70,6 +70,8 @@ Whatever the tool, the **right button paints colour 0**, which is how you erase:
 
 With Select, drag a rectangle on the canvas. A transform bar appears at the top right of the canvas with four buttons: flip horizontally, flip vertically, rotate clockwise, rotate counter-clockwise. The same four are <kbd>Shift</kbd>+<kbd>H</kbd>, <kbd>Shift</kbd>+<kbd>V</kbd>, <kbd>]</kbd> and <kbd>[</kbd>. <kbd>Delete</kbd> or <kbd>Backspace</kbd> clears the selected pixels to colour 0.
 
+![A selection on the player sprites and the transform bar](img/art-transform.png "With Select, a rectangle over the walk frames; the bar at the top right flips and turns it.")
+
 ### Clipboard
 
 <kbd>Ctrl/⌘</kbd>+<kbd>C</kbd> copies the selection, or the **whole region** when nothing is selected. <kbd>Ctrl/⌘</kbd>+<kbd>X</kbd> cuts, and needs a selection. <kbd>Ctrl/⌘</kbd>+<kbd>V</kbd> pastes as a floating block and switches to Move: drag it where it goes, then <kbd>Enter</kbd> settles it and <kbd>Esc</kbd> discards it. Starting any other stroke settles it too. The Copy and Paste buttons at the right of the header do the same.
@@ -82,7 +84,7 @@ The two arrows in the header, <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> and <kbd>Ctrl/⌘
 
 The gear of the SHEET strip opens the **Sheet size** dialog: a width and a height from 8 to 256 pixels, in steps of 8. A sheet is always a whole number of cells across and down.
 
-![The Sheet size dialog](img/art-size-dialog.png "The Sheet size dialog. The costs of a change are listed above the buttons before it is made.")
+![The Sheet size dialog](img/art-size-dialog-cost.png "The Sheet size dialog with the width lowered to 64: the tiles that follow and the calls that cannot are counted before Renumber does anything.")
 
 Changing the width is not a small thing. The picture stays where it is, but the grid of numbers reflows over it, so a sprite number comes to mean a different cell, and so does every number on every sheet after this one. The editor follows through: the dialog counts what it will move (`N map tiles follow`, `N calls in your code are rewritten`) and the button is called **Renumber**. A call that names a sprite with something other than a plain number cannot be followed, and the dialog says how many of those there are so you can check them yourself.
 
@@ -120,6 +122,8 @@ local bits = map.flag(17)
 ## Palette
 
 ![The PALETTE panel](img/art-palette.png "The PALETTE panel: the sixteen slots, the Presets menu, Reset, and the hex and R/G/B of the slot in hand.")
+
+![The Presets menu](img/art-presets.png "Presets: Bubblegum 16 and PICO-8, each shown as its sixteen swatches.")
 
 The palette is **sixteen colours for the whole game**, shared by every sheet and every map. Click a slot to draw with it; below the grid, the slot's number, its hex value and three R/G/B sliders let you change the colour itself. Every pixel drawn with that slot changes with it, on every sheet.
 

@@ -73,6 +73,8 @@ PUBLISH opens the Publish dialog. Publishing puts the current save on the hub, a
 
 Under that, the same Game size gauge. Over 1 MB the notice says by how much and the button is disabled: everything else still saves, and the game still runs. Before the first release the buttons are Not yet and Publish; once published, **Unpublish** and **Update release**. Each release also leaves a version named `published` in the history, so the state people are playing is always something you can go back to.
 
+![The Publish dialog](img/game-publish.png "Publish, before the first release: what a release allows, the size gauge, Not yet and Publish.")
+
 The button in the header is greyed, with the reason on hover, while the game is over the ceiling or has no name or summary.
 
 ## Share

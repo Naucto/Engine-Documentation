@@ -89,6 +89,8 @@ functions:
 - name: set
   signature: map.set(tx, ty, n[, m])
   summary: Change a tile of map m (the first by default) for this run only.
+  picture: img/frames/map-set.png
+  caption: 'The same window of the map before and after map.set(9, 26, 0): the outlined tile of the platform is gone on the right.'
   description: 'Change a tile for the rest of this run. The edit lives in memory only, the saved map is untouched, and reloading the game brings the level back. Out of the map, or on a map that does not exist, the call does nothing.'
   params:
   - name: tx

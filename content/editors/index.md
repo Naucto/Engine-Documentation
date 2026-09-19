@@ -33,6 +33,8 @@ The console column, with the 320×180 screen and the Console and Perf strips, ex
 
 The pop-out button in the console column's head lifts the screen into a **floating card** you can drag by its title bar and resize by its edges. It follows you from tab to tab, so you can watch the game while you paint a sprite or write a pattern, and it may take up to a third of the window. The empty slot it left behind in the console column says where it went; **Bring it back**, there or on the card's title bar, docks it again.
 
+![The floating viewer over the MAP tab](img/viewer-floating.png "The viewer as a card at the bottom right of the MAP tab, the game running, its transport on the scrim.")
+
 ## The header
 
 The header is shared by every tab. From left to right:

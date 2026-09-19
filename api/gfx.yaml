@@ -499,8 +499,8 @@ functions:
 - name: set_col
   signature: gfx.set_col(from, to)
   summary: 'Draw palette remap: pixels of colour `from` are drawn as `to`.'
-  picture: img/frames/gfx-palette.png
-  caption: 'The sixteen palette entries; colour 4 redefined to a cyan by set_color, so the row and the box both change; colour 9 drawn as colour 2 by set_col.'
+  picture: img/frames/gfx-set-col.png
+  caption: 'The same sprite plain, with its yellow drawn as white by set_col(4, 5), and plain again after reset_col.'
   description: 'Draw one colour as another, from this call on: sprites, shapes, the map and text all follow, `gfx.clear` does not. It holds until `gfx.reset_col()`, across frames too, so reset it before the next thing you draw plain. A sprite''s transparent colour stays transparent whatever it is mapped to.'
   params:
   - name: from

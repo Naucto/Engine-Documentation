@@ -20,15 +20,21 @@ The editor is CodeMirror 6, set up for Lua. Brackets and quotes close themselves
 
 Typing the name of an API function offers completions; resting the pointer on one shows its card; inside its parentheses, a signature help names the argument you are on. That help also knows the **functions your own tabs declare**, whichever tab they are written in.
 
+![Signature help while typing a call](img/code-signature.png "Inside gfx.draw_sprite( the help names the arguments and picks out the one being written.")
+
 The right end of the status bar says where your work stands: **Synced** when the server has everything, `Unsaved changes` while an edit is waiting, `Syncing` while it goes, `Not saved` when a write was refused. Saving is automatic; naming a version of the game is done in [GAME](/learn/editors/game).
 
 ### Find and replace
 
 The magnifier in the tab strip, or <kbd>Ctrl/⌘</kbd>+<kbd>F</kbd>, opens the Find bar under the editor. It has `Match case`, `Regexp` and `Whole word`, arrows for the previous and next match, and a button that selects every match at once. <kbd>Ctrl/⌘</kbd>+<kbd>G</kbd> and <kbd>Shift</kbd>+<kbd>Ctrl/⌘</kbd>+<kbd>G</kbd> walk the matches without leaving the editor. The chevron at the left unfolds a `Replace with` field with **Replace this one** and Replace every one. <kbd>Esc</kbd> closes the bar.
 
+![The Find bar with Replace unfolded](img/code-find.png "Find with Regexp on and Replace unfolded: the matches, the arrows, Select every match, and the Replace with field.")
+
 ## Errors
 
 When the game throws, the failing line is **underlined and tinted**, with a mark in the gutter and the message on hover. The status bar shows `1 error`, and the Console tab of the column carries a badge with the count. Fix the line; with Auto on, the game reruns by itself.
+
+![A runtime error in the editor](img/code-error.png "The failing line underlined, the status bar's 1 error, the Console's red line and HALTED.")
 
 ## Tabs
 
@@ -82,6 +88,8 @@ The pop-out button at the top of the column lifts the screen into a floating win
 ## The reference
 
 ![The reference in the console's place](img/code-reference.png "Under 1602 px wide, the reference takes the console's place and the game is paused until you swap back.")
+
+![The reference beside the console](img/code-reference-split.png "From 1602 px wide the reference stands beside the console, and the game keeps running.")
 
 The reference is this documentation, opened inside the editor. <kbd>F1</kbd> opens it on the card of the **symbol under the caret**: with the caret anywhere in `gfx.draw_sprite`, that function's card. Pressing <kbd>F1</kbd> on another symbol later moves the pane there; moving the caret does not. <kbd>Ctrl/⌘</kbd>+<kbd>K</kbd> opens it with the caret in its search box, which lists the first ten hits as you type. The button on the edge of the column opens and closes it as well, and the editor remembers whether it was open.
 
