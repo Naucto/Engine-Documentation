@@ -34,8 +34,8 @@ From a preset shows 23 sounds on shelves: All, Lead, Bass, Keys, Pad, Drums and 
 
 The selected instrument, with the gold edge, is the one new notes are written with, and its colour paints its notes on the roll. Hover a row for three actions: Duplicate, the pencil, which opens **Rename instrument** (a name of up to 16 characters and one of the accent colours), and the trash.
 
-> [!WARNING]
-> The trash removes the instrument at once, with no confirmation. Its notes lose their instrument. Undo brings it back (<kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd>).
+> [!NOTE]
+> The trash asks first when the instrument is in use, and the dialog counts the patterns and SFX slots that lose its notes; an unused one goes at once. Undo brings it back either way (<kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd>).
 
 ### The inspector
 
@@ -136,7 +136,7 @@ end
 
 ### Undo and redo
 
-The two arrows at the right of the pattern bar, and <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>, undo and redo what happened to instruments, patterns and SFX slots, including a deleted instrument. **The MUSIC grid is not covered**: a box you emptied has to be typed back.
+The two arrows at the right of the pattern bar, and <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>, undo and redo what happened to instruments, patterns, SFX slots, the MUSIC grid and samples, **a deleted instrument included**.
 
 ## Shortcuts
 
@@ -144,7 +144,7 @@ The two arrows at the right of the pattern bar, and <kbd>Ctrl/⌘</kbd>+<kbd>Z</
 | --- | --- |
 | <kbd>Space</kbd> | Play the pattern, or stop it |
 | <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> | Undo |
-| <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> | Redo |
+| <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> or <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd> | Redo |
 | Right click on a note | Delete it |
 | Drag on the ruler | Move the head, during playback too |
 

@@ -67,7 +67,7 @@ Who is in the session, and the Kick button, are on the [GAME](/learn/editors/gam
 | --- | --- | --- |
 | <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> | ART, MAP, SOUND | Undo |
 | <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> | ART, MAP, SOUND | Redo |
-| <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd> | ART only | Redo |
+| <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd> | ART, MAP, SOUND | Redo |
 | <kbd>F1</kbd> | CODE only | The reference, on the symbol under the caret |
 | <kbd>Ctrl/⌘</kbd>+<kbd>K</kbd> | CODE only | Search the reference |
 

@@ -33,7 +33,7 @@ The **Perf** tab beside it shows the measured FPS, the CPU share of the step, th
 
 ## What an error looks like
 
-An error in `_init`, `_update` or `_draw` halts the game: the screen freezes on the last frame, the Console prints one red line followed by "--- HALTED ---", and the music stops.
+An error in `_init`, `_update` or `_draw` halts the game: the screen freezes on the last frame, the Console prints one red line followed by "--- HALTED ---", and the music stops. On the page of a published game, where there is no Console, the screen itself says the game stopped, shows that line and offers a Restart.
 
 ```
 ! update: Runtime error: main:12: attempt to index a nil value (global 'player')

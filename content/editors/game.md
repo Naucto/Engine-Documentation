@@ -77,7 +77,7 @@ The button in the header is greyed, with the reason on hover, while the game is 
 
 ## Share
 
-SHARE opens the collaborators dialog. Collaborators can edit everything in real time; the dialog reserves publishing for the creator.
+SHARE opens the collaborators dialog. Collaborators can edit everything in real time, and any of them can publish; only the creator changes who is on the game.
 
 ![The Share dialog](img/game-share.png "Share: who the game belongs to, and inviting someone by name.")
 

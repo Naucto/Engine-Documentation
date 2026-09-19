@@ -39,7 +39,7 @@ The bar above the panel and the two toggles in the header set how the sheet is s
 | Grid    | On by default: the cell lines over the canvas                                                                                    |
 | Crop    | Shows only the region, fitted to the panel, once the neighbours stop mattering                                                   |
 | Onion   | Only while Crop is on: ghosts the cells one region's width to the left, so the previous frame of an animation shows under this one |
-| Lock    | On by default: a stroke stops at the region's edge. Hidden while Crop is on, there being nothing outside the region to reach     |
+| Lock    | On by default: a stroke stops at the region's edge. Hidden while Crop is on, there being nothing outside the region to reach. On a laptop-wide window Lock and Crop show their icon alone |
 | Zoom    | `×1` to `×64` with the `−` and `+` buttons, the slider, or <kbd>Ctrl/⌘</kbd> + wheel; the `×N` readout fits the sheet to the panel again |
 
 > [!TIP]

@@ -64,7 +64,7 @@ The globals go, the palette and the camera come back to what the editors show, t
 
 ![The console column](img/code-console.png "The console column: the game at 320×180, the transport with Auto, and the Console and Perf tabs.")
 
-The column at the right of CODE holds the **running game** at its own 320 × 180, scaled to the column. Opening the editor does not launch it; the transport under the screen does: Play or Pause, Restart, Step one frame, the gamepad indicators and Fullscreen. Click the screen to give it the keyboard.
+The column at the right of CODE holds the **running game** at its own 320 × 180, scaled to the column. Opening the editor does not launch it; the transport under the screen does: Play or Pause, Restart, Step one frame (one update, pausing a running game first), the gamepad indicators and Fullscreen. Click the screen to give it the keyboard.
 
 The **Auto** switch, on by default, reruns the game 400 ms after every edit, so the screen shows what you just typed. Turn it off while a change spans several tabs.
 

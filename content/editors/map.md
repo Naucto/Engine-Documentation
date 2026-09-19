@@ -62,7 +62,7 @@ With Select, drag a rectangle of tiles. The transform bar at the top right of th
 
 ### Undo
 
-The two arrows in the header, <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> and <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>. Adding, renaming and deleting a map are undone the same way.
+The two arrows in the header, <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> and <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> or <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd>. Adding, renaming and deleting a map are undone the same way.
 
 ## Map size
 
