@@ -125,8 +125,6 @@ The palette is **sixteen colours for the whole game**, shared by every sheet and
 
 The default is Bubblegum 16. The **Presets** menu applies Bubblegum 16 or PICO-8 to the sixteen slots, and Reset puts Bubblegum 16 back. Both are undoable, like any edit to a slot.
 
-The section folds from its header, and the editor remembers whether it is open.
-
 > [!NOTE]
 > What a game does with [[gfx.set_color]] while it runs lasts for that run only. The palette the editor shows is the one the next run starts from.
 
