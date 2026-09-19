@@ -86,6 +86,16 @@ for await (const file of walk(resolve(root, 'content'))) {
   const meta = parse(m[1]);
   for (const key of ['title', 'slug', 'section', 'order']) if (meta[key] === undefined) errors.push(`${file}: front-matter lacks ${key}`);
   slugs.add(meta.slug);
+  for (const key of ['lua', 'assets'])
+    if (meta[key] && !(await exists(resolve(dirname(file), meta[key]))))
+      errors.push(`${file}: ${key} file ${meta[key]} is not there`);
+  if (meta.assets) {
+    try {
+      JSON.parse(await readFile(resolve(dirname(file), meta.assets), 'utf8'));
+    } catch (e) {
+      errors.push(`${file}: assets file ${meta.assets} does not parse: ${e.message}`);
+    }
+  }
   pages.push({ file, body: src.slice(m[0].length) });
 }
 /**
