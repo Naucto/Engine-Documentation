@@ -15,15 +15,16 @@ functions:
 
     |----|----|----|
 
-    | `max_players` | number | Session capacity, **including the host**. Defaults to `2`, and is neither
-    rounded nor capped by the engine. The player cannot change it -- capacity belongs to the game. |
+    | `max_players` | number | Session capacity, **including the host**. A whole number from `2` to `16`;
+    defaults to `2`. The engine passes it on as written and the server refuses anything else: the dialog
+    reports the failure and no session starts. The player cannot change it: capacity belongs to the game. |
 
     | `title` | string | Default session title offered in the dialog. The player can edit it. |
 
 
     The callback fires only when the session is actually created. If the player cancels the dialog, the
-    callback is never called and no session starts -- design your game so it simply stays in its menu
-    state in that case.
+    callback is never called and no session starts: design your game so it stays in its menu state in
+    that case.
 
 
     Raises `net: already in a session; call net.leave() first` if a session is active. A second call made
@@ -97,6 +98,7 @@ functions:
   returns: null
   examples:
   - |-
+    local state = "playing"
     local game_over = true
     if game_over then
       net.leave()
@@ -111,7 +113,7 @@ functions:
 - name: id
   signature: net.id()
   summary: Your player id in the session.
-  description: 'The id of this player''s account, the same id the host receives in `peer.joined` / `peer.left` and every peer gets as the `from` of an event, so it is the natural key for per-player data in [[net.state]]. It is not a seat number from `1` to `max_players`: ids are large, not contiguous, and two windows on one account share one.'
+  description: 'The id this player holds in the session, the same id the host receives in `peer.joined` / `peer.left` and every peer gets as the `from` of an event, so it is the natural key for per-player data in [[net.state]]. It is the player''s account id, except for the second client of the NET tab''s test rig, which runs on your account under an id of its own. It is not a seat number from `1` to `max_players`: ids are not contiguous, and an account holds one seat in a session.'
   params: []
   returns: Your own player id in the session, as an integer.
   returnType: number
@@ -140,7 +142,7 @@ functions:
 
     | `"peer.left"` | `(playerId)` | A player leaves or disconnects. **Host only** |
 
-    | `"ended"` | *(none)* | The session ends -- in particular when the host leaves |
+    | `"ended"` | *(none)* | The session ends, in particular when the host leaves |
 
     | `"event:<name>"` | `(from, payload)` | A peer calls `net.emit("<name>", payload)`; `from` is its
     player id |
@@ -153,14 +155,18 @@ functions:
 
 
     State patterns match dotted key paths and support two wildcards: `*` matches exactly one path segment,
-    `**` matches any number of segments. Change callbacks fire only when the value actually changes (rewriting
-    an identical value is silent), and they fire for your own writes too. The names above are reserved:
-    `net.on("error", ...)` always registers the rejection listener, so it never observes a [[net.state]]
-    key literally named `error`. Listening for `"error"` is the intended way to detect a write the host
-    rolled back; the [permissions](/learn/tutorials/permissions) tutorial shows that rejected-write behavior
-    in action, there observed via the protected value flipping back. A lock acquire, a queue push or a queue
-    pop refused by the permissions fires `"error"` too, with the path and `"forbidden"`: a refused acquire''s
-    callback never runs, and a refused pop''s callback gets `nil`.'
+    `**` any number of segments. A change callback fires only when the value actually changes (rewriting
+    an identical value is silent), and it fires for your own writes too.
+
+
+    The names in the table are reserved: `net.on("error", ...)` always registers the rejection listener,
+    so it never observes a [[net.state]] key literally named `error`.
+
+
+    Listening for `"error"` is how a game learns that the host rolled back one of its writes; the
+    [permissions](/learn/tutorials/permissions) tutorial shows it happening. A lock acquire, a queue push
+    or a queue pop refused by the permissions fires `"error"` too, with the path and `"forbidden"`: a
+    refused acquire''s callback never runs, and a refused pop''s callback gets `nil`.'
   params:
   - name: pattern
     type: string
@@ -196,8 +202,8 @@ functions:
     end)
   notes:
   - kind: note
-    text: An error raised inside a `net.on` callback (or a lock/queue callback) is printed to the output
-      panel but does **not** stop the game.
+    text: 'An error raised inside a `net.on` callback (or a lock/queue callback) is printed to the Console,
+      as `Error: …`, but does **not** stop the game.'
   aliases: []
   seeAlso:
   - net.emit
@@ -214,8 +220,8 @@ functions:
     required: true
   - name: payload
     type: any
-    description: Optional value to send along -- a number, string, boolean, or nested table. Functions
-      cannot be sent. Omitted, the receivers get `nil`.
+    description: 'Optional value to send along: a number, string, boolean, or nested table. Functions
+      cannot be sent. Omitted, the receivers get `nil`.'
     optional: true
   returns: null
   examples:
@@ -230,13 +236,13 @@ functions:
 - name: lock
   signature: net.lock()
   summary: Create a replicated lock value.
-  description: 'Create a mutual-exclusion lock. Locks let players compete for something safely -- only
-    one peer at a time can hold a given lock, no matter how simultaneously they ask.
+  description: 'Create a mutual-exclusion lock. Locks let players compete for something safely: only
+    one peer at a time can hold a given lock, however close together they ask.
 
 
-    **Put the lock in** [[net.state]] **to share it.** A lock becomes shared and host-serialized only
-    once it is assigned into `net.state`; its net.state path is its identity, and you use it straight
-    from there. Store it right next to what it protects:
+    **Assign the lock into the shared state to share it**: a lock becomes shared, and ordered by the
+    host, only once it sits in [[net.state]]. Its path there is its identity, and you use it straight
+    from there, so store it right next to what it protects. A lock has two functions:
 
 
     - `acquire(fn)` requests the lock. When granted, `fn` is called with a single argument: a `release`
@@ -246,13 +252,13 @@ functions:
     - `is_locked()` returns `true` while any peer holds the lock.
 
 
-    Requests are ordered by the session host, so two peers acquiring "at the same time" are serialized
-    -- one runs, then the other. If a peer disconnects while holding locks, its locks are released automatically
+    Requests are ordered by the session host, so two peers acquiring "at the same time" are serialized:
+    one runs, then the other. If a peer disconnects while holding locks, its locks are released automatically
     and its pending requests are dropped. A lock stored under a host-only path (see [permissions](/learn/tutorials/permissions))
     can only be acquired by the host, just like a write to that path: a guest''s `acquire` there is refused,
     its callback never runs, and `net.on("error")` fires with the path and `"forbidden"`.'
   params: []
-  returns: A lock handle -- a table with an `acquire` and an `is_locked` function.
+  returns: 'A lock handle: a table with an `acquire` and an `is_locked` function.'
   returnType: table
   examples:
   - |-
@@ -284,7 +290,7 @@ functions:
     session host, so an item is delivered to exactly one popper.
 
 
-    Like a lock, a queue becomes shared only once it is assigned into [[net.state]]; its net.state path
+    Like a lock, a queue becomes shared only once it is assigned into [[net.state]]; its path there
     is its identity, and you use it from there:
 
 
@@ -302,7 +308,7 @@ functions:
     write, its `push` and its `pop` are refused: `net.on("error")` fires with the path and `"forbidden"`,
     and the `pop` callback still gets `nil`, as on an empty queue.'
   params: []
-  returns: A queue handle -- a table with `push`, `pop`, `length` and `peek`.
+  returns: 'A queue handle: a table with `push`, `pop`, `length` and `peek`.'
   returnType: table
   examples:
   - |-
@@ -331,7 +337,7 @@ values:
   signature: net.state
   summary: A table shared by every player in the session. Writes replicate to all peers automatically;
     reads always return the latest replicated value.
-  description: 'A table shared by every player in the session. Writes replicate to all peers; reads answer the latest replicated value. A player who joins mid-game receives everything they may read. Stored values are numbers, strings, booleans and nested tables; a function raises `net: cannot store a function in net.state`. Writing `nil` to a key deletes it, and everything under it. Reading it outside a session raises `net: no active session`.'
+  description: 'A table shared by every player in the session. Writes replicate to all peers; reads answer the latest replicated value. A player who joins mid-game receives everything they may read. Stored values are numbers, strings, booleans and nested tables; a function raises `net: cannot store a function in net.state`. Iterated with `pairs`, a shared table gives its keys as strings, numeric ones included: compare a player key with `tonumber(id) == net.id()`. Writing `nil` to a key deletes it, and everything under it. Reading it outside a session raises `net: no active session`.'
   params: []
   returns: null
   examples:

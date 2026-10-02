@@ -15,11 +15,13 @@ Each step explains one idea and gives the code it adds, whole: a function is alw
 
 ## What you will build
 
-A black screen with four boxes. While the music plays, the box of the current beat lights up and a line says which bar of the chain is going by. The `a` button (<kbd>X</kbd>) zaps; `pause` (<kbd>Enter</kbd>) fades the music out, and again brings it back. **Copy to new game** at the head of the page installs the code alone: instruments, patterns and slots are not carried over, so the copy runs silent until Steps 1 to 4 are done. A game that asks for a sound it does not have raises no error; it plays nothing.
+A black screen with four boxes. While the music plays, the box of the current beat lights up and a line says which bar of the chain is going by. The `a` action (<kbd>X</kbd>) zaps; `pause` (<kbd>Enter</kbd>) fades the music out, and again brings it back.
+
+**Copy to new game** at the head of the page installs the code alone: instruments, patterns and slots are not carried over, so the copy runs silent until Steps 1 to 4 are done. A game that asks for a sound it does not have raises no error; it plays nothing.
 
 ## Step 1: An instrument from a preset
 
-Open **SOUND**. A new game has no sound at all: the middle column says No sound yet, and there is no piano roll, because a note is written with an instrument and there is none yet.
+Open **SOUND**. A new game has no sound at all: the middle column says "No sound yet", and there is no piano roll, because a note is written with an instrument and there is none yet.
 
 ### The New instrument dialog
 
@@ -83,7 +85,7 @@ The MUSIC bank at the bottom left is the chain. The `#` field says which of the 
 
 An empty box with music after it is a hole, drawn in **orange**, and the music stops before it: a pattern carries its own length and an empty place has none, so nothing could say how long the silence lasts. A rest is a pattern with no notes in it, chained like any other.
 
-The section has a transport of its own. Play the music plays `00`, then `01`, then stops; the box that is sounding lights up in pink, and the head runs on the roll only while the roll shows the pattern that is sounding. Whether the chain goes round again is the game's decision, in Step 5.
+The section has a transport of its own. Its Play button plays `00`, then `01`, then stops; the box that is sounding lights up in pink, and the head runs on the roll only while the roll shows the pattern that is sounding. Whether the chain goes round again is the game's decision, in Step 5.
 
 > [!TRY]
 > Play the music. The first bar, the second, silence. Switch the roll to pattern `1` and play it again: the head appears on the roll when the second box turns pink.
@@ -172,7 +174,7 @@ function _update()
 end
 ```
 
-What SOUND decided is not final: [[sound.set_pattern]] can raise the tempo of a pattern from code, and [[sound.set_instrument]] change how an instrument sounds, **for this run only**; the document keeps what you drew.
+What SOUND decided is not final: [[sound.set_pattern]] can raise the tempo of a pattern from code, and [[sound.set_instrument]] change how an instrument sounds, **for this run only**; the game keeps what you wrote in SOUND.
 
 ### A beat indicator
 

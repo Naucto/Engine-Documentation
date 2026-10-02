@@ -7,9 +7,9 @@ functions:
   picture: img/frames/map-draw.png
   caption: 'The whole first map drawn with map.draw(0, y), y chosen so its last row, the floor, sits on the bottom of the screen.'
   description: |-
-    Draw the map, or the part of it that `tx`, `ty`, `tw`, `th` name, with its top-left corner at `x`, `y`. Tiles are the sheet's 8 × 8 sprites; a tile of sprite `0` is empty. The camera moves it like anything else, and a tile changed with `map.set` is drawn changed. `tw` and `th` left out are the whole width and height even when `tx`, `ty` are not `0`.
+    Draw the map, or the part of it that `tx`, `ty`, `tw`, `th` name, with its top-left corner at `x`, `y`. Tiles are the sheet's 8 × 8 sprites; a tile of sprite `0` is empty. The camera moves it like anything else, and a tile changed with [[map.set]] is drawn changed. `tw` and `th` left out are the whole width and height even when `tx`, `ty` are not `0`, so give them with `tx`, `ty`: a window that runs past the map's edge repeats the map's last pixels.
 
-    A game may keep several maps, made in the MAP tab. Every `map.*` call but `map.flag` takes the map it works on as its last argument, counted from `1` in the order of the strip in that tab, and works on the first one when that argument is left out.
+    A game may keep several maps, made in the MAP tab. Every `map.*` call but [[map.flag]] takes the map it works on as its last argument, counted from `1` in the order of the strip in that tab, and works on the first one when that argument is left out.
   params:
   - name: x
     type: number

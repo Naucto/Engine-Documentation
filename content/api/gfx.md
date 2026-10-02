@@ -67,7 +67,7 @@ A colour is a palette index from `0` to `15`. **An index outside that range wrap
 
 ## Colours
 
-A colour is a number from `0` to `15`, and what each number shows is the palette. **The palette belongs to the game**: a new game starts on Bubblegum 16, the ART tab's Palette panel edits any entry (with Presets to start from and Reset to go back), and the functions below change it from code.
+A colour is a number from `0` to `15`, and what each number shows is the palette. **The palette belongs to the game**: a new game starts on Bubblegum 16, the ART tab's PALETTE panel edits any entry (with Presets to start from and Reset to go back), and the functions below change it from code.
 
 Every colour name in the examples of this documentation ("white", "yellow") is read on Bubblegum 16. A game on another palette shows the same numbers as other colours.
 
@@ -101,7 +101,9 @@ Colour `0` is a colour like any other for shapes, pixels, text and [[gfx.clear]]
 
 ### Remapping colours while drawing
 
-A **draw remap** ([[gfx.set_col]]) changes the number that gets written while drawing: after `gfx.set_col(4, 5)`, every pixel that would have been `4` is stored as `5`, for sprites, shapes, map and text alike. It is baked into the frame, so [[gfx.get_pixel]] reads `5`, and it stays on until [[gfx.reset_col]], across frames. **Reset before the next thing you draw plain**, or the whole screen stays tinted, this frame and the next. The picture below, its labels aside:
+A draw remap ([[gfx.set_col]]) changes the number that gets written while drawing: after `gfx.set_col(4, 5)`, every pixel that would have been `4` is stored as `5`, for sprites, shapes, map and text alike. It is baked into the frame, so [[gfx.get_pixel]] reads `5`, and it stays on until [[gfx.reset_col]], across frames. **Reset before the next thing you draw plain**, or the whole screen stays tinted, this frame and the next.
+
+This code draws the picture below, labels aside:
 
 ```lua
 function _draw()
@@ -128,10 +130,10 @@ end
 
 The palette and display functions ([[gfx.set_color]], [[gfx.get_color]], [[gfx.screen_col]], [[gfx.reset_palette]], [[gfx.shift]], [[gfx.blank]]) are the same in both places, and what they act on depends on where they are called:
 
-- **Anywhere but `_scanline`** (in `_init`, `_update` or `_draw`): they change the **frame**: every line, kept from frame to frame until reset. `gfx.shift(dx, dy)` here is a screenshake; `gfx.set_color(0, "#402010")` here tints the whole background for as long as you like.
-- **Inside `_scanline(y)`**: they change **line `y` and every line below it**, until a later line changes it again, for this frame only. The beam starts every frame from the frame state, so nothing a line sets leaks into the next frame.
+- Anywhere but `_scanline` (in `_init`, `_update` or `_draw`), they change the **whole frame**: every line, kept from frame to frame until reset. `gfx.shift(dx, dy)` here is a screenshake; `gfx.set_color(0, "#402010")` here tints the whole background for as long as you like.
+- Inside `_scanline(y)`, they change **line `y` and every line below it**, until a later line changes it again, for this frame only. The beam starts every frame from the frame state, so nothing a line sets leaks into the next frame.
 
-Unlike [[gfx.set_col]], none of this touches the frame: [[gfx.get_pixel]] still reads the number that was drawn, and a HUD drawn in colour `5` shows whatever `5` means on its line.
+Unlike [[gfx.set_col]], none of this changes the numbers `_draw()` wrote: [[gfx.get_pixel]] still reads the number that was drawn, and a HUD drawn in colour `5` shows whatever `5` means on its line.
 
 > [!TIP]
 > `_update` and `_draw` each get a fresh instruction budget, ten million instructions a step, and the 180 calls to `_scanline` spend `_draw`'s. Keep each call to a few lines: compute tables in `_init`, and change the palette only on the lines where something changes (`if y % 12 == 0 then …`).
@@ -160,7 +162,7 @@ end
 
 ### 240 colours from sixteen
 
-A frame holds sixteen numbers, but each band of lines can show them as sixteen colours of its own. Fifteen bands of twelve lines, each given its own palette on its first line, show 240 colours in a picture drawn once with sixteen indices.
+A frame holds only the numbers `0` to `15`, but each band of lines can show them as sixteen colours of its own. Fifteen bands of twelve lines, each given its own palette on its first line, show 240 colours in a picture drawn once with sixteen indices.
 
 ```lua
 local BAND = 12

@@ -16,7 +16,7 @@ The MAP tab is where you lay out levels and backgrounds: a grid of tiles, each h
 
 ## The map
 
-A new game has one map of **128 × 32 tiles**, and the header says so: `Map #1 128 × 32 TILES`. A tile is 8 × 8 pixels, the size of a sprite, so the map is 1024 × 256 pixels and the screen shows 20 × 11 tiles of it at a time. A tile holds a sprite number; sprite `0` is the empty tile.
+A new game has one map of **128 × 32 tiles**, and the header says so: `Map #1 128 × 32 TILES`. A tile is 8 × 8 pixels, the size of a sprite, so the map is 1024 × 256 pixels and the 320 × 180 screen shows 40 tiles of it across and 22 and a half down. A tile holds a sprite number; sprite `0` is the empty tile.
 
 The canvas in the middle is the map at `×2` by default. The zoom runs from `×1` to `×8`: the `−` and `+` buttons, the slider, or <kbd>Ctrl/⌘</kbd> + wheel over the map. The wheel on its own scrolls.
 
@@ -28,7 +28,7 @@ Two toggles sit above the right panel. **Grid**, on by default, draws a fine lin
 
 **Flags** tints every tile by the first flag set on its sprite, in the colour that bit has in the FLAGS panel of ART: bit 0 green, 1 blue, 2 orange, 3 pink, 4 hot pink, 5 gold, 6 lime, 7 magenta. It is the quickest way to see a level's collision: turn it on, and every solid tile lights up, every tile you forgot stays dark.
 
-![MAP with the Flags overlay on](img/map-flags.png "The MAP tab with Flags on: the tiles whose sprite carries flag 0 are tinted green, and a tile painted with a sprite that has no flag stays as it is.")
+![MAP with the Flags overlay on](img/map-flags.png "The MAP tab with Flags on, on the Platformer: the ground and the platforms carry flag 0 and are tinted green, the spikes flag 1, blue, and the trophy flag 2, orange.")
 
 ## The WHOLE MAP panel
 
@@ -40,7 +40,7 @@ The lower panel is a minimap of the current map, every tile drawn three pixels w
 
 ![The TILE PICKER panel](img/map-brush.png "The TILE PICKER showing the Platformer's first sheet: the gold outline over four cells is the brush, made by dragging over two columns and two rows.")
 
-The TILE PICKER at the top of the right panel shows a sheet. Click a cell to make it the **brush**, the sprite the Stamp tool lays, or **drag a rectangle** of up to 8 × 8 cells to stamp a block of tiles at once: a whole tree, a platform end to end. The Tilesets strip above the picker chooses which sheet, since a map can take its tiles from any of them; a tileset is a sheet, as the ART tab calls it.
+The TILE PICKER at the top of the right panel shows a sheet. Click a cell to make it the **brush**, the sprite the Stamp tool lays, or drag a rectangle of up to 8 × 8 cells to stamp a block of tiles at once: a whole tree, a platform end to end. The Tilesets strip above the picker chooses which sheet, since a map can take its tiles from any of them; a tileset is a sheet, as the ART tab calls it.
 
 ![The tools](img/map-tools.png "The tool group in the header: Stamp, Fill, Select, Erase and Move.")
 
@@ -52,7 +52,7 @@ Five tools, each with a key. The letters are not those of ART: Select is <kbd>M<
 | Fill   | <kbd>F</kbd> | Floods a patch of one tile with the brush's first cell          |
 | Select | <kbd>M</kbd> | Drags a rectangle of tiles to transform, copy or move           |
 | Erase  | <kbd>E</kbd> | Clears tiles to sprite 0                                        |
-| Move   | <kbd>V</kbd> | Drags a floating paste into place                               |
+| Move   | <kbd>V</kbd> | Drags the selected tiles, or a floating paste, into place       |
 
 Whatever the tool, the **right button erases**.
 
@@ -64,7 +64,7 @@ With Select, drag a rectangle of tiles. The transform bar at the top right of th
 
 ### Undo
 
-The two arrows in the header, <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> and <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> or <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd>. Adding, renaming and deleting a map are undone the same way.
+The two arrows in the header undo and redo; so do <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> for undo and <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> or <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd> for redo. Adding, renaming and deleting a map are undone the same way.
 
 ## Map size
 
@@ -72,7 +72,7 @@ The gear of the WHOLE MAP strip opens the **Map size** dialog: a width and a hei
 
 ## Several maps
 
-The `+` of the WHOLE MAP strip adds a map at the size of the current one. Double-click a tab, or click its pencil, to give the map a **name and a colour**; its cross deletes it after a confirmation. A deleted map takes its tiles with it, and code that drew it by number will draw the next map along, or nothing.
+The `+` of the WHOLE MAP strip adds a map at the size of the current one. Double-click a tab, or click its pencil, to give the map a **name and a colour**; its trash deletes it after a confirmation. A deleted map takes its tiles with it, and code that drew it by number will draw the next map along, or nothing.
 
 Every `map.*` function but [[map.flag]], which reads a sprite and not a map, takes the map it works on as its **last argument**, counted from `1` in the order of the strip. Leave it out and the first map is used, so a game with one map never names it.
 
@@ -120,6 +120,8 @@ local function solid_at(px, py)
 end
 ```
 
+Going the other way, a tile coordinate times 8 is a pixel: a platform at tile column 9, row 20, five tiles wide, sits at `x = 72, y = 160, w = 40, h = 8`.
+
 [[map.set]] changes a tile while the game runs, and [[map.get]] with a map number reads another map:
 
 ``` lua
@@ -129,5 +131,3 @@ local spr = map.get(3, 4, 2)   -- what map 2 holds at tile (3, 4)
 
 > [!IMPORTANT]
 > A tile written with [[map.set]] lasts for the run. The next launch starts from the map as the MAP tab shows it.
-
-Going the other way, a platform at tile column 9, row 20, five tiles wide, sits at `x = 72, y = 160, w = 40, h = 8` in pixels.

@@ -12,7 +12,10 @@ description: Build a one-screen coin hunt in ten minutes, with a sprite that wal
 
 This tutorial turns the sprite you moved in [Getting started](/learn/getting-started) into a game you can finish: a room with walls, five coins to collect, a score and a win. It takes about ten minutes and visits ART, MAP and CODE once each.
 
-Each step explains one idea and gives the code it adds, whole: a function is always shown from `function` to `end`, so it can be typed or pasted as it stands, and a function shown again replaces the one you had. The editor needs a window at least **1024 pixels wide**; narrower, it shows a message instead of the tabs.
+Each step explains one idea and gives the code it adds, whole: a function is always shown from `function` to `end`, so it can be typed or pasted as it stands, and a function shown again replaces the one you had.
+
+> [!IMPORTANT]
+> The editor needs a browser window at least **1024 px** wide. Narrower, it shows "The editor needs a bigger screen" instead of the workspace.
 
 ## What you will build
 
@@ -20,7 +23,7 @@ A top-down room that fits on one screen. The player walks in four directions and
 
 ## Step 1: Draw the sprites
 
-Open **ART**. The sheet of `256` sprites is drawn in the canvas; the SHEET map at the right shows the whole sheet small, and a click on one of its cells selects that sprite. PREVIEW, over the canvas, then reads its number, such as `SPRITE 000`.
+Open **ART**. The sheet of `256` sprites is drawn in the canvas; the SHEET map at the right shows the whole sheet small, and a click on one of its cells selects that sprite. PREVIEW, at the bottom right of the canvas, then reads its number, such as `SPRITE 000`.
 
 The colours are the swatches under PALETTE, in the right column. They are **numbered from `0`**, left to right, the top row first, and the number shows once a swatch is clicked; the code names a colour by that number.
 
@@ -31,7 +34,7 @@ Select sprite `0` and draw the player: a round body in colour `4` (yellow) with 
 A new game does not start empty: the starter moon sits in sprites `1`, `2`, `17` and `18`. Drawing the coin over `1` is intended; clear the other three if you like, this game never draws them.
 
 > [!TIP]
-> Lock, at the right end of the tool bar, is off when a game opens. On, a stroke stays inside the selected sprite instead of running into the next one; worth switching on while the coin's rim is drawn one pixel from the edge.
+> Lock, just to the right of the tools in the bar above the canvas, is off when a game opens. On, a stroke stays inside the selected sprite instead of running into the next one; worth switching on while the coin's rim is drawn one pixel from the edge.
 
 ### The wall and its flag
 
@@ -59,9 +62,9 @@ The screen is `320 x 180` pixels, which is `40` tiles across and `22` and a half
 
 ## Step 3: Walk into walls
 
-Switch to **CODE**. The middle column is the script, `main`; the right column is the game screen with its Play button and the console under it. If the right column shows REFERENCE instead of the game, press <kbd>F1</kbd> or click ⇄ on its edge to swap back.
+Switch to **CODE**. The middle column is the script, `main`; the right column is the game screen with its Play button and the console under it. If the right column shows REFERENCE instead of the game, click ⇄ on its edge to swap back.
 
-Delete the starter script, and start with the numbers Step 1 and 2 decided:
+Delete the starter script, and start with the numbers Steps 1 and 2 decided:
 
 ``` lua
 SPRITE_PLAYER = 0
@@ -101,7 +104,7 @@ end
 
 ### Move, then check
 
-`_init` creates the player where Getting started did, only closer to the corner:
+`_init` creates the player, the same table as in Getting started, placed near the top-left corner of the room:
 
 ``` lua
 function _init()

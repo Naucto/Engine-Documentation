@@ -16,7 +16,9 @@ The ART tab is where you draw the sprites of your game: characters, tiles, objec
 
 ## The sheet
 
-A new game has one sheet of **128 × 128 pixels**, cut into cells of 8 × 8. Each cell is a sprite, numbered from `0` left to right and top to bottom: sixteen per row, 256 in all. That number is what your code hands to [[gfx.draw_sprite]]. A sheet and a **tileset** are the same thing: the header here and the MAP tab, which stamps its tiles from a sheet, call it a tileset.
+A new game has one sheet of **128 × 128 pixels**, cut into cells of 8 × 8. Each cell is a sprite, numbered from `0` left to right and top to bottom: sixteen per row, 256 in all. That number is what your code hands to [[gfx.draw_sprite]].
+
+A sheet and a **tileset** are the same thing: the header here and the MAP tab, which stamps its tiles from a sheet, call it a tileset.
 
 The canvas in the middle shows the whole sheet. The gold outline on it is the **region**: the cells you are working on, and what the FLAGS panel writes to. The header names the sheet (`Tileset #1`), then the region's size in cells when it is bigger than one, then its size in pixels. PREVIEW, at the bottom right of the canvas, shows the region at its real size, and under it `SPRITE 001` is the number of the region's first cell.
 
@@ -60,7 +62,7 @@ Eight tools, each with a one-letter key. Pick a colour in the PALETTE panel, the
 | Circle | <kbd>C</kbd>   | Drag an ellipse outline                                             |
 | Select | <kbd>S</kbd>   | Drag a rectangle of pixels to transform, copy or move               |
 | Pick   | <kbd>I</kbd>   | Takes the colour under the pointer as the current colour            |
-| Move   | <kbd>M</kbd>   | Drags the selection, or the whole region when nothing is selected   |
+| Move   | <kbd>M</kbd>   | Drags the selection; with nothing selected, the region while Lock or Crop is on, and the whole sheet otherwise |
 
 Whatever the tool, the **right button paints colour 0**, which is how you erase: colour 0 is the transparent one when the sprite is drawn.
 
@@ -74,11 +76,11 @@ With Select, drag a rectangle on the canvas. A transform bar appears at the top 
 
 ### Clipboard
 
-<kbd>Ctrl/⌘</kbd>+<kbd>C</kbd> copies the selection, or the **whole region** when nothing is selected. <kbd>Ctrl/⌘</kbd>+<kbd>X</kbd> cuts, and needs a selection. <kbd>Ctrl/⌘</kbd>+<kbd>V</kbd> pastes as a floating block and switches to Move: drag it where it goes, then <kbd>Enter</kbd> settles it and <kbd>Esc</kbd> discards it. Starting any other stroke settles it too. The Copy and Paste buttons at the right of the header do the same.
+<kbd>Ctrl/⌘</kbd>+<kbd>C</kbd> copies the selection; with nothing selected it copies the **region** while Lock or Crop is on, and the whole sheet otherwise. <kbd>Ctrl/⌘</kbd>+<kbd>X</kbd> cuts, and needs a selection. <kbd>Ctrl/⌘</kbd>+<kbd>V</kbd> pastes as a floating block and switches to Move: drag it where it goes, then <kbd>Enter</kbd> settles it and <kbd>Esc</kbd> discards it. Starting any other stroke settles it too. The Copy and Paste buttons at the right of the header do the same.
 
 ### Undo
 
-The two arrows in the header, <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> and <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> or <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd>. The history covers pixels, flags and the palette, and also adding, renaming and deleting a sheet.
+The two arrows in the header undo and redo; so do <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> for undo and <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> or <kbd>Ctrl/⌘</kbd>+<kbd>Y</kbd> for redo. The history covers pixels, flags and the palette, and also adding, renaming and deleting a sheet.
 
 ## Sheet size
 
@@ -95,9 +97,9 @@ Making a sheet smaller does not delete what falls outside it. The dialog counts 
 
 ## Several sheets
 
-The `+` of the SHEET strip adds a sheet at the same size as the first one. Each tab in the strip is a sheet: double-click it, or click its pencil, to give it a **name and a colour**; its cross deletes it after a confirmation, and its art goes with it.
+The `+` of the SHEET strip adds a sheet at the same size as the first one. Each tab in the strip is a sheet: double-click it, or click its pencil, to give it a **name and a colour**; its trash deletes it after a confirmation, and its art goes with it.
 
-Sprite numbers run on from one sheet to the next. With a first sheet of 128 × 128, the first cell of the second sheet is sprite `256`, and the header of ART shows that number under PREVIEW when you select it. Deleting a sheet shifts the numbers after it down, so code that named one of them will point at the next sprite along.
+Sprite numbers run on from one sheet to the next. With a first sheet of 128 × 128, the first cell of the second sheet is sprite `256`, and PREVIEW, at the bottom right of the canvas, reads `SPRITE 256` when you select it. Deleting a sheet shifts the numbers after it down, so code that named one of them will point at the next sprite along.
 
 The MAP tab stamps tiles from any sheet. [[gfx.draw_region]], which copies a rectangle of pixels rather than whole sprites, reads the first sheet only.
 
@@ -110,7 +112,9 @@ Every sprite carries **eight bits**, numbered 0 to 7, and the FLAGS panel shows 
 The engine gives the bits no meaning. Your game reads them with [[map.flag]] and decides that bit 0 means solid, bit 2 means water, and so on. The MAP tab can tint tiles by their first flag, which is the quickest way to check a level's collision.
 
 > [!WARNING]
-> The panel writes bits on a sprite of any sheet, but only the **first sheet's flags are read**: for a sprite of a second sheet [[map.flag]] answers `false` for any bit (and `0` with no bit) whatever the panel shows. Keep the sprites whose flags matter, the solid tiles, on the first sheet. It takes a sprite number, not a cell: [[map.get]] turns a cell into its sprite first.
+> The panel writes bits on a sprite of any sheet, but only the **first sheet's flags are read**: for a sprite of a second sheet [[map.flag]] answers `false` for any bit, and `0` with no bit, whatever the panel shows.
+
+Keep the sprites whose flags matter, the solid tiles, on the first sheet. [[map.flag]] takes a sprite number, not a cell: [[map.get]] turns a cell into its sprite first.
 
 ``` lua
 -- bit 0 of sprite 17, true or false
@@ -126,11 +130,11 @@ local bits = map.flag(17)
 
 ![The PALETTE panel](img/art-palette.png "The PALETTE panel: the sixteen slots, the Presets menu, Reset, and the hex and R/G/B of the slot in hand.")
 
-![The Presets menu](img/art-presets.png "Presets: Bubblegum 16 and PICO-8, each shown as its sixteen swatches.")
-
 The palette is **sixteen colours for the whole game**, shared by every sheet and every map. Click a slot to draw with it; below the grid, the slot's number, its hex value and three R/G/B sliders let you change the colour itself. Every pixel drawn with that slot changes with it, on every sheet.
 
 The default is Bubblegum 16. The **Presets** menu applies Bubblegum 16 or PICO-8 to the sixteen slots, and Reset puts Bubblegum 16 back. Both are undoable, like any edit to a slot.
+
+![The Presets menu](img/art-presets.png "Presets: Bubblegum 16 and PICO-8, each shown as its sixteen swatches.")
 
 > [!NOTE]
 > What a game does with [[gfx.set_color]] while it runs lasts for that run only. The palette the editor shows is the one the next run starts from.

@@ -11,13 +11,13 @@ namespace: input
 
 # input · Keys, buttons and the mouse
 
-Two ways to read the player. **Actions** (left, right, up, down, a, b, x, y, pause) are what the console maps to the keyboard, a gamepad or the touch overlay, and the player can rebind them. Raw keys are read by name. Actions are the portable choice: a game that reads `"w"` does not work on an AZERTY keyboard, nor on a gamepad.
+Two ways to read the player. **Actions** (`left`, `right`, `up`, `down`, `a`, `b`, `x`, `y`, `pause`) are what the console maps to the keyboard, a gamepad or the touch overlay, and the player can rebind them. Raw keys are read by name. Actions are the portable choice: a game that reads `"w"` does not work on an AZERTY keyboard, nor on a gamepad.
 
 ## Actions
 
 `held` is true while the action is held, `pressed` on the step it is pressed, `released` on the step it is released. The words the controls table and the game's "how to play" panel show for each action are typed in the [GAME tab](/learn/editors/game), under Controls, not in code.
 
-The default bindings, which the player can change in Settings → Controls:
+The default bindings, which the player can change in Settings › Controls:
 
 ![Settings › Controls](../editors/img/settings-controls.png "Settings › Controls: each action with its keys and its gamepad button, per player, and the touch pad layout.")
 

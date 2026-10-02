@@ -29,7 +29,7 @@ A game can hold several maps. Every function but `flag` takes the map's number a
 
 The painted map is the level's data: read the tile under a point to know what is there, and the flags of that sprite to know what it means. **Out of the map, `get` answers `0`**, which is sprite 0, so guard your bounds where sprite 0 carries a flag. A `set` lasts for the run only: reloading the game brings the painted level back.
 
-![MAP with the Flags overlay on](../editors/img/map-flags.png "The MAP tab with its Flags toggle on: every tile whose sprite has a flag set is tinted in that bit's colour, so the tiles map.flag will call solid show up at a glance and the ones with no flag stay dark.")
+![MAP with the Flags overlay on](../editors/img/map-flags.png "The MAP tab with its Flags toggle on: every tile whose sprite has a flag set is tinted in the colour of its first set bit, so the tiles map.flag will call solid show up at a glance and the ones with no flag are left as they are.")
 
 {{api:map.get}}
 

@@ -10,7 +10,9 @@ legacy_slugs:
 
 # Coordinates and Rendering Model
 
-This page is the map of every number you pass to a drawing function: screen pixels, the camera that shifts them, the clip that cuts them, and the sprite and tile numbers that name a picture. It ends with what the screen actually is, an array of palette indices. The words it uses are in the [Glossary](/learn/reference/glossary).
+This page is the map of every number you pass to a drawing function: screen pixels, the camera that shifts them, the clip that cuts them, and the sprite and tile numbers that name a picture. It ends with what the screen actually is, an array of palette indices.
+
+The words it uses are in the [Glossary](/learn/reference/glossary).
 
 ## The screen
 
@@ -75,4 +77,6 @@ A map is a grid of sprite numbers, one per **8 × 8 tile**. Tile coordinates cou
 
 The screen is not a picture but an array of **palette indices**, one per pixel, from `0` to `15`. Drawing functions write indices; the palette turns them into colours only at display time, which is why [[gfx.set_color]], which changes what a slot of the palette looks like, recolours what is already drawn, and why a colour index above 15 wraps around (17 draws as 1). [[gfx.set_col]] is a different thing: it swaps the number that gets written while you draw, so it changes only what is drawn after it.
 
-Nothing erases the array for you: what `_draw` does not overwrite stays from the previous frame, so a frame usually opens with [[gfx.clear]]. Between the array and the display sits the **beam**: the picture goes to the screen one line at a time, from the top line down, and if your game defines a function `_scanline(y)` it is called just before line `y` is shown, so each line can have its own palette or shift, for that frame only. [The display beam](/learn/api/gfx#the-display-beam) covers it.
+Nothing erases the array for you: what `_draw` does not overwrite stays from the previous frame, so a frame usually opens with [[gfx.clear]].
+
+Between the array and the display sits the **beam**: the picture goes to the screen one line at a time, from the top line down, and if your game defines a function `_scanline(y)` it is called just before line `y` is shown, so each line can have its own palette or shift, for that frame only. [The display beam](/learn/api/gfx#the-display-beam) covers it.

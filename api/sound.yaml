@@ -51,7 +51,7 @@ functions:
   - name: length
     type: number
     optional: true
-    description: 'Seconds to hold; left out, a quarter of a second. `0` holds the note until `sound.stop_note`.'
+    description: 'Seconds to hold; left out, a quarter of a second. `0` holds the note until [[sound.stop_note]].'
   - name: volume
     type: number
     optional: true
@@ -96,7 +96,7 @@ functions:
 - name: play_music
   signature: sound.play_music([song, loop, fade_in])
   summary: Start music 0..15; loops from its start unless told otherwise.
-  description: 'Play one of the sixteen musics of the SOUND tab, replacing the one playing. A number outside `0` to `15`, or an empty one, plays nothing and raises no error. A music loops from its start unless the code says otherwise: `loop` here, or `sound.set_music` for that music.'
+  description: 'Play one of the sixteen musics of the SOUND tab, replacing the one playing. A number outside `0` to `15`, or an empty one, plays nothing and raises no error. A music loops from its start unless the code says otherwise: `loop` here, or [[sound.set_music]] for that music.'
   params:
   - name: song
     type: number
@@ -104,7 +104,7 @@ functions:
     optional: true
   - name: loop
     type: boolean
-    description: 'Whether the music restarts when it reaches its end. Left out, it loops, unless `sound.set_music` said otherwise for this music. Lua truth applies: only `false` means no, so `0` loops; a `nil` is the same as leaving it out.'
+    description: 'Whether the music restarts when it reaches its end. Left out, it loops, unless [[sound.set_music]] said otherwise for this music. Lua truth applies: only `false` means no, so `0` loops; a `nil` is the same as leaving it out.'
     optional: true
   - name: fade_in
     type: number
@@ -234,7 +234,7 @@ functions:
   signature: sound.set_instrument(name, fields)
   summary: Change an instrument for this run.
   description: |-
-    Change some settings of an instrument **for this run only**: the SOUND tab and the saved game keep theirs, and the next run starts from them again. A note already sounding keeps the instrument it started with; the change lands from the next note on, in music, in a sound effect or from `sound.play_note` alike. Calling it again adds to what it set before, and a value outside its range is kept at the nearest end.
+    Change some settings of an instrument **for this run only**: the SOUND tab and the saved game keep theirs, and the next run starts from them again. A note already sounding keeps the instrument it started with; the change lands from the next note on, in music, in a sound effect or from [[sound.play_note]] alike. Calling it again adds to what it set before, and a value outside its range is kept at the nearest end.
 
     | Field | What it is | Range |
     | --- | --- | --- |
@@ -325,7 +325,7 @@ functions:
   signature: sound.set_music(n, fields)
   summary: Change whether a music loops for this run.
   description: |-
-    Set whether a music restarts when it reaches its end, **for this run only**. A music loops from its start unless the code says otherwise, and this is one way of saying so. On the music playing it takes effect at once, so a loop can be let out at its next end; on any other it is what `sound.play_music` does for that music when it is not given a `loop` of its own. Lua truth applies: only `false` means no; a `nil` is the same as leaving it out, and the music loops.
+    Set whether a music restarts when it reaches its end, **for this run only**. A music loops from its start unless the code says otherwise, and this is one way of saying so. On the music playing it takes effect at once, so a loop can be let out at its next end; on any other it is what [[sound.play_music]] does for that music when it is not given a `loop` of its own. Lua truth applies: only `false` means no; a `nil` is the same as leaving it out, and the music loops.
 
     | Field | What it is |
     | --- | --- |

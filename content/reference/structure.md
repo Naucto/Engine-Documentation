@@ -104,7 +104,7 @@ end
 
 ## Game state management
 
-For a game with several screens (menu, gameplay, game over), use one **state variable** and branch on it in `_update` and `_draw`. Transitions are ordinary assignments to that variable; here the A button (X, space or a pad button) starts the game and a fall ends it. This too is a skeleton: `update_game`, `draw_menu` and the others are yours to write.
+For a game with several screens (menu, gameplay, game over), use one **state variable** and branch on it in `_update` and `_draw`. Transitions are ordinary assignments to that variable; here the `a` action (<kbd>X</kbd>, <kbd>Space</kbd> or a pad button) starts the game and a fall ends it. This too is a skeleton: `update_game`, `draw_menu` and the others are yours to write.
 
 ``` lua
 state = "menu"

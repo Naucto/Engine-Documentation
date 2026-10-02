@@ -19,17 +19,19 @@ This page takes you from an empty account to a sprite you can move around the sc
 
 On the My games page, press **+ New game** in the top bar (the list itself only offers the button while it is empty). The screen says "> creating a new game…" for a moment, then the editor opens on the GAME tab, where the game is called "Untitled game" until you name it.
 
-A new game is not empty. Its `main` tab already holds a starter program, a moon driven with [[input.held]], and the moon itself is drawn in sprites 1, 2, 17 and 18 of the sheet. Run it once to see the console at work: open the **CODE** tab and press **▶**, the Play button under the game screen at the right. Then replace it.
+A new game is not empty. Its `main` tab already holds a starter program, a moon driven with [[input.held]], and the moon itself is drawn in sprites 1, 2, 17 and 18 of the sheet. Run it once to see the console at work: open the CODE tab and press **▶**, the Play button under the game screen at the right. Then replace it.
 
 ## Step 1: Draw a sprite
 
-Open the **ART** tab. The big canvas in the middle is the whole sheet, the picture your sprites are cut from; each sprite is one 8 × 8 cell of it. The cell you are working on is the **region**, drawn with a gold outline, and it is chosen on the small SHEET map at the top right: click a cell there. PREVIEW, at the bottom right of the canvas, then reads `SPRITE 000` and shows that cell at its real size.
+Open the **ART** tab. The big canvas in the middle is the whole sheet, the picture your sprites are cut from; each sprite is one 8 × 8 cell of it.
+
+The cell you are working on is the **region**, drawn with a gold outline, and it is chosen on the small SHEET map at the top right: click a cell there. PREVIEW, at the bottom right of the canvas, then reads that cell's number, such as `SPRITE 000`, and shows the cell on its own, enlarged.
 
 A new game opens with the region on sprite 1, the moon. Click the top-left cell of the SHEET map to move it to sprite `0`, which the starter game leaves empty, and draw a small character in it. Lock, in the bar above the canvas, is an option that keeps a stroke inside the region; it is off to begin with, so stay inside the cell.
 
 Colours are picked in PALETTE at the bottom right. The swatches count from `0`, left to right, top row first; click one and its number shows under the grid, as `SLOT 04`.
 
-![The ART tab with a stroke drawn on sprite 0](img/getting-started-art.png "The ART tab after Step 1: the region on sprite 0, the first cell, with a stroke drawn in it, and PREVIEW at the bottom right showing that cell at its real size. The starter moon stays on the cells beside it.")
+![The ART tab with a stroke drawn on sprite 0](img/getting-started-art.png "The ART tab after Step 1: the region on sprite 0, the first cell, with a stroke drawn in it, and PREVIEW at the bottom right showing that cell on its own. The starter moon stays on the cells beside it.")
 
 > [!WARNING]
 > Colour 0, the near-black at the start of the palette, is the transparent colour of a sprite. Pixels left in colour 0 are not drawn, so pick any other colour for your character.
@@ -54,13 +56,17 @@ function _draw()
 end
 ```
 
-Line by line: `{ x = 156, y = 86 }` is a **table**, a box with named slots, and `local` keeps the name `player` to this tab. The numbers put the sprite in the middle of the screen: the screen is 320 × 180, so its centre is (160, 90), and a sprite is 8 pixels wide, so half of it, 4, is taken off each. `function _update() … end` is a function, a block of code with a name; `if … then … end` runs what is between `then` and `end` only when the test before it is true.
+Line by line: `{ x = 156, y = 86 }` is a **table**, a box with named slots, and `local` keeps the name `player` to this tab.
+
+The numbers put the sprite in the middle of the screen: the screen is 320 × 180, so its centre is (160, 90), and a sprite is 8 pixels wide, so half of it, 4, is taken off each.
+
+`function _update() … end` is a function, a block of code with a name; `if … then … end` runs what is between `then` and `end` only when the test before it is true.
 
 `_update` runs sixty times a second and moves the player; `_draw` clears the screen and draws sprite `0` where the player is. [[input.held]] asks for an **action**, not a key: "left" answers to the left arrow, to A or Q, to a gamepad and to the touch controls alike.
 
 ## Step 3: Play
 
-The game screen is in the column at the right of the code, with a small transport bar under it. If that column shows REFERENCE instead, press <kbd>F1</kbd>, or click the ⇄ button on the column's edge, to swap the screen back. Press the **▶** button (Play). Your sprite appears on the dark background, and the arrow keys move it.
+The game screen is in the column at the right of the code, with a small transport bar under it. If that column shows REFERENCE instead, click the ⇄ button on the column's edge to swap the screen back. Press the **▶** button (Play). Your sprite appears on the dark background, and the arrow keys move it.
 
 ![The CODE tab with the game screen](img/getting-started-code.png "The CODE tab after ▶: the code of Step 2 on the left, and on the game screen at the top right the sprite drawn in Step 1, with the transport under it.")
 

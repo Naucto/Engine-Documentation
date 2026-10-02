@@ -17,7 +17,7 @@ The Naucto API is small on purpose. This page lists what a game cannot exceed an
 | What | Limit |
 |------|-------|
 | Screen | 320 × 180 pixels, 16 colours, one 4 × 6 font |
-| Sprite sheet | 8 to 256 pixels a side, in steps of 8; several sheets, numbered on from one another |
+| Sprite sheet | 8 to 256 pixels a side, in steps of 8; several sheets, their sprite numbers running on from one sheet to the next |
 | Map | 1 to 256 tiles a side; several maps, numbered from 1 |
 | Sound | 5 voices; 100 patterns (`00` to `99`); 16 musics (`0` to `15`); a PCM sample of at most 8 KB |
 | Code | 10 million Lua instructions per call; a tab name of at most 24 characters |
@@ -58,7 +58,7 @@ Normal game logic never gets close; it trips on a `while` loop whose exit condit
 
 ## Runtime errors halt the game
 
-An uncaught error in `_init`, `_update` or `_draw` **halts the game**: the screen freezes on the last frame and the music stops until you fix the error and rerun ([Debugging](/learn/reference/debugging) shows the message). Errors inside `net` callbacks are the exception: they are printed and the game goes on.
+An uncaught error in `_init`, `_update`, `_draw` or `_scanline` **halts the game**: the screen freezes on the last frame and the music stops until you fix the error and rerun ([Debugging](/learn/reference/debugging) shows the message). Errors inside `net` callbacks are the exception: they are printed and the game goes on.
 
 Out-of-range arguments are not errors. A colour index is taken modulo 16, [[map.get]] answers `0` outside the map, [[map.flag]] takes a sprite number, not a cell, and answers `false` for a bit the sprite does not have (and `0` with no bit), and a sprite number no sheet holds is drawn from the first sheet.
 
@@ -68,8 +68,8 @@ The CODE editor holds several tabs, and they run in the order of the strip, each
 
 ## Multiplayer
 
-A session has the capacity the game declares (`max_players`, `2` by default). Only numbers, strings and booleans are shared, there is no host migration, and a client's write to a protected path is rolled back. [Multiplayer](/learn/concepts/multiplayer) has the whole model.
+A session has the capacity the game declares (`max_players`, a whole number from `2` to `16`, `2` by default). Numbers, strings, booleans and tables of them are shared, never a function. There is no host migration, and a guest's write to a protected path is rolled back. [Multiplayer](/learn/concepts/multiplayer) has the whole model.
 
 ## What works well today
 
-Within these limits, the tutorials show the range: a [platformer](/learn/tutorials/platformer) with tilemap collisions, sprite flags and a camera; a two-player [pong](/learn/tutorials/pong) over the network; a [coin rush](/learn/tutorials/click-race) built on locks and events; a [tag arena](/learn/tutorials/tag) with a host-driven world. HUDs with [[gfx.print]] and shapes, palette swaps with [[gfx.set_col]] and musics from the SOUND tab all come from the same small API.
+Within these limits, the tutorials show the range: a [platformer](/learn/tutorials/platformer) with tilemap collisions, sprite flags and a camera; a two-player [pong](/learn/tutorials/pong) over the network; a [coin rush](/learn/tutorials/click-race) built on locks and a queue; a [tag arena](/learn/tutorials/tag) with a host-driven world. HUDs with [[gfx.print]] and shapes, palette swaps with [[gfx.set_col]] and musics from the SOUND tab all come from the same small API.

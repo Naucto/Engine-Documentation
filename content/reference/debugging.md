@@ -14,9 +14,9 @@ This page is for the moment a game does something you did not write. It starts w
 
 ## The Console
 
-The column beside the screen has a **Console** tab. It is emptied at every run, keeps the last 2000 lines, and prefixes each one: `> ` for a `print` or [[sys.log]], `? ` in orange for [[sys.warn]], `! ` in red for [[sys.error]] and for the engine's own errors. `print` and `sys.log` are the same function: arguments are separated by a tab, and a table is written out as JSON.
+The column at the right of the CODE tab holds the screen and, under it, a **Console** tab. It is emptied at every run, keeps the last 2000 lines, and prefixes each one: `> ` for a `print` or [[sys.log]], `? ` in orange for [[sys.warn]], `! ` in red for [[sys.error]] and for the engine's own errors. `print` and `sys.log` are the same function: arguments are separated by a tab, and a table is written out as JSON.
 
-![The console column of CODE](../editors/img/code-console.png "The column beside the screen: the transport under the game, then the Console and Perf tabs. Before the first run the Console says so.")
+![The console column of CODE](../editors/img/code-console.png "The console column: the screen, the transport under it, then the Console and Perf tabs. Before the first run the Console says so.")
 
 ``` lua
 local player = { x = 40, y = 40, vx = 0, on_ground = false }
@@ -31,18 +31,18 @@ end
 > [!TIP]
 > A `print` in `_draw` writes sixty lines a second. To watch a value while playing, draw it with [[gfx.print]] in a corner of the screen instead.
 
-The **Perf** tab beside it shows the measured FPS, the CPU share of the step, the frame count, the engine state, PLAYERS as `n / max` in a netplay session (`—` outside one), EDITORS, the number of people editing the project, and the sync state.
+The **Perf** tab beside it shows the measured FPS, the CPU share of the step, the frame count, the engine state, PLAYERS (`n / max` in a netplay session, `—` outside one), EDITORS (the number of people editing the project) and the sync state.
 
 ## What an error looks like
 
-An error in `_init`, `_update` or `_draw` halts the game: the screen freezes on the last frame, the Console prints one red line followed by "--- HALTED ---", and the music stops. On the page of a published game, where there is no Console, the screen itself says the game stopped, shows that line and offers a Restart.
+An error in `_init`, `_update`, `_draw` or `_scanline` halts the game: the screen freezes on the last frame, the Console prints one red line followed by "--- HALTED ---", and the music stops. On the page of a published game, where there is no Console, the screen itself says the game stopped, shows that line and offers a Restart.
 
 ```
 ! update: Runtime error: main:12: attempt to index a nil value (global 'player')
 --- HALTED ---
 ```
 
-The line reads: the phase (`load`, `init`, `update` or `draw`), then the **tab** the error came from and the line number counted in that tab. The CODE tab highlights that line and its status bar shows "1 error". With the Auto switch on, the game reruns by itself once you fix the line, there is nothing to save; with it off, press Restart.
+The line reads: the phase (`load`, `init`, `update`, `draw` or `scanline`), then the **tab** the error came from and the line number counted in that tab. The CODE tab highlights that line and its status bar shows "1 error". With the Auto switch on, the game reruns by itself once you fix the line: there is nothing to save. With it off, press Restart.
 
 ![A runtime error in CODE](../editors/img/code-error.png "A runtime error: line 3 of main is tinted with a mark in its gutter, the status bar reads 1 ERROR, and the Console tab, with its badge, shows the red line that names the tab and the line, then --- HALTED ---.")
 
@@ -77,7 +77,7 @@ The player can change them in Settings › Controls; the whole table, with playe
 
 [[input.key_pressed]] takes the browser's `event.key` name, which is **case-sensitive**: `"ArrowLeft"`, not `"arrowleft"`; `" "` for the space bar, not `"space"`; `"a"` for the key as typed. `"A"` matches only when the key produces an upper-case letter, with Shift held or Caps Lock on.
 
-## Colors look wrong
+## Colours look wrong
 
 A colour index is taken modulo 16 by every drawing function, [[gfx.clear]] and the shapes included: `17` draws colour `1`, and nothing warns you. If a shape shows up in a colour you never picked, check the arithmetic that produced the index.
 

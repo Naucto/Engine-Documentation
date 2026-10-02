@@ -16,7 +16,7 @@ Naucto is a fantasy console that lives in your browser. This page says what it i
 
 A game is drawn on a **320 × 180 screen** with sixteen colours, 8 × 8 sprites and a built-in 4 × 6 font. It is written in Lua against a small API, and everything, from the art to the sound to the code, is edited and run in the same tab of your browser.
 
-The editor has **six tabs**, one per part of a game: GAME holds the name, summary, cover, saved versions and the Publish button; CODE holds the Lua, with the screen and the Console beside it; ART is where sprites are drawn, MAP where they are laid out into levels, SOUND where instruments, patterns and musics are made, and NET where a multiplayer game declares who may write what. Every tab is described in [Editors](/learn/editors/index).
+The editor has **six tabs**, one per part of a game: GAME holds the name, summary, cover and publishing status, while the header above every tab holds the saved versions, Share and the Publish button; CODE holds the Lua, with the screen and the Console beside it; ART is where sprites are drawn, MAP where they are laid out into levels, SOUND where instruments, patterns and musics are made, and NET where a multiplayer game declares who may write what. Every tab is described in [Editors](/learn/editors/index).
 
 ![The editor on the CODE tab](editors/img/code.png "The editor open on the CODE tab of a new game, running. The six tabs run down the left edge: GAME, CODE, ART, MAP, SOUND and NET. The code takes the middle; the game screen, with the starter moon, and the Console are in the column at the right.")
 

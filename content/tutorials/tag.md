@@ -11,9 +11,9 @@ legacy_slugs:
 
 # Build a Tag Arena
 
-A four-player game of tag: everyone runs around the arena, one player is "it", and touching someone passes it on. This tutorial focuses on playing with **more than two peers**: reacting to [[net.state]] changes with `net.on`, handling players who join mid-game, and cleaning up after players who leave. Do [Pong](/learn/tutorials/pong) and [Coin Rush](/learn/tutorials/click-race) first; the session menu comes from the former and the host-provisioning pattern from the latter, and this tutorial only explains what is new.
+A four-player game of tag: everyone runs around the arena, one player is "it", and touching someone passes it on. This tutorial focuses on playing with **more than two peers**: reacting to [[net.state]] changes with [[net.on]], handling players who join mid-game, and cleaning up after players who leave.
 
-Each step gives the functions that carry it, whole, so the game runs at the end of every step.
+Do [Pong](/learn/tutorials/pong) and [Coin Rush](/learn/tutorials/click-race) first; the session menu comes from the former and the host-provisioning pattern from the latter, and this tutorial only explains what is new. Each step gives the functions that carry it, whole, so the game runs at the end of every step.
 
 ## What you will build
 
@@ -27,9 +27,51 @@ Everything is drawn with [[gfx.fill_rect]] and [[gfx.rect]]; no sprites needed. 
 
 ## Step 1: Assemble the known parts
 
+### The constants
+
+Start with the constants and globals of this game: `IT_SPEED`, `TAG_COOLDOWN = 60` frames, `tag_cooldown` (host only) and `taunt_timer`, plus `overlaps(a, b)`, the axis-aligned box test explained in [limitations](/learn/reference/limitations), between two players:
+
+``` lua
+W, H         = 320, 180
+PLAYER_SIZE  = 8
+SPEED        = 2
+IT_SPEED     = 2.4          -- "it" runs slightly faster
+TAG_COOLDOWN = 60           -- frames before "it" can tag again (one second)
+
+COL_BG  = 0                 -- black
+COL_IT  = 2                 -- red
+COLORS  = { 11, 13, 4, 6 }  -- light blue, green, yellow, pink
+
+state        = "menu"       -- "menu" | "waiting" | "playing" | "over"
+is_host      = false
+next_color   = 1            -- host only
+tag_cooldown = 0            -- host only
+taunt_timer  = 0
+
+function _init()
+  state        = "menu"
+  is_host      = false
+  next_color   = 1
+  tag_cooldown = 0
+  taunt_timer  = 0
+  print("Press H to host a game, J to join one")
+end
+
+function clamp(v, lo, hi)
+  if v < lo then return lo end
+  if v > hi then return hi end
+  return v
+end
+
+function overlaps(a, b)
+  return a.x < b.x + PLAYER_SIZE and a.x + PLAYER_SIZE > b.x
+     and a.y < b.y + PLAYER_SIZE and a.y + PLAYER_SIZE > b.y
+end
+```
+
 ### The menu
 
-The state machine is Pong's: `"menu" | "waiting" | "playing" | "over"`, and `m` leaves the session straight from `"over"`, without an `update_over()`:
+The state machine is Pong's, `"menu" | "waiting" | "playing" | "over"`, but Tag has no winner and nothing in this game sets `"over"`: a player leaves by stopping the game, and the `m` branch that leaves the session only starts to matter with the round timer of Extending the example:
 
 ``` lua
 function _update()
@@ -144,51 +186,11 @@ function update_playing()
 end
 ```
 
-The constants and locals for this game: `IT_SPEED`, `TAG_COOLDOWN = 60` frames, `tag_cooldown` (host only) and `taunt_timer`, plus an AABB overlap test between two players, `overlaps(a, b)`, the rectangle test explained in [limitations](/learn/reference/limitations):
-
-``` lua
-W, H         = 320, 180
-PLAYER_SIZE  = 8
-SPEED        = 2
-IT_SPEED     = 2.4          -- "it" runs slightly faster
-TAG_COOLDOWN = 60           -- frames before "it" can tag again (one second)
-
-COL_BG  = 0                 -- black
-COL_IT  = 2                 -- red
-COLORS  = { 11, 13, 4, 6 }  -- light blue, green, yellow, pink
-
-state        = "menu"       -- "menu" | "waiting" | "playing" | "over"
-is_host      = false
-next_color   = 1            -- host only
-tag_cooldown = 0            -- host only
-taunt_timer  = 0
-
-function _init()
-  state        = "menu"
-  is_host      = false
-  next_color   = 1
-  tag_cooldown = 0
-  taunt_timer  = 0
-  print("Press H to host a game, J to join one")
-end
-
-function clamp(v, lo, hi)
-  if v < lo then return lo end
-  if v > hi then return hi end
-  return v
-end
-
-function overlaps(a, b)
-  return a.x < b.x + PLAYER_SIZE and a.x + PLAYER_SIZE > b.x
-     and a.y < b.y + PLAYER_SIZE and a.y + PLAYER_SIZE > b.y
-end
-```
-
 ## Step 2: Who is "it"
 
 The entire game state specific to Tag is a single shared key, `net.state.it`, the player id of the chaser. The host declares itself "it" at session start (`net.state.it = net.id()`, right after provisioning itself).
 
-The interesting part is how everyone reacts to it. Instead of sending an event when a tag happens, every peer **listens to the key**. State your facts, listen for changes: compared with announcing tags via `net.emit`, this keeps late joiners correct for free, because an event fired before they arrived is gone forever, but the current `it` is right there in their state snapshot.
+The interesting part is how everyone reacts to it. Instead of sending an event when a tag happens, every peer **listens to the key**. State your facts, listen for changes: compared with announcing tags via [[net.emit]], this keeps late joiners correct for free, because an event fired before they arrived is gone forever, but the current `it` is right there in their state snapshot.
 
 ### Departures
 
@@ -273,7 +275,7 @@ end
 ```
 
 > [!TRY]
-> Run two or three clients (the Test rig, set up as in Pong's [Testing with two clients](/learn/tutorials/pong#testing-with-two-clients), gives you the second): every square moves, and every screen agrees on who wears the ring. The host's screen has the border; the others print "Player … is it -- run!" in their console.
+> Run two or three clients (the TEST RIG, set up as in Pong's [Testing with two clients](/learn/tutorials/pong#testing-with-two-clients), gives you the second): every square moves, and every screen agrees on who wears the ring. The host's screen has the border; the others print "Player … is it -- run!" in their console.
 
 ![Three squares in the arena, one ringed in red, and a red border around the screen](../../api/img/frames/tut-tag.png "Step 2 on the chaser's screen: three players, the red ring on the one who is it, and the red border that says it is you.")
 
@@ -327,7 +329,7 @@ end
 
 ## Step 4: A taunt event
 
-Not everything belongs in `net.state`. A taunt is a one-shot moment with no lasting truth, exactly what `net.emit` is for. On <kbd>Space</kbd>, with a one-second local cooldown so holding the key does not spam; the timer counts down every frame, so `update_taunt()` runs from `update_playing()` for everyone:
+Not everything belongs in `net.state`. A taunt is a one-shot moment with no lasting truth, exactly what [[net.emit]] is for. <kbd>Space</kbd> sends one, with a one-second local cooldown so holding the key does not spam; the timer counts down every frame, so `update_taunt()` runs from `update_playing()` for everyone:
 
 ``` lua
 function update_taunt()
@@ -357,7 +359,7 @@ The `"event:taunt"` listener from Step 2 prints who taunted you (the `from` argu
 
 ## Step 5: Play with three or four
 
-Like Coin Rush, Tag keys players by `net.id()`, and the NET tab's Test rig joins under an id of its own, so host plus rig is a **two-player game** on one machine. For three or four, use other browsers logged in as other accounts, or friends.
+Like Coin Rush, Tag keys players by [[net.id]], and the NET tab's TEST RIG joins under an id of its own, so host plus rig is a **two-player game** on one machine. For three or four, use other browsers logged in as other accounts, or friends.
 
 1. Host, then switch on **Listed in browse**, which appears once START HOSTING has been pressed (it is off by default). The session then appears under PUBLIC in the others' Join a session dialog; without it they need the JOIN CODE.
 2. Let one player join after the game has been running: they appear instantly with the right positions and the right "it", the state snapshot doing its job.

@@ -10,7 +10,9 @@ legacy_slugs:
 
 # Multiplayer
 
-Naucto games can be played online by several players at once. This page explains the model behind the `net` API and how to test it alone; the function-by-function reference lives in [Networking](/learn/api/net). Two words are used throughout: a **player** is a person, and a **peer** is one machine in the session, the host's included. The rest of the vocabulary is in the [Glossary](/learn/reference/glossary).
+Naucto games can be played online by several players at once. This page explains the model behind the `net` API and how to test it alone; the function-by-function reference lives in [Networking](/learn/api/net).
+
+Two words are used throughout: a player is a person, and a **peer** is one machine in the session, the host's included. The rest of the vocabulary is in the [Glossary](/learn/reference/glossary).
 
 ## Sessions and the host
 
@@ -18,7 +20,9 @@ A multiplayer game runs inside a **session**. One player creates it with [[net.h
 
 `net.host` takes a table with two keys: `max_players`, the capacity including the host, `2` when left out, and an optional `title`. Players cannot raise the capacity from the dialog.
 
-The host is the session's referee. All shared writes, lock grants and queue operations are **ordered by the host**, which is what keeps every peer's view consistent. Give global responsibilities to the host: physics for shared objects, scoring, spawning. And there is no host migration, no handing of the host's role to another peer when the host leaves: the session ends for everyone, and each peer's `net.on("ended")` callback fires.
+The host is the session's referee. All shared writes, lock grants and queue operations are **ordered by the host**, which is what keeps every peer's view consistent. Give global responsibilities to the host: physics for shared objects, scoring, spawning.
+
+There is no host migration, no handing of the host's role to another peer when the host leaves: the session ends for everyone, and each peer's `net.on("ended")` callback fires.
 
 Peers connect directly to the host, with an automatic **relay** when a direct connection is impossible: a server in the middle that passes the traffic on. This is invisible to your code.
 
@@ -28,9 +32,9 @@ The API offers three complementary tools; picking the right one keeps your game 
 
 ### Shared state
 
-[[net.state]] is a **replicated** table, one every peer holds a copy of, for anything that **is**: positions, scores, the ball, the world. Write it like a normal table; every peer reads the same values, and a player who joins later receives a snapshot, the current contents, on arrival.
+[[net.state]] is a replicated table, one every peer holds a copy of, for anything that **is**: positions, scores, the ball, the world. Write it like a normal table; every peer reads the same values, and a player who joins later receives a snapshot, the current contents, on arrival.
 
-A **path** is the address of a value in that table, written with dots: `net.state.players[3].x` is the path `players.3.x`, and each word between the dots is a **segment**. That is how the NET tab lists what the game shares, one row per path, and what the patterns of `net.on` name. React to changes with `net.on(pattern, function(path, new_value) … end)`, where `*` in the pattern matches one segment and `**` any number of them: `"players.*.x"` fires for every player's `x`.
+A **path** is the address of a value in that table, written with dots: `net.state.players[3].x` is the path `players.3.x`, and each word between the dots is a segment. That is how the NET tab lists what the game shares, one row per path, and what the patterns of [[net.on]] name. React to changes with `net.on(pattern, function(path, new_value) … end)`, where `*` in the pattern matches one segment and `**` any number of them: `"players.*.x"` fires for every player's `x`.
 
 ### Events
 
@@ -44,7 +48,9 @@ A **path** is the address of a value in that table, written with dots: `net.stat
 
 `net.state` is **allow-by-default**: with nothing configured, any peer may read or write any key, and games stay consistent by convention. Each player writes only its own branch, keyed by its player id; the host writes everything global, the ball, the scores, who is "it"; everyone reads everything. When two peers genuinely must write the same key, protect it with `net.lock`.
 
-The **callback** is the function you hand to `net.host` or `net.join`, and it runs once the session exists; only inside it, or later while the session runs, may the game touch `net.state`: outside a session, that raises `net: no active session`. One strategy, used by every netplay tutorial: the host creates the `players` branch with its own entry, and gives every newcomer an entry when `peer.joined` fires, which it does on the host only. A player who joins has nothing to create; its callback only switches state.
+The **callback** is the function you hand to `net.host` or `net.join`, and it runs once the session exists; only inside it, or later while the session runs, may the game touch `net.state`: outside a session, that raises `net: no active session`.
+
+One strategy, used by every netplay tutorial: the host creates the `players` branch with its own entry, and gives every newcomer an entry when `peer.joined` fires, which it does on the host only. A player who joins has nothing to create; its callback only switches state.
 
 ``` lua
 local function new_entry()
@@ -96,11 +102,13 @@ Points that deserve care:
 
 ## Testing alone
 
-The NET tab is also the test bench. Once your game has called `net.host`, **Spawn a second client** in its TEST RIG panel opens a second copy of the game as a small screen inside that panel, on this machine, playing under an id of its own. That copy starts at `_init` like any run, so it has to reach `net.join()` through your game's own menu: click its screen to give it the keyboard, then press the key your menu uses to join. The panel says `Waiting for this client to call net.join()` until then. Latency and Loss sliders degrade that client's outgoing traffic; the R and W columns show the permissions of every declared path, and Route says whether the session is direct or relayed. Force a relay refuses the direct path for the next session, to measure what a relayed game costs.
+The NET tab is also the test bench. Once your game has called `net.host`, **Spawn a second client** in its TEST RIG panel opens a second copy of the game as a small screen inside that panel, on this machine, playing under an id of its own. That copy starts at `_init` like any run, so it has to reach `net.join()` through your game's own menu: click its screen to give it the keyboard, then press the key your menu uses to join. The panel says `Waiting for this client to call net.join()` until then.
+
+Latency and Loss sliders degrade that client's outgoing traffic; the R and W columns show the permissions of every declared path, and Route says whether the session is direct or relayed. Force a relay refuses the direct path for the next session, to measure what a relayed game costs.
 
 Two things to do first, because you leave the CODE tab to use the rig:
 
-- **Pop the VIEWER out** with the button at the top of the console column, so your own game keeps running while you are on NET; docked, it pauses there, and the host with it.
+- **Pop the viewer out** with the button at the top of the console column, so your own game keeps running while you are on NET; docked, it pauses there, and the host with it.
 - **Turn Auto off**. With Auto on, an edit reruns the game, and rerunning ends the session.
 
 Who can join is shown there too: everyone in the work session can take a player slot, and anyone else needs the invite code from the host dialog, where the host can also list the session publicly.

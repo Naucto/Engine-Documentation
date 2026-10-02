@@ -126,7 +126,7 @@ A **snapshot** is the whole of `net.state` as it stands, sent to a player on joi
 
 ## Path
 
-A **path** is the address of a value in `net.state`, written with dots: `net.state.players[3].x` is the path `players.3.x`, and each word between the dots is a segment. The NET tab lists the shared state one path per row, the permissions are set per path, and the patterns of `net.on` name paths, with `*` for one segment and `**` for any number. See [Multiplayer](/learn/concepts/multiplayer).
+A **path** is the address of a value in `net.state`, written with dots: `net.state.players[3].x` is the path `players.3.x`, and each word between the dots is a segment. The NET tab lists the shared state one path per row, the permissions are set per path, and the patterns of [[net.on]] name paths, with `*` for one segment and `**` for any number. See [Multiplayer](/learn/concepts/multiplayer).
 
 ## Event
 
@@ -134,7 +134,7 @@ An **event** is a one-shot message sent with [[net.emit]] and received by the ot
 
 ## Callback
 
-A **callback** is a function you hand to another function, to be called later when something happens: the function given to [[net.host]] or [[net.join]] runs once the session exists, the one given to `net.on` runs at every matching change. An error inside a `net` callback does not halt the game; it is printed to the Console. See [Multiplayer](/learn/concepts/multiplayer).
+A **callback** is a function you hand to another function, to be called later when something happens: the function given to [[net.host]] or [[net.join]] runs once the session exists, the one given to [[net.on]] runs at every matching change. An error inside a `net` callback does not halt the game; it is printed to the Console. See [Multiplayer](/learn/concepts/multiplayer).
 
 ## Lock
 
@@ -162,7 +162,9 @@ The **clip** is the rectangle [[gfx.clip]] keeps every later draw call inside, i
 
 ## Beam and scanline
 
-The **beam** is how the picture reaches the screen: one line at a time, from the top line, `0`, to the bottom one, `179`, each palette index turned into a colour on the way. A **scanline** is one of those lines. If the game defines `_scanline(y)`, the beam calls it just before showing line `y`, so a line can have its own palette or shift for that frame only. See [The display beam](/learn/api/gfx#the-display-beam).
+The **beam** is how the picture reaches the screen: one line at a time, from the top line, `0`, to the bottom one, `179`, each palette index turned into a colour on the way.
+
+A **scanline** is one of those lines. If the game defines `_scanline(y)`, the beam calls it just before showing line `y`, so a line can have its own palette or shift for that frame only. See [The display beam](/learn/api/gfx#the-display-beam).
 
 ## Action
 
@@ -170,4 +172,8 @@ An **action** is one of the nine inputs a game reads, `left`, `right`, `up`, `do
 
 ## Table, global and local
 
-A **table** is Lua's one container: a box with named slots, `{ x = 156, y = 86 }`, or numbered ones, `{ 1, 2, 3 }`. A **global** is a name written without `local`; it is visible to every tab and to `_init`, `_update` and `_draw` wherever they are. A **local** is a name declared with `local`, visible only in the block, or the tab, where it is written. Every launch starts with the globals empty. See [Code structure](/learn/reference/structure).
+A **table** is Lua's one container: a box with named slots, `{ x = 156, y = 86 }`, or numbered ones, `{ 1, 2, 3 }`.
+
+A **global** is a name written without `local`; it is visible to every tab and to `_init`, `_update` and `_draw` wherever they are. Every launch starts with the globals empty.
+
+A **local** is a name declared with `local`, visible only in the block, or the tab, where it is written. See [Code structure](/learn/reference/structure).

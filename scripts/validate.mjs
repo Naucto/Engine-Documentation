@@ -1,8 +1,5 @@
-// Checks every page has front-matter, every [[ref]] resolves, every picture exists, every api
-// entry has a signature, every signature's parameters are documented and say whether they are
-// required, every function that returns something says what type it returns, no Lua example calls
-// a v0 global, no prose uses a word the docs have retired, and every tutorial step's code is whole
-// and in the step file that holds the game at that point.
+// Exits non-zero, listing every failure, unless the pages, their pictures, the tutorial steps and
+// the api manifest all hold to the rules checked below.
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 
@@ -20,11 +17,9 @@ async function* walk(dir) {
 }
 
 /**
- * `print` is in an aliases list, and it is not one of these.
- *
- * The other aliases are v0 globals that exist only under the compat prelude, which a project
- * created today does not get -- so an example calling one is an example that errors. SysAPI
- * installs `print` unconditionally, so it is a second real name rather than a deprecated one.
+ * The aliases the engine installs unconditionally, real names in their own right: every other
+ * alias is a v0 global that exists only under the compat prelude, which a project created today
+ * does not get, so an example calling one errors.
  */
 const REAL_GLOBALS = new Set(['print']);
 
@@ -122,13 +117,7 @@ for await (const file of walk(resolve(root, 'content'))) {
   }
   pages.push({ file, meta, body: src.slice(m[0].length), offset: m[0].split('\n').length - 1 });
 }
-/**
- * The one thing a reader copies verbatim.
- *
- * The prose kept its v0 calls through the move to Markdown while the tutorials' own main.lua files
- * were migrated, so following a page step by step produced a game that errored while its "complete
- * code" ran. Nothing else here reads inside a fence, which is why nobody saw it.
- */
+/** The v0 globals a body's Lua blocks call, outside Lua comments, by line of the body. */
 function legacyCallsIn(body) {
   const found = [];
   let inLua = false;

@@ -34,7 +34,7 @@ The camera follows the player horizontally. If you would rather start from the f
 
 ### Draw the seven sprites
 
-Open **ART**. A click on a cell of the SHEET map, at the right, selects that sprite, and PREVIEW over the canvas reads its number, such as `SPRITE 032`. Draw these seven:
+Open **ART**. A click on a cell of the SHEET map, at the right, selects that sprite, and PREVIEW, at the bottom right of the canvas, reads its number, such as `SPRITE 032`. Draw these seven:
 
 | Sprite index | Content                            |
 |--------------|------------------------------------|
@@ -46,7 +46,9 @@ Open **ART**. A click on a cell of the SHEET map, at the right, selects that spr
 | `33`         | Deadly tile, such as spikes        |
 | `34`         | End tile, such as a trophy or door |
 
-The player character is **8 pixels wide and 8 pixels tall** (1 tile wide, 1 tile tall). Each player animation frame fits in a single sprite slot. The swatches under PALETTE are numbered from `0`, left to right, the top row first; the number shows once a swatch is clicked.
+The player character is **8 pixels wide and 8 pixels tall** (1 tile wide, 1 tile tall). Each player animation frame fits in a single sprite slot.
+
+The swatches under PALETTE are numbered from `0`, left to right, the top row first; the number shows once a swatch is clicked.
 
 ![ART with sprite 32 selected and flag 0 lit](img/platformer-art.png "ART, sprite 032 selected on the SHEET map: the ground tile in the canvas, flag 0 already on in the FLAGS panel under it.")
 
@@ -88,7 +90,7 @@ Row 20 (y=160): end tile at column 50
 Row 21 (y=168): ground spanning columns 0-52
 ```
 
-The map is `128` tiles wide and the window shows its left part only. The wheel scrolls the map up and down; <kbd>Shift</kbd> and the wheel, or a horizontal wheel, scroll it **sideways**, about eight tiles a notch, which is how the columns past the edge come into view. The status line at the bottom of the map reads the tile under the cursor, `TILE 50,20 · SPR 034`: the column, the row and the sprite painted there, so a column is found without counting.
+The map is `128` tiles wide and the window shows its left part only. The wheel scrolls the map up and down; <kbd>Shift</kbd> and the wheel, or a horizontal wheel, scroll it **sideways**, about eight tiles a notch, which is how the columns past the edge come into view. The status line at the bottom of the map reads the tile under the cursor, `TILE 50,20 · SPR 034 · flags 2`: the column, the row, the sprite painted there and the flag bits set on it, so a column is found without counting.
 
 > [!TIP]
 > The **Flags** button of MAP tints every tile by the first flag set on its sprite. Switch it on to check Step 1 at a glance: the ground and platforms in one colour, the spikes in another, the end tile in a third. A tile with no tint carries no flag, and the player will fall through it.
@@ -97,7 +99,7 @@ The map is `128` tiles wide and the window shows its left part only. The wheel s
 
 ## Step 3: Read the map as collision
 
-There is no separate collision data in this game: the painted map is the collision data. Switch to **CODE**, delete the starter script, and start with constants for everything Step 1 and 2 decided: the four player sprites, the player size, the tile size, the map size (`128 x 32`, the default), the number of sprites, and one constant per flag bit.
+There is no separate collision data in this game: the painted map is the collision data. Switch to **CODE**, delete the starter script, and start with constants for everything Steps 1 and 2 decided: the four player sprites, the player size, the tile size, the map size (`128 x 32`, the default), the number of sprites, and one constant per flag bit.
 
 ``` lua
 SPRITE_IDLE   = 0
@@ -248,7 +250,7 @@ end
 
 ### A first loop
 
-To see something, the minimal loop: `_update` reads the input, then applies gravity and the velocity; `_draw` clears with a sky colour (`11`, the light blue of the default palette), draws the map, and draws the player with the sprite `anim_frame` names.
+To see something, the minimal loop: `_update` reads the input, then applies gravity and the velocity; `_draw` clears with a sky colour (`11`, the light blue of the default palette), draws the map, and draws the player with the sprite `anim_frame` names. The last two arguments of [[gfx.draw_sprite]] are the width and height in sprites, `1` by `1` here.
 
 ``` lua
 function _update()
@@ -318,7 +320,11 @@ end
 
 ### The Y pass
 
-`move_y` follows the same pattern, and gravity with its `max_fall` cap moves in here from Step 4's `_update`. It has three extra responsibilities. `on_ground` is set to `false` right after the move, before the tests. Falling, the row under the player's feet is tested at `y + PLAYER_H` with no `- 1`, since the tile below is what is being probed; on a hit the player snaps on top, `vy` goes to zero and `on_ground` comes back `true`, which is what re-arms the jump. Rising, the row at `player.y` is tested and the player bumps its head. The function closes with the fell-off-the-world check: below `260` (the map is `32 x 8 = 256` pixels tall), the player respawns.
+`move_y` follows the same pattern, and gravity with its `max_fall` cap moves in here from Step 4's `_update`. It does three things `move_x` does not:
+
+- It tracks the ground: `on_ground` is set to `false` right after the move, before the tests, and comes back `true` only on a landing, which is what re-arms the jump.
+- It probes one row further when falling: the row under the player's feet is tested at `y + PLAYER_H` with no `- 1`, since the tile below is what is being probed, and on a hit the player snaps on top and `vy` goes to zero. Rising, the row at `player.y` is tested and the player bumps its head.
+- It closes with the fell-off-the-world check: below `260` (the map is `32 x 8 = 256` pixels tall), the player respawns.
 
 ``` lua
 function move_y()
@@ -392,7 +398,7 @@ end
 
 ## Step 6: Tiles with meaning
 
-The deadly and end tiles reuse the machinery from Step 3. `win_game` sets `game_finished`, stops the player, and announces the win with `print`, the same call as [[sys.log]], which writes to the console; [[gfx.print]] would put it on the canvas instead, in a 4x6 font. The early return is what makes it **fire once**.
+The deadly and end tiles reuse the machinery from Step 3. `win_game` sets `game_finished`, stops the player, and announces the win with `print`, the same call as [[sys.log]], which writes to the console; [[gfx.print]] would put it on the screen instead, in a 4x6 font. The early return is what makes it **fire once**.
 
 ``` lua
 function win_game()
@@ -516,9 +522,9 @@ end
 ```
 
 > [!TRY]
-> Run to the end tile. Walk frames alternate as you move, the jump sprite shows in the air, the camera follows without ever exposing the void beyond the map edges, and touching the trophy prints "You Won" and freezes the action.
+> Run to the end tile. Walk frames alternate as you move, the jump sprite shows in the air, the camera follows without ever exposing the void beyond the map edges, and touching the end tile prints `You Won` in the console and freezes the action.
 
-![The player far to the right of the level, the view scrolled with it](img/frames/platformer-camera.png "Step 7 near the end of the level: the player is far to the right of the map and the camera has scrolled with it, so the start of the level is off screen to the left and the view stops at the map's edge.")
+![The player far to the right of the level, the view scrolled with it](img/frames/platformer-camera.png "Step 7 past the spikes: the player has run right and the camera has scrolled about a hundred pixels with it, so the start of the level is off screen to the left and the trophy has come into view on the right.")
 
 ## How it all fits together
 

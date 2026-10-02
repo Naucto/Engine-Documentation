@@ -20,10 +20,10 @@ Each step explains one idea and gives the functions that carry it, whole, so the
 - A menu where the player chooses to host or join a session
 - Two paddles, each controlled by its own player, shared through `net.state`
 - A ball simulated by the host and replicated to the other player
-- A score, point announcements via `net.emit`, and a win condition
+- A score, point announcements via [[net.emit]], and a win condition
 - Clean handling of the opponent leaving
 
-No sprites or map are needed: the whole game is drawn with [[gfx.fill_rect]] and [[gfx.rect]], so you can go straight to **CODE**. Copy to new game, at the head of this page, installs the finished game in a project of your own, to compare against or to play straight away.
+No sprites or map are needed: the whole game is drawn with [[gfx.fill_rect]], so you can go straight to **CODE**. Copy to new game, at the head of this page, installs the finished game in a project of your own, to compare against or to play straight away.
 
 ## Step 1: Four states
 
@@ -60,7 +60,7 @@ function clamp(v, lo, hi)
 end
 ```
 
-`state` says which screen the game is on, `is_host` whether we are the one who created the session, and `side` (`"left"` or `"right"`) which paddle is ours. `_init()` resets all three and prints the menu instructions, and the palette colours for each side are `11` (light blue) for the left paddle and `2` (red) for the right.
+`state` says which screen the game is on, `is_host` whether you are the one who created the session, and `side` (`"left"` or `"right"`) which paddle is yours. `_init()` resets all three and prints the menu instructions. The palette colours are `11` (light blue) for the left paddle and `2` (red) for the right.
 
 Then dispatch on `state` every frame. The four update functions stay empty for now; the next steps fill them one at a time:
 
@@ -93,11 +93,11 @@ end
 ```
 
 > [!NOTE]
-> Menus and announcements go to the console with [[sys.log]] rather than onto the canvas. [[gfx.print]] does draw text, but in a 4x6 font sized for a score, not for a paragraph of instructions.
+> Menus and announcements go to the console with `print`, the same call as [[sys.log]], rather than onto the screen. [[gfx.print]] does draw text, but in a 4x6 font sized for a score, not for a paragraph of instructions.
 
 ## Step 2: Hosting and joining
 
-`net.host` and `net.join` open a platform dialog and return immediately; your callback fires only if the session is actually created or joined. That asymmetry drives the whole menu design. Two rules to encode:
+[[net.host]] and [[net.join]] open a platform dialog and return immediately; your callback fires only if the session is actually created or joined. That asymmetry drives the whole menu design. Two rules to encode:
 
 1. Switch state before calling. A repeat `net.host` on the next frame while the dialog is still open is silently ignored, a no-op rather than an error (an error is raised only if a session is already active). Moving to `"waiting"` first keeps the game's state clear instead of firing the call unconditionally every frame.
 2. Cancel means nothing fires. The only signal for "the player cancelled" is the absence of your callback, so give `"waiting"` its own inputs; otherwise a cancel strands the player there. Let them re-open host/join, or press a key to return to the menu.
@@ -150,7 +150,7 @@ end
 
 ## Step 3: The host sets the table
 
-`on_connected` runs once, on success, for both roles; use `is_host` to split the work. Following the ownership convention from [multiplayer](/learn/concepts/multiplayer), the host creates **every piece of shared state** the game will ever read, so nobody else has to wonder whether a key exists. Both roles then derive `side` from `is_host`, subscribe to what they will listen to for the rest of the session, and switch to `"playing"`:
+`on_connected` runs once, on success, for both roles; use `is_host` to split the work. Following the ownership convention from [multiplayer](/learn/concepts/multiplayer), the host creates **every piece of shared state** the game will ever read, so nobody else has to wonder whether a key exists. Both roles then derive `side` from `is_host`, subscribe with [[net.on]] to what they will listen to for the rest of the session, and switch to `"playing"`:
 
 ``` lua
 function on_connected()
@@ -191,7 +191,7 @@ end
 
 The two listeners both roles register are for later steps, but a session is the only place to register them, so they go in now. `"event:point"` is how the host will announce a point in Step 5. `"ended"` fires when the session dies, which is what happens when the host leaves: tell the player and call `_init()` to return to the menu, because `net.state` is gone with the session and the `"over"` screen reads it.
 
-`reset_ball(direction)` assigns `net.state.ball` a fresh table with a centered `x, y` and a `dx, dy` velocity moving toward `direction`. Assigning a whole table **replaces the subtree** in one go, exactly what a reset wants:
+`reset_ball(direction)` assigns `net.state.ball` a fresh table with a centred `x, y` and a `dx, dy` velocity moving toward `direction`. Assigning a whole table **replaces the subtree** in one go, exactly what a reset wants:
 
 ``` lua
 function reset_ball(direction)
@@ -265,7 +265,7 @@ end
 
 ### Testing with two clients
 
-Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, use the NET tab's Test rig, which spawns a second client on your machine. Three things to know before you press its button:
+Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, use the NET tab's TEST RIG, which spawns a second client on your machine. Three things to know before you press its button:
 
 - On the NET tab your own game is paused unless the VIEWER is popped out. Pop it out first, from the button at the top of the CODE tab's console column, and host from the floating viewer.
 - Turn **Auto** off, in the same column: an edit reruns the game, and a rerun ends the session.
@@ -274,7 +274,7 @@ Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the 
 That client runs on your account but plays under an id of its own; Pong never looks at ids anyway, only at `side`.
 
 > [!TRY]
-> Host, then join from the second client. You should see both paddles on both screens, each controlling its own, and the ball sitting frozen in the center, because nothing moves it yet.
+> Host, then join from the second client. You should see both paddles on both screens, each controlling its own, and the ball sitting frozen in the centre, because nothing moves it yet.
 
 ![Both paddles centred and the ball waiting in the middle of the court](../../api/img/frames/tut-pong-serve.png "Step 4 on either screen: the two paddles where the host put them, the ball in the centre, and nothing moving it yet.")
 
@@ -323,7 +323,7 @@ end
 
 ### Scoring
 
-Scoring is where the host talks to the other player. The **sender of an event never receives it**, hence the local [[sys.log]] next to the emit; the other side hears it through the `"event:point"` listener from Step 3:
+Scoring is where the host talks to the other player. The **sender of an event never receives it**, hence the local `print` next to the emit; the other side hears it through the `"event:point"` listener from Step 3:
 
 ``` lua
 function score_point(scorer, serve_direction)
@@ -355,7 +355,7 @@ end
 
 ## Step 6: Winning and leaving
 
-The host decides the winner by writing `net.state.winner`; everyone else just watches for it. At the end of `update_playing()`, when `net.state.winner` is set, switch to `"over"` and announce the result. In `update_over()`, `m` cleans up and restarts:
+The host decides the winner by writing `net.state.winner`; everyone else just watches for it. At the end of `update_playing()`, when `net.state.winner` is set, switch to `"over"` and announce the result. In `update_over()`, `m` leaves the session with [[net.leave]] and restarts:
 
 ``` lua
 function update_playing()
@@ -383,7 +383,7 @@ end
 
 ### The other screens
 
-A score display needs no text: `draw_score()` draws one small square per point in each side's colour along the top edge. Then `_draw()` grows its other states: the screen filled with the winner's colour in `"over"`, and two idle paddles with a dotted center line for the menu:
+A score display needs no text: `draw_score()` draws one small square per point in each side's colour along the top edge. Then `_draw()` grows its other states: the screen filled with the winner's colour in `"over"`, and two idle paddles with a dotted centre line for the menu:
 
 ``` lua
 function draw_score()
@@ -435,4 +435,4 @@ end
 - Rematch: on the "over" screen, let the host reset the score and ball instead of leaving.
 - Faster rallies: increase `ball.dx` slightly on each paddle bounce.
 - Spin: adjust `ball.dy` based on where the ball hits the paddle.
-- Sound: call [[sound.play_music]] on `event:point` if your project has music slots.
+- Sound: play a jingle with [[sound.play_sfx]] in `score_point` and in the `"event:point"` listener, once the game has an SFX slot; [Make it sound](/learn/tutorials/sound) makes one.

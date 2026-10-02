@@ -1,4 +1,5 @@
-// Merges api/*.yaml into dist/manifest.json (the shape the Frontend and the engine parity test read).
+// Merges api/*.yaml into dist/manifest.json: every namespace, and an index of each function and
+// value by its full name and by its aliases.
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 

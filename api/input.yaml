@@ -11,7 +11,7 @@ functions:
   - name: action
     type: string
     required: true
-    description: One of left right up down a b x y pause.
+    description: 'One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.'
   - name: player
     type: number
     optional: true
@@ -35,13 +35,13 @@ functions:
 - name: pressed
   signature: input.pressed(action[, player])
   summary: True on the step an action was pressed.
-  description: True only on the step an action went down - what you want for a jump or a menu choice,
-    so holding the button does not repeat it.
+  description: 'True only on the step an action went down: what you want for a jump or a menu choice,
+    so holding the button does not repeat it.'
   params:
   - name: action
     type: string
     required: true
-    description: One of left right up down a b x y pause.
+    description: 'One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.'
   - name: player
     type: number
     optional: true
@@ -63,13 +63,13 @@ functions:
 - name: released
   signature: input.released(action[, player])
   summary: True on the step an action was released.
-  description: True only on the step an action was released. Pair it with `input.pressed` to measure how long
+  description: True only on the step an action was released. Pair it with [[input.pressed]] to measure how long
     a button was held.
   params:
   - name: action
     type: string
     required: true
-    description: One of left right up down a b x y pause.
+    description: 'One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.'
   - name: player
     type: number
     optional: true
@@ -90,13 +90,13 @@ functions:
 - name: key_pressed
   signature: input.key_pressed(key)
   summary: True while a keyboard key (event.key name) is held.
-  description: 'True for every step a keyboard key is held, despite the name: the edge is `input.key_down`. Keys are named by the browser''s `event.key` value, so the exact string matters: with Shift held the A key is `"A"`, and the letters follow the keyboard''s layout. Every key is released when the game loses focus.'
+  description: 'True for every step a keyboard key is held, despite the name: the edge is [[input.key_down]]. Keys are named by the browser''s `event.key` value, so the exact string matters: with Shift held the A key is `"A"`, and the letters follow the keyboard''s layout. Every key is released when the game loses focus.'
   params:
   - name: key
     type: string
     description: Key name from the browser keyboard event.
     required: true
-  returns: '`true` if the key is pressed, `false` otherwise.'
+  returns: True while held.
   returnType: boolean
   examples:
   - |-
@@ -104,7 +104,7 @@ functions:
     if input.key_pressed("Shift") then speed = 4 end
   notes:
   - kind: warning
-    text: '`key_pressed` means held: it stays `true` for as long as the key is down, so a jump or a menu choice read with it repeats every step. Read the press with `input.key_down`.'
+    text: '`key_pressed` means held: it stays `true` for as long as the key is down, so a jump or a menu choice read with it repeats every step. Read the press with [[input.key_down]].'
   - kind: tip
     text: 'Prefer actions over raw keys: they work with a gamepad and can be rebound.'
   aliases:
@@ -116,7 +116,7 @@ functions:
 - name: key_down
   signature: input.key_down(key)
   summary: True on the step a key went down.
-  description: True on the step a key went down, using the browser's event.key names ("a", "Escape", "ArrowLeft").
+  description: 'True only on the step a key went down. Keys are named by the browser''s `event.key` value: `"a"`, `"Escape"`, `"ArrowLeft"`.'
   params:
   - name: key
     type: string
@@ -156,7 +156,7 @@ functions:
 - name: mouse_pressed
   signature: input.mouse_pressed([button])
   summary: True while a mouse button is held.
-  description: 'True for every step a mouse button is held, despite the name: the edge is `input.mouse_down`. `0` is the left button, `1` the right, `2` the middle.'
+  description: 'True for every step a mouse button is held, despite the name: the edge is [[input.mouse_down]]. `0` is the left button, `1` the right, `2` the middle.'
   params:
   - name: button
     type: number
@@ -170,7 +170,7 @@ functions:
     if mx and input.mouse_pressed() then gfx.pixel(mx, my, 5) end
   notes:
   - kind: warning
-    text: '`mouse_pressed` means held, like `key_pressed`: a click is `input.mouse_down`.'
+    text: '`mouse_pressed` means held, like `key_pressed`: a click is [[input.mouse_down]].'
   aliases: []
   seeAlso:
   - input.mouse_down

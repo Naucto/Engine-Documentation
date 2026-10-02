@@ -11,9 +11,9 @@ legacy_slugs:
 
 # Build a Coin Rush
 
-Up to four players race to collect coins scattered on the screen; first to ten wins. When two players touch the same coin on the same frame, only one may get the point: this tutorial is all about [[net.lock]] (settling races fairly) and [[net.queue]] (feeding respawn work to the host). The game is called Coin Rush; its address, and the other tutorials, say `click-race`. Do the [Pong](/learn/tutorials/pong) tutorial first: this one builds on its session menu and moves faster over everything the two games share.
+Up to four players race to collect coins scattered on the screen; first to ten wins. When two players touch the same coin on the same frame, only one may get the point: this tutorial is all about [[net.lock]] (settling races fairly) and [[net.queue]] (feeding respawn work to the host).
 
-As in Pong, each step explains one idea and gives the functions that carry it, whole, so the game runs at the end of every step.
+Do the [Pong](/learn/tutorials/pong) tutorial first: this one builds on its session menu and moves faster over everything the two games share. As in Pong, each step explains one idea and gives the functions that carry it, whole, so the game runs at the end of every step.
 
 ## What you will build
 
@@ -58,7 +58,7 @@ function update_waiting()
 end
 ```
 
-This game needs three extra locals next to `state` and `is_host`, all explained as they come up: `next_color` (host only), `respawn_timer` (host only), and `claiming` (a table, one entry per coin we are currently trying to grab). `_init()` resets all of them. The constants settle the field: `COIN_COUNT = 5`, `WIN_SCORE = 10`, `RESPAWN_DELAY = 120` (two seconds at 60 FPS), an 8-pixel player, a 4-pixel coin, and a `COLORS` list with **one palette colour per possible player**, four entries:
+This game needs three extra globals next to `state` and `is_host`, all explained as they come up: `next_color` (host only), `respawn_timer` (host only), and `claiming` (a table, one entry per coin you are currently trying to grab). `_init()` resets all of them. The constants settle the field: `COIN_COUNT = 5`, `WIN_SCORE = 10`, `RESPAWN_DELAY = 120` (two seconds at 60 FPS), an 8-pixel player, a 4-pixel coin, and a `COLORS` list with **one palette colour per possible player**, four entries:
 
 ``` lua
 W, H        = 320, 180
@@ -204,7 +204,7 @@ end
 
 ## Step 3: Moving your square
 
-Movement is Pong's paddle logic on two axes, applied to your own entry. The only new element is finding that entry, which **belongs to the host** until it has been provisioned:
+Movement is Pong's paddle logic on two axes, applied to your own entry. The only new element is finding that entry, which **does not exist** until the host has provisioned it:
 
 ``` lua
 function my_player()
@@ -287,9 +287,9 @@ function _draw()
 end
 ```
 
-### One account per player
+### One id per player
 
-This game keys everything by `net.id()`, so every client needs an id of its own. The NET tab's Test rig gives its second client one: it runs on your account, but the host's `peer.joined` sees a new id, provisions a second entry, and each screen steers **its own square**. Set it up as in Pong ([Testing with two clients](/learn/tutorials/pong#testing-with-two-clients)): viewer popped out, Auto off, then click the rig's screen and press `j` there. To go past two players, add a second browser logged in to another account, or friends.
+This game keys everything by [[net.id]], so every client needs an id of its own. The NET tab's TEST RIG gives its second client one: it runs on your account, but the host's `peer.joined` sees a new id, provisions a second entry, and each screen steers **its own square**. Set it up as in Pong ([Testing with two clients](/learn/tutorials/pong#testing-with-two-clients)): VIEWER popped out, Auto off, then click the rig's screen and press `j` there. To go past two players, add a second browser logged in to another account, or friends.
 
 > [!TRY]
 > Host plus one or two joiners: every screen should show every square moving live, each with a white ring around its own. Join a third player after moving around a bit: the newcomer sees everyone in the right place. That is the state snapshot at work.
@@ -333,7 +333,7 @@ end
 - The `taken` re-check inside `acquire` is the whole point of the lock: the world may have changed between asking for the lock and being granted it. The loser of the race reaches this line and finds the coin already gone.
 - `release()` runs on every path: a lock that is never released blocks that coin for the rest of the session.
 
-Drive it from an `update_collect()` that loops over the coins and calls `try_collect(i)` for any untaken coin overlapping you. The overlap test is the AABB rectangle test from [limitations](/learn/reference/limitations), with the player and coin sizes. Then add `update_collect()` to `update_playing()`:
+Drive it from an `update_collect()` that loops over the coins and calls `try_collect(i)` for any untaken coin overlapping you. The overlap test is the axis-aligned box test from [limitations](/learn/reference/limitations), with the player and coin sizes. Then add `update_collect()` to `update_playing()`:
 
 ``` lua
 function overlaps_coin(me, coin)
@@ -389,7 +389,7 @@ function update_respawns()
 end
 ```
 
-Only the host calls it: it goes in `update_playing()` inside an `is_host` branch, next to `update_movement()` and `update_collect()` which everyone runs. Close the loop like in Pong: when `net.state.winner` appears, announce it and switch to `"over"`, where `m` calls `net.leave()` and restarts:
+Only the host calls it: it goes in `update_playing()` inside an `is_host` branch, next to `update_movement()` and `update_collect()` which everyone runs. Close the loop like in Pong: when `net.state.winner` appears, announce it and switch to `"over"`, where `m` calls [[net.leave]] and restarts:
 
 ``` lua
 function update_playing()
@@ -424,5 +424,5 @@ end
 
 - Bonus coins: store a `value` on each coin and add it to the score.
 - Sudden death: the host shortens `RESPAWN_DELAY` as scores climb.
-- Announcements: `net.emit("stolen", i)` when you snatch a coin someone was standing on.
+- Announcements: send a `"stolen"` event with [[net.emit]] when you snatch a coin someone was standing on.
 - Round timer: the host counts frames down in `net.state.time_left`; highest score wins at zero.

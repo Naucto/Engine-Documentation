@@ -27,7 +27,9 @@ The name is 25 characters at most, the summary 50, the description 300 and there
 
 ### Controls
 
-The console has nine actions, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, and the code reads them by those names with `input.held`, `input.pressed` and `input.released`. An action is not a key: `a`, `b`, `x` and `y` are the four buttons of a gamepad, and on the keyboard they are <kbd>X</kbd> or <kbd>Space</kbd>, <kbd>C</kbd> or <kbd>Shift</kbd>, <kbd>V</kbd> and <kbd>B</kbd> by default, while the key <kbd>A</kbd> is `left`. The whole table of default keys is in [input](/learn/api/input#actions). The Controls block is one row per action with a field for **the word your game gives it**, 25 characters at most: `Jump` beside `a`, `Walk` beside `left`. Leave empty the actions the game does not read.
+The console has nine actions, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, and the code reads them by those names with [[input.held]], [[input.pressed]] and [[input.released]]. An action is not a key: `a`, `b`, `x` and `y` are the four buttons of a gamepad, and on the keyboard they are <kbd>X</kbd> or <kbd>Space</kbd>, <kbd>C</kbd> or <kbd>Shift</kbd>, <kbd>V</kbd> and <kbd>B</kbd> by default, while the key <kbd>A</kbd> is `left`. The whole table of default keys is in [input](/learn/api/input#actions).
+
+The Controls block is one row per action with a field for **the word your game gives it**, 25 characters at most: `Jump` beside `a`, `Walk` beside `left`. Leave empty the actions the game does not read.
 
 The names are part of the game document, so they are saved and published with it and need no code. Two places show them: the **How to play** panel on the game's page, which lists only the actions you named, and Settings › Controls, where the label column reads them beside each binding while that game is on screen. A game that names nothing gets the console's own words instead.
 
@@ -45,7 +47,7 @@ None, Ads or Paid, with a Price field for Paid. Paid games are not charged yet; 
 
 ### IN THIS WORK SESSION
 
-Everyone connected to the game right now, with `you` on your own row. The host has a **Kick** button on every other row. Under the list, `invite by name…` searches for a person and adds them as a collaborator, the same thing the SHARE dialog does.
+Everyone connected to the game right now, with `you` on your own row. The host of the work session, whoever opened the game first, or the person who took over when they left, has a **Kick** button on every other row. Under the list, `invite by name…` searches for a person and adds them as a collaborator, the same thing the SHARE dialog does.
 
 ### Lineage
 
@@ -77,7 +79,7 @@ The name is 32 characters at most. The field says `N of M named versions`, the s
 
 PUBLISH opens the Publish dialog. Publishing puts the current save on the hub, as the game people play; what you save after that stays yours until you publish again. The dialog lists what a release allows: people can play it from the hub and your profile, like it, and **remix it into a game of their own**, with a line back to yours.
 
-Under that, the same Game size gauge. Over 1 MB the notice says by how much and the button is disabled: everything else still saves, and the game still runs. Before the first release the buttons are Not yet and Publish; once published, **Unpublish** and **Update release**. Each release also leaves a version named `published` in the history, so the state people are playing is always something you can go back to.
+Under that, the same Game size gauge. Over 1 MB the notice says by how much and the button is disabled: everything else still saves, and the game still runs. Before the first release the buttons are Not yet and Publish; once published, Unpublish and Update release. Each release also leaves a version named `published` in the history, so the state people are playing is always something you can go back to.
 
 ![The Publish dialog](img/game-publish.png "Publish, before the first release: what a release allows, the size gauge, Not yet and Publish.")
 
