@@ -34,7 +34,7 @@ A game runs in a browser tab, beside other people's games, so the parts of Lua t
 `print` is the console's own, the same function as [[sys.log]]: it writes a number the browser's way, so `3.0` prints as `3`, and a table as JSON. `tostring` keeps Lua's spelling.
 
 > [!WARNING]
-> The console's functions, `print` included, cannot be called from inside a coroutine: the call stops the coroutine with `Unsupported Lua type thread`. A coroutine changes the game's state and `_draw` shows it; see [[coroutine.create]].
+> `print` cannot print a coroutine itself: `print(co)` stops with `Unsupported Lua type thread`. Print `tostring(co)` instead; see [[coroutine.create]].
 
 ## Basic functions
 

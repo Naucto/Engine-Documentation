@@ -12,7 +12,7 @@ namespace: coroutine
 A coroutine is a function that can stop half way and go on later from the same point. Resumed once per `_update`, it turns a sequence that spans many frames, a cutscene or a patrol, into one function read from top to bottom.
 
 > [!WARNING]
-> **The console's own functions cannot be called from inside a coroutine**: `print`, `gfx`, `sound` and the rest stop it with `Unsupported Lua type thread`. The coroutine changes the game's state, and `_draw` shows it.
+> **A coroutine cannot be printed directly**: `print(co)` stops with `Unsupported Lua type thread`. Print `tostring(co)` instead.
 
 {{api:coroutine.create}}
 
