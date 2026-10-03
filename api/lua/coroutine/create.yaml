@@ -19,7 +19,7 @@ examples:
     print(select(2, coroutine.resume(intro)))   --> a figure steps in
 notes:
   - kind: warning
-    text: '**The console''s own functions cannot be called from inside a coroutine**: `print`, `gfx`, `sound` and the rest stop it with `Unsupported Lua type thread`, which [[coroutine.resume]] returns as its error. Yield what has to be shown, and draw it in `_draw`. Printing a coroutine itself fails the same way; print `tostring(co)`.'
+    text: '**A coroutine cannot be printed directly**: `print(co)` stops with `Unsupported Lua type thread`. Print `tostring(co)` instead.'
 seeAlso:
   - coroutine.resume
   - coroutine.wrap
