@@ -1,0 +1,27 @@
+name: emit
+signature: net.emit(name[, payload])
+summary: Broadcast an event.
+description: 'Send a one-shot event to the **other** players in the session. The sender does not
+  receive its own event: if the sender needs the same effect, apply it locally after emitting. A
+  table arrives with its keys as strings, so `{10, 20}` is read back as `payload["1"]`,
+  `payload["2"]`.'
+params:
+  - name: name
+    type: string
+    description: Event name; receivers subscribe with `net.on("event:" .. name, ...)`.
+    required: true
+  - name: payload
+    type: any
+    description: "Optional value to send along: a number, string, boolean, or nested table. Functions
+      cannot be sent. Omitted, the receivers get `nil`."
+    optional: true
+returns: null
+examples:
+  - |-
+    -- inside the host or join callback, or later in the session
+    net.emit("serve", { direction = -1 })
+notes: []
+aliases: []
+seeAlso:
+  - net.on
+since: "1.0"

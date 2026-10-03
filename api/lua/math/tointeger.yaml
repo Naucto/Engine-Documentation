@@ -1,0 +1,21 @@
+name: tointeger
+signature: math.tointeger(x)
+summary: x as an integer, or nil when it has a fraction.
+description: 'Returns `x` as an integer when it is a whole number, such as `3.0`, and `nil` otherwise. It tells whether a division came out even.'
+params:
+  - name: x
+    type: number
+    description: The number.
+    required: true
+returns: The integer, or `nil`.
+returnType: number|nil
+examples:
+  - |-
+    print(math.tointeger(12 / 4))   --> 3
+    print(math.tointeger(7 / 2))    --> nil
+seeAlso:
+  - math.type
+  - math.floor
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.tointeger

@@ -1,0 +1,31 @@
+name: unpack
+signature: table.unpack(t[, i, j])
+summary: The elements of a list as separate values.
+description: 'Returns `t[i]`, `t[i + 1]` up to `t[j]` as separate values, which passes a list to a function as its arguments.'
+params:
+  - name: t
+    type: table
+    description: The list.
+    required: true
+  - name: i
+    type: number
+    description: The first element; left out, `1`.
+    optional: true
+  - name: j
+    type: number
+    description: The last element; left out, `#t`.
+    optional: true
+returns: The elements, one value each.
+returnType: any
+examples:
+  - |-
+    local spawn = { 40, 96 }
+    local x, y = table.unpack(spawn)
+    print(x, y)                         --> 40 96
+    print(math.max(table.unpack({ 3, 9, 4 })))   --> 9
+aliases: []
+seeAlso:
+  - table.pack
+  - select
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-table.unpack

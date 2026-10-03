@@ -1,0 +1,24 @@
+name: mouse_pressed
+signature: input.mouse_pressed([button])
+summary: True while a mouse button is held.
+description: "True for every step a mouse button is held, despite the name: the edge is
+  [[input.mouse_down]]. `0` is the left button, `1` the right, `2` the middle."
+params:
+  - name: button
+    type: number
+    optional: true
+    description: Button `0` (left), `1` (right) or `2` (middle); left out, `0`.
+returns: True while held.
+returnType: boolean
+examples:
+  - |-
+    local mx, my = input.get_mouse_pos()
+    if mx and input.mouse_pressed() then gfx.pixel(mx, my, 5) end
+notes:
+  - kind: warning
+    text: "`mouse_pressed` means held, like `key_pressed`: a click is [[input.mouse_down]]."
+aliases: []
+seeAlso:
+  - input.mouse_down
+  - input.get_mouse_pos
+since: "2.0"

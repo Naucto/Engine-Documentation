@@ -1,0 +1,26 @@
+name: atan
+signature: math.atan(y[, x])
+summary: The angle, in radians, of a direction given as y and x.
+description: 'With both arguments, the angle from the x axis to the point (`x`, `y`), using their signs to pick the right quarter: the angle from an enemy to the player is `math.atan(py - ey, px - ex)`. With `y` alone, the angle whose tangent is `y`.'
+params:
+  - name: "y"
+    type: number
+    description: The vertical part of the direction.
+    required: true
+  - name: x
+    type: number
+    description: The horizontal part; left out, `1`.
+    optional: true
+returns: The angle, from `-math.pi` to `math.pi`.
+returnType: number
+examples:
+  - |-
+    local angle = math.atan(10, 0)            -- straight down the screen
+    print(math.deg(angle))                    --> 90
+seeAlso:
+  - math.sin
+  - math.cos
+  - math.deg
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.atan

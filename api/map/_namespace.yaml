@@ -1,0 +1,9 @@
+namespace: map
+title: Map
+order:
+  - draw
+  - get
+  - set
+  - flag
+  - width
+  - height

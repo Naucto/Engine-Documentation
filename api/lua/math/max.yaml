@@ -1,0 +1,26 @@
+name: max
+signature: math.max(x, ...)
+summary: The largest of its arguments.
+description: 'Returns the largest of the numbers it is given, so a value never drops below a floor: a timer that stops at zero, a speed that never turns negative.'
+params:
+  - name: x
+    type: number
+    description: The first number.
+    required: true
+  - name: "..."
+    type: number
+    description: The others.
+    optional: true
+returns: The largest.
+returnType: number
+examples:
+  - |-
+    local timer = 2
+    timer = math.max(timer - 5, 0)
+    print(timer)                 --> 0
+    print(math.max(3, 9, 4))     --> 9
+seeAlso:
+  - math.min
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.max

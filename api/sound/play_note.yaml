@@ -1,0 +1,42 @@
+name: play_note
+signature: sound.play_note(instrument, pitch[, length, volume, channel])
+summary: Play a note now; pitch is MIDI or "C4".
+description: 'Play a single note on an instrument right now, without a pattern. A new game has no
+  instrument: add one in the SOUND tab first, from a preset or from scratch, and name it here. The
+  pitch is a MIDI number or a name like `"C4"`; a name that cannot be read plays C4. The note plays
+  at priority 1, like a sound effect, and `volume` is its velocity.'
+params:
+  - name: instrument
+    type: string
+    required: true
+    description: The instrument's name exactly as the SOUND tab shows it, case included (a preset is
+      called `"Square lead"`, not `"lead"`), or its id. A name no instrument has plays nothing and
+      warns once in the console.
+  - name: pitch
+    type: number|string
+    required: true
+    description: MIDI note or name such as "C4".
+  - name: length
+    type: number
+    optional: true
+    description: Seconds to hold; left out, a quarter of a second. `0` holds the note until [[sound.stop_note]].
+  - name: volume
+    type: number
+    optional: true
+    description: 0..1, default 1.
+  - name: channel
+    type: number
+    optional: true
+    description: Force a voice 0..4.
+returns: null
+examples:
+  - |-
+    -- a two-note pickup jingle, on the Square lead preset added in the SOUND tab
+    sound.play_note("Square lead", "C5", 0.08)
+    sound.play_note("Square lead", "G5", 0.12)
+notes: []
+aliases: []
+seeAlso:
+  - sound.stop_note
+  - sound.play_sfx
+since: "2.0"

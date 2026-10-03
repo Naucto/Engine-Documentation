@@ -1,0 +1,21 @@
+name: pack
+signature: table.pack(...)
+summary: Its arguments gathered in a new list, with their count in n.
+description: 'Returns a new table holding every argument at `1`, `2` and on, and their number in the field `n`, which counts the `nil` ones that `#` would miss.'
+params:
+  - name: "..."
+    type: any
+    description: The values to gather.
+    optional: true
+returns: The new table.
+returnType: table
+examples:
+  - |-
+    local args = table.pack("a", nil, "c")
+    print(args.n, args[3])   --> 3 c
+aliases: []
+seeAlso:
+  - table.unpack
+  - select
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-table.pack

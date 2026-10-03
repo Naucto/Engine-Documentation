@@ -1,0 +1,21 @@
+name: randomseed
+signature: math.randomseed(x)
+summary: Restart the random sequence from a seed.
+description: 'Sets where [[math.random]] starts: the same seed gives the same numbers in the same order, every run. A level generated from a seed comes out the same each time it is played, and a seed is a short thing to share.'
+params:
+  - name: x
+    type: number
+    description: The seed.
+    required: true
+returns: null
+examples:
+  - |-
+    math.randomseed(42)
+    local first = math.random(100)
+    math.randomseed(42)
+    print(math.random(100) == first)   --> true
+seeAlso:
+  - math.random
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.randomseed

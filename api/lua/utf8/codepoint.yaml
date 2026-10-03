@@ -1,0 +1,29 @@
+name: codepoint
+signature: utf8.codepoint(s[, i, j])
+summary: The code points of the characters of a UTF-8 string.
+description: 'Returns the Unicode code point of each character that starts between byte `i` and byte `j`, by default the first character only.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+  - name: i
+    type: number
+    description: The first byte; left out, `1`.
+    optional: true
+  - name: j
+    type: number
+    description: The last byte; left out, `i`.
+    optional: true
+returns: One code point per character.
+returnType: number
+examples:
+  - |-
+    print(utf8.codepoint("é"))             --> 233
+    print(utf8.codepoint("hé", 1, -1))     --> 104 233
+seeAlso:
+  - utf8.char
+  - string.byte
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-utf8.codepoint

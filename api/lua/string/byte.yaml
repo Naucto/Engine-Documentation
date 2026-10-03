@@ -1,0 +1,29 @@
+name: byte
+signature: string.byte(s[, i, j])
+summary: The numeric codes of characters in a string.
+description: 'Returns the byte value of each character of `s` from `i` to `j`, by default the first one only: `65` for `A`. It turns a letter into a number, such as a tile index read from a level drawn in text.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+  - name: i
+    type: number
+    description: The first position; left out, `1`.
+    optional: true
+  - name: j
+    type: number
+    description: The last position; left out, `i`.
+    optional: true
+returns: One number per character.
+returnType: number
+examples:
+  - |-
+    print(string.byte("A"))           --> 65
+    print(("abc"):byte(1, -1))        --> 97 98 99
+aliases: []
+seeAlso:
+  - string.char
+  - utf8.codepoint
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.byte

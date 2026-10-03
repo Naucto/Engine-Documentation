@@ -1,0 +1,22 @@
+name: getmetatable
+signature: getmetatable(v)
+summary: The metatable of a value, or nil.
+description: 'Returns the metatable `setmetatable` gave a table, or `nil` when it has none. Every string shares one, whose `__index` is the `string` table: it is what makes `s:upper()` work.'
+params:
+  - name: v
+    type: any
+    description: The value to ask.
+    required: true
+returns: Its metatable, or `nil`.
+returnType: table|nil
+examples:
+  - |-
+    local Enemy = {}
+    local bat = setmetatable({}, Enemy)
+    print(getmetatable(bat) == Enemy)   --> true
+    print(getmetatable({}))             --> nil
+aliases: []
+seeAlso:
+  - setmetatable
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-getmetatable

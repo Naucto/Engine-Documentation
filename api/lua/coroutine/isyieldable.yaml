@@ -1,0 +1,16 @@
+name: isyieldable
+signature: coroutine.isyieldable()
+summary: Whether the running code may call yield.
+description: 'Returns `true` inside a coroutine, where [[coroutine.yield]] can pause, and `false` in the main one, where it would be an error: a helper such as a `wait` can check before it yields.'
+params: []
+returns: '`true` inside a coroutine.'
+returnType: boolean
+examples:
+  - |-
+    print(coroutine.isyieldable())                                     --> false
+    print(coroutine.wrap(function() return coroutine.isyieldable() end)())   --> true
+seeAlso:
+  - coroutine.running
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-coroutine.isyieldable

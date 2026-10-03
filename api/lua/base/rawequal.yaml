@@ -1,0 +1,27 @@
+name: rawequal
+signature: rawequal(a, b)
+summary: Whether two values are the same, without the __eq metamethod.
+description: 'Compares `a` and `b` as `==` would without a metatable: two tables are equal only when they are the same table, whatever their `__eq` says.'
+params:
+  - name: a
+    type: any
+    description: The first value.
+    required: true
+  - name: b
+    type: any
+    description: The second value.
+    required: true
+returns: '`true` when they are the same value.'
+returnType: boolean
+examples:
+  - |-
+    local Point = { __eq = function(p, q) return p.x == q.x end }
+    local a = setmetatable({ x = 1 }, Point)
+    local b = setmetatable({ x = 1 }, Point)
+    print(a == b)            --> true
+    print(rawequal(a, b))    --> false
+aliases: []
+seeAlso:
+  - setmetatable
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-rawequal

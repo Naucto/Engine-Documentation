@@ -1,0 +1,29 @@
+name: clear
+signature: gfx.clear([colour])
+summary: Fill the screen with a palette colour (default 0).
+picture: ../img/frames/gfx-clear.png
+caption: The screen filled with palette colour 1, then a line of text over it.
+description: "Fill the whole screen with one colour, and start the frame from it: call it first in
+  `_draw()`. It ignores the clip, the camera and any `set_col` remap: the colour goes straight to
+  the screen."
+params:
+  - name: colour
+    type: number
+    description: Palette index, `0` to `15`; left out, `0`.
+    optional: true
+returns: null
+examples:
+  - |-
+    function _draw()
+      gfx.clear(1)                 -- a dark red background
+      gfx.draw_sprite(1, 152, 82)  -- then the scene over it
+    end
+notes:
+  - kind: note
+    text: "An index past `15` wraps around: `16` draws as `0` and `-1` as `15`. Nothing stops the game."
+aliases:
+  - clear
+seeAlso:
+  - gfx.fill_rect
+  - gfx.reset_palette
+since: "1.0"

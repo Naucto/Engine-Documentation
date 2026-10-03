@@ -1,0 +1,19 @@
+name: upper
+signature: string.upper(s)
+summary: A copy of a string in capitals.
+description: 'Returns `s` with every ASCII letter in capitals; other characters are left as they are.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+returns: The string in capitals.
+returnType: string
+examples:
+  - |-
+    print(("press start"):upper())   --> PRESS START
+aliases: []
+seeAlso:
+  - string.lower
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.upper

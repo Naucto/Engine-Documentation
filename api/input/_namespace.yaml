@@ -1,0 +1,12 @@
+namespace: input
+title: Input
+order:
+  - held
+  - pressed
+  - released
+  - key_pressed
+  - key_down
+  - get_mouse_pos
+  - mouse_pressed
+  - mouse_down
+  - players

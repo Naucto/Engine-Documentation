@@ -1,0 +1,19 @@
+name: tan
+signature: math.tan(x)
+summary: The tangent of an angle in radians.
+description: 'Returns the tangent of `x`, the slope of a line at that angle: how far it climbs per pixel across.'
+params:
+  - name: x
+    type: number
+    description: An angle in radians.
+    required: true
+returns: Its tangent.
+returnType: number
+examples:
+  - |-
+    print(math.floor(math.tan(math.pi / 4) + 0.5))   --> 1
+seeAlso:
+  - math.atan
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.tan

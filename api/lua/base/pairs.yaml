@@ -1,0 +1,24 @@
+name: pairs
+signature: pairs(t)
+summary: Every key and value of a table, for a for loop.
+description: 'Walks every key of a table, the named fields as well as the numbered ones, in a for loop. **The order is not defined**: two runs may visit the same table differently, so a list that has to be drawn in order is walked with `ipairs` instead. Setting a field that already exists, or clearing one to `nil`, is allowed during the walk; adding a new key is not.'
+params:
+  - name: t
+    type: table
+    description: The table to walk.
+    required: true
+returns: What a generic for needs to walk the table, one key and its value per turn.
+returnType: function
+examples:
+  - |-
+    local stock = { apples = 3 }
+    for name, count in pairs(stock) do
+      print(name, count)
+    end
+    --> apples 3
+aliases: []
+seeAlso:
+  - ipairs
+  - next
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-pairs

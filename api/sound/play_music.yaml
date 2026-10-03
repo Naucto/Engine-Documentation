@@ -1,0 +1,35 @@
+name: play_music
+signature: sound.play_music([song, loop, fade_in])
+summary: Start music 0..15; loops from its start unless told otherwise.
+description: "Play one of the sixteen musics of the SOUND tab, replacing the one playing. A number
+  outside `0` to `15`, or an empty one, plays nothing and raises no error. A music loops from its
+  start unless the code says otherwise: `loop` here, or [[sound.set_music]] for that music."
+params:
+  - name: song
+    type: number
+    description: Music number, as the `#` field of the SOUND tab shows it, `0` to `15`; left out, `0`.
+      An empty number plays nothing.
+    optional: true
+  - name: loop
+    type: boolean
+    description: "Whether the music restarts when it reaches its end. Left out, it loops, unless
+      [[sound.set_music]] said otherwise for this music. Lua truth applies: only `false` means no,
+      so `0` loops; a `nil` is the same as leaving it out."
+    optional: true
+  - name: fade_in
+    type: number
+    description: Seconds to fade the music up over. Defaults to `0`, which starts at full volume.
+    optional: true
+returns: null
+examples:
+  - |-
+    function _init()
+      sound.play_music(0)  -- music number 0, the first
+    end
+notes: []
+aliases:
+  - play_music
+seeAlso:
+  - sound.stop_music
+  - sound.music_pos
+since: "1.0"

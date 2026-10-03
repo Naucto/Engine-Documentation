@@ -1,0 +1,22 @@
+name: error
+signature: sys.error(...)
+summary: Write an error line to the console.
+description: Writes an error line to the console, in the error colour. It reports a problem; it does
+  not stop the game.
+params:
+  - name: ...
+    type: any
+    description: One or more values to write.
+    required: true
+returns: null
+examples:
+  - |-
+    local n = 3
+    local level = nil
+    if not level then sys.error("level " .. n .. " is missing") end
+notes: []
+aliases: []
+seeAlso:
+  - sys.log
+  - sys.warn
+since: "2.0"

@@ -1,0 +1,12 @@
+namespace: utf8
+title: Unicode text
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#6.5
+order:
+  - len
+  - char
+  - codepoint
+  - codes
+  - offset
+values:
+  - charpattern

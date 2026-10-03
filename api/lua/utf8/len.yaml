@@ -1,0 +1,29 @@
+name: len
+signature: utf8.len(s[, i, j])
+summary: The number of characters in a UTF-8 string.
+description: 'Counts the characters of `s`, where `#s` counts bytes: `"héllo"` is five characters and six bytes. A string that is not valid UTF-8 gives `nil` and the position of the first bad byte.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+  - name: i
+    type: number
+    description: The byte to start counting at; left out, `1`.
+    optional: true
+  - name: j
+    type: number
+    description: The byte to stop at; left out, `-1`, the end.
+    optional: true
+returns: The count, or `nil` and a position.
+returnType: number|nil
+examples:
+  - |-
+    local name = "Zoé"
+    print(#name, utf8.len(name))   --> 4 3
+seeAlso:
+  - string.len
+  - utf8.offset
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-utf8.len

@@ -1,0 +1,27 @@
+name: rawget
+signature: rawget(t, key)
+summary: A field of a table, without its metatable's __index.
+description: 'Reads `t[key]` as stored in the table itself, without the `__index` fallback: the way to tell a field an object has from one it inherits from its class.'
+params:
+  - name: t
+    type: table
+    description: The table.
+    required: true
+  - name: key
+    type: any
+    description: The key to read.
+    required: true
+returns: The value stored at `key`, or `nil`.
+returnType: any
+examples:
+  - |-
+    local defaults = { speed = 2 }
+    local player = setmetatable({}, { __index = defaults })
+    print(player.speed)              --> 2
+    print(rawget(player, "speed"))   --> nil
+aliases: []
+seeAlso:
+  - rawset
+  - setmetatable
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-rawget

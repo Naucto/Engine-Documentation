@@ -1,0 +1,33 @@
+name: held
+signature: input.held(action[, player])
+summary: True while an action (left right up down a b x y pause) is held.
+description: 'True for every step an action is held. Actions are named, not keys: the player decides
+  which key or pad button produces them, and your game never has to care. A name that is not an
+  action (a typo, `"jump"`) answers `false` without a warning.'
+params:
+  - name: action
+    type: string
+    required: true
+    description: One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.
+  - name: player
+    type: number
+    optional: true
+    description: Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first
+      gamepad are player 1 together, the second keyboard layout and the second gamepad player 2. A
+      number past `4` answers `false`.
+returns: True while held.
+returnType: boolean
+examples:
+  - |-
+    local player = { x = 40, y = 40 }
+
+    function _update()
+      if input.held("left") then player.x = player.x - 2 end
+      if input.held("right") then player.x = player.x + 2 end
+    end
+notes: []
+aliases: []
+seeAlso:
+  - input.pressed
+  - input.released
+since: "2.0"

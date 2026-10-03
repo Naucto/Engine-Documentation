@@ -1,0 +1,38 @@
+name: line
+signature: gfx.line(x0, y0, x1, y1, colour)
+summary: Draw a one-pixel line.
+picture: ../img/frames/gfx-shapes.png
+caption: rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.
+description: Draw a straight line between two points, both ends included. Coordinates are floored;
+  the camera and the clip apply.
+params:
+  - name: x0
+    type: number
+    description: Start x position.
+    required: true
+  - name: y0
+    type: number
+    description: Start y position.
+    required: true
+  - name: x1
+    type: number
+    description: End x position.
+    required: true
+  - name: y1
+    type: number
+    description: End y position.
+    required: true
+  - name: colour
+    type: number
+    description: Palette index 0..15.
+    required: true
+returns: null
+examples:
+  - gfx.line(0, 0, 319, 179, 8)  -- diagonal across the screen
+notes: []
+aliases:
+  - line
+seeAlso:
+  - gfx.rect
+  - gfx.pixel
+since: "1.0"

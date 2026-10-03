@@ -1,0 +1,40 @@
+name: set_music
+signature: sound.set_music(n, fields)
+summary: Change whether a music loops for this run.
+description: >-
+  Set whether a music restarts when it reaches its end, **for this run only**. A music loops from
+  its start unless the code says otherwise, and this is one way of saying so. On the music playing
+  it takes effect at once, so a loop can be let out at its next end; on any other it is what
+  [[sound.play_music]] does for that music when it is not given a `loop` of its own. Lua truth
+  applies: only `false` means no; a `nil` is the same as leaving it out, and the music loops.
+
+
+  | Field | What it is |
+
+  | --- | --- |
+
+  | `loop` | `true` to start over at the end, `false` to stop there |
+params:
+  - name: n
+    type: number
+    required: true
+    description: Music number, as the `#` field of the SOUND tab shows it, `0` to `15`. An empty number
+      warns once and changes nothing.
+  - name: fields
+    type: table
+    required: true
+    description: "`loop`, `true` or `false`."
+returns: null
+examples:
+  - |-
+    -- the music plays out to its end, then the ending shows
+    function game_over()
+      sound.set_music(0, { loop = false })
+    end
+notes: []
+aliases: []
+seeAlso:
+  - sound.play_music
+  - sound.stop_music
+  - sound.set_pattern
+since: "2.0"

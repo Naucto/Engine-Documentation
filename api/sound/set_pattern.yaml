@@ -1,0 +1,47 @@
+name: set_pattern
+signature: sound.set_pattern(n, fields)
+summary: Change the tempo or length of a pattern for this run.
+description: >-
+  Change the tempo or the length of a pattern **for this run only**: the SOUND tab and the saved
+  game keep theirs. On the music it takes effect at once, even while the pattern plays: the next
+  step comes at the new tempo, and a pattern past its new end goes on to the next one. A sound
+  effect already playing keeps the pattern it copied when it was triggered, tempo included: the
+  change reaches it from its next trigger. Calling it again adds to what it set before.
+
+
+  | Field | What it is | Range |
+
+  | --- | --- | --- |
+
+  | `bpm` | Beats a minute | `40` to `240` |
+
+  | `steps` | Length, in steps; notes past it are not played | `1` to `64` |
+params:
+  - name: n
+    type: number
+    required: true
+    description: The pattern's number, as the PATTERN field of the SOUND tab shows it. A number no
+      pattern has warns once and changes nothing.
+  - name: fields
+    type: table
+    required: true
+    description: "`bpm`, `steps`, or both; the other keeps its value."
+returns: null
+examples:
+  - |-
+    -- the music speeds up when the timer goes under ten seconds
+    local left = 60
+    function _update()
+      local before = left
+      left = left - sys.dt()
+      if before >= 10 and left < 10 then
+        sound.set_pattern(0, { bpm = 180 })
+      end
+    end
+notes: []
+aliases: []
+seeAlso:
+  - sound.play_music
+  - sound.set_instrument
+  - sound.set_music
+since: "2.0"

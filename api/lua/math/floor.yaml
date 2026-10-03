@@ -1,0 +1,23 @@
+name: floor
+signature: math.floor(x)
+summary: The largest whole number not above x.
+description: 'Rounds `x` down, towards minus infinity, and returns an integer: the tile a pixel position falls in, or a score without its fraction. `x // 1` does the same with a float result.'
+params:
+  - name: x
+    type: number
+    description: The number to round.
+    required: true
+returns: '`x` rounded down.'
+returnType: number
+examples:
+  - |-
+    local px = 37.6
+    print(math.floor(px))        --> 37
+    print(math.floor(px / 8))    --> 4
+    print(math.floor(-0.5))      --> -1
+seeAlso:
+  - math.ceil
+  - math.tointeger
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.floor

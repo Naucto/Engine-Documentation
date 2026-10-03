@@ -1,0 +1,22 @@
+name: leave
+signature: net.leave()
+summary: Leave the current session.
+description: 'Leave the current session and tear it down. Safe to call when there is no session (it
+  does nothing). After leaving, the game may host or join again. Your own `"ended"` callback does
+  not fire: only the other players get it, and only when the one leaving is the host.'
+params: []
+returns: null
+examples:
+  - |-
+    local state = "playing"
+    local game_over = true
+    if game_over then
+      net.leave()
+      state = "menu"
+    end
+notes: []
+aliases: []
+seeAlso:
+  - net.host
+  - net.join
+since: "1.0"

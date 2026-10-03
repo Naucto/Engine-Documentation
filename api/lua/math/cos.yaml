@@ -1,0 +1,21 @@
+name: cos
+signature: math.cos(x)
+summary: The cosine of an angle in radians.
+description: 'Returns the cosine of `x`, between `-1` and `1`: the horizontal part of a direction whose vertical part is [[math.sin]].'
+params:
+  - name: x
+    type: number
+    description: An angle in radians.
+    required: true
+returns: Its cosine.
+returnType: number
+examples:
+  - |-
+    local angle, radius = 0, 10
+    print(160 + math.cos(angle) * radius)   --> 170
+seeAlso:
+  - math.sin
+  - math.atan
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.cos

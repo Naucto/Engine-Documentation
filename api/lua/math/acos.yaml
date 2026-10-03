@@ -1,0 +1,20 @@
+name: acos
+signature: math.acos(x)
+summary: The angle, in radians, whose cosine is x.
+description: 'The reverse of [[math.cos]]: from a cosine between `-1` and `1`, the angle between `0` and `math.pi`.'
+params:
+  - name: x
+    type: number
+    description: A cosine, `-1` to `1`.
+    required: true
+returns: The angle in radians.
+returnType: number
+examples:
+  - |-
+    print(math.deg(math.acos(-1)))   --> 180
+seeAlso:
+  - math.cos
+  - math.asin
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.acos

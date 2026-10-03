@@ -1,0 +1,32 @@
+name: concat
+signature: table.concat(t[, sep, i, j])
+summary: The elements of a list joined into one string.
+description: 'Joins the strings and numbers of `t`, from `i` to `j`, with `sep` between two of them. Building a long string in pieces and joining them once is much faster than adding to it with `..` in a loop.'
+params:
+  - name: t
+    type: table
+    description: A list of strings and numbers.
+    required: true
+  - name: sep
+    type: string
+    description: What goes between two elements; left out, nothing.
+    optional: true
+  - name: i
+    type: number
+    description: The first element; left out, `1`.
+    optional: true
+  - name: j
+    type: number
+    description: The last element; left out, `#t`.
+    optional: true
+returns: The joined string.
+returnType: string
+examples:
+  - |-
+    local items = { "sword", "key", "map" }
+    print(table.concat(items, ", "))   --> sword, key, map
+aliases: []
+seeAlso:
+  - string.rep
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-table.concat

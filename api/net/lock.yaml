@@ -1,0 +1,52 @@
+name: lock
+signature: net.lock()
+summary: Create a replicated lock value.
+description: >-
+  Create a mutual-exclusion lock. Locks let players compete for something safely: only one peer at a
+  time can hold a given lock, however close together they ask.
+
+
+  **Assign the lock into the shared state to share it**: a lock becomes shared, and ordered by the
+  host, only once it sits in [[net.state]]. Its path there is its identity, and you use it straight
+  from there, so store it right next to what it protects. A lock has two functions:
+
+
+  - `acquire(fn)` requests the lock. When granted, `fn` is called with a single argument: a
+  `release` function that frees the lock. If the lock is busy, the request waits in a first-come,
+  first-served queue and `fn` runs later, when the current holder releases.
+
+  - `is_locked()` returns `true` while any peer holds the lock.
+
+
+  Requests are ordered by the session host, so two peers acquiring "at the same time" are
+  serialized: one runs, then the other. If a peer disconnects while holding locks, its locks are
+  released automatically and its pending requests are dropped. A lock stored under a host-only path
+  (see [permissions](/learn/tutorials/permissions)) can only be acquired by the host, just like a
+  write to that path: a guest's `acquire` there is refused, its callback never runs, and
+  `net.on("error")` fires with the path and `"forbidden"`.
+params: []
+returns: "A lock handle: a table with an `acquire` and an `is_locked` function."
+returnType: table
+examples:
+  - |-
+    -- inside the host callback
+    net.state.score_lock = net.lock()   -- the host creates the shared lock once
+
+    net.state.score_lock.acquire(function(release)
+      -- nobody else holds the lock in here
+      net.state.score = (net.state.score or 0) + 1
+      release()
+    end)
+notes:
+  - kind: note
+    text: "A lock you never assign into `net.state` is a **local** lock: usable without a session, but
+      private to this player and uncontended (it grants immediately, even while it is already held).
+      It exists so the same code runs in single-player and multiplayer."
+  - kind: warning
+    text: Nothing prevents a peer from writing a lock-protected [[net.state]] key without acquiring the
+      lock first. A lock only protects against peers that also use it.
+aliases: []
+seeAlso:
+  - net.queue
+  - net.on
+since: "1.0"

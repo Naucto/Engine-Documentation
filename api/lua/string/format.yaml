@@ -1,0 +1,30 @@
+name: format
+signature: string.format(fmt, ...)
+summary: Text built from a template and values, like C's printf.
+description: 'Puts the values into `fmt` where its directives are: `%d` a whole number, `%s` any value as text, `%x` hexadecimal, `%5d` padded to five columns, `%03d` padded with zeros, `%%` a percent sign. It is the way to write a score in a fixed width, so the text beside it does not move as the number grows.'
+params:
+  - name: fmt
+    type: string
+    description: The template.
+    required: true
+  - name: "..."
+    type: any
+    description: One value per directive, in order.
+    optional: true
+returns: The text.
+returnType: string
+examples:
+  - |-
+    local score, lives = 420, 3
+    print(string.format("SCORE %06d", score))       --> SCORE 000420
+    print(("%s x%d"):format("lives", lives))        --> lives x3
+    print(string.format("%x", 255))                 --> ff
+notes:
+  - kind: warning
+    text: 'A float is rounded the browser''s way: `%.1f` of `2.25` writes `2.3` where C would write `2.2`. Keep scores and timers whole, or round them yourself with [[math.floor]].'
+aliases: []
+seeAlso:
+  - tostring
+  - gfx.print
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.format

@@ -1,0 +1,32 @@
+name: xpcall
+signature: xpcall(f, handler, ...)
+summary: Like pcall, with a function that sees the error first.
+description: 'Calls `f` in protected mode, like `pcall`, but hands an error to `handler` before the call unwinds; what `handler` returns is what `xpcall` returns after `false`. A handler is the place to add context, or to log the error with [[sys.error]] and carry on.'
+params:
+  - name: f
+    type: function
+    description: The function to call.
+    required: true
+  - name: handler
+    type: function
+    description: Called with the error; its result replaces it.
+    required: true
+  - name: "..."
+    type: any
+    description: The arguments of `f`.
+    optional: true
+returns: '`true` and the results of `f`, or `false` and what `handler` returned.'
+returnType: boolean
+examples:
+  - |-
+    local function load_level(n)
+      error("level " .. n .. " is missing", 0)
+    end
+    local ok, err = xpcall(load_level, function(e) return "while loading: " .. e end, 3)
+    print(ok, err)   --> false while loading: level 3 is missing
+aliases: []
+seeAlso:
+  - pcall
+  - error
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-xpcall

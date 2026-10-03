@@ -1,0 +1,21 @@
+name: char
+signature: string.char(...)
+summary: A string made of the characters with the given codes.
+description: 'The reverse of [[string.byte]]: each number, from `0` to `255`, becomes the character with that code.'
+params:
+  - name: "..."
+    type: number
+    description: The codes, one per character.
+    optional: true
+returns: The string.
+returnType: string
+examples:
+  - |-
+    print(string.char(72, 105))                     --> Hi
+    print(string.char(string.byte("A") + 2))        --> C
+aliases: []
+seeAlso:
+  - string.byte
+  - utf8.char
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.char

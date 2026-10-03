@@ -1,0 +1,17 @@
+name: stop
+signature: sound.stop()
+summary: Stop everything.
+description: "Stops everything at once: music, sound effects and any held notes."
+params: []
+returns: null
+examples:
+  - |-
+    function game_over()
+      sound.stop()
+    end
+notes: []
+aliases: []
+seeAlso:
+  - sound.stop_music
+  - sound.stop_note
+since: "2.0"

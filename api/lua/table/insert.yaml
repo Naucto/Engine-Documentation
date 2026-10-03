@@ -1,0 +1,31 @@
+name: insert
+signature: table.insert(t, [pos,] value)
+summary: Add a value to a list, at the end or at a position.
+description: 'With two arguments, appends `value` after the last element of `t`. With three, puts it at `pos` and shifts the elements from there one place up, so the list keeps no gap.'
+params:
+  - name: t
+    type: table
+    description: The list.
+    required: true
+  - name: pos
+    type: number
+    description: Where to put it, from `1` to `#t + 1`; left out, the end.
+    optional: true
+  - name: value
+    type: any
+    description: The value to add.
+    required: true
+returns: null
+examples:
+  - |-
+    local bullets = {}
+    table.insert(bullets, { x = 10 })
+    table.insert(bullets, { x = 20 })
+    table.insert(bullets, 1, { x = 0 })
+    print(#bullets, bullets[1].x)   --> 3 0
+aliases: []
+seeAlso:
+  - table.remove
+  - ipairs
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-table.insert

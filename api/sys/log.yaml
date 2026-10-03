@@ -1,0 +1,26 @@
+name: log
+signature: sys.log(...)
+summary: Write to the console (same as print).
+description: "Write a line to the console under the viewer. Values are turned into text and joined
+  with tabs: `nil` prints `nil`, a boolean `true` or `false`, a function `function`, and a table is
+  written as JSON, with its keys as strings. `print` is the same function. The console keeps the
+  last 2000 lines."
+params:
+  - name: ...
+    type: any
+    description: One or more values to write.
+    required: true
+returns: null
+examples:
+  - |-
+    local player = { x = 40, y = 40, hp = 3, on_ground = true }
+    local score = 0
+    print("player", player.x, player.y)
+    print("health:", player.hp, "score:", score)
+    print("on_ground:", player.on_ground)
+notes: []
+aliases: []
+seeAlso:
+  - sys.warn
+  - sys.error
+since: "1.0"

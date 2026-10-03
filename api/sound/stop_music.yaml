@@ -1,0 +1,23 @@
+name: stop_music
+signature: sound.stop_music([fade_out])
+summary: Stop the music.
+description: Stop the music, at once or over a fade. During the fade `sound.music_pos()` still
+  answers, until the fade ends.
+params:
+  - name: fade_out
+    type: number
+    description: Seconds to fade the music down over. Defaults to `0`, which stops it at once.
+    optional: true
+returns: null
+examples:
+  - |-
+    if input.pressed("pause") then
+      sound.stop_music(0.5)
+    end
+notes: []
+aliases:
+  - stop_music
+seeAlso:
+  - sound.play_music
+  - sound.stop
+since: "1.0"

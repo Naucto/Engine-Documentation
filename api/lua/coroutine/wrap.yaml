@@ -1,0 +1,22 @@
+name: wrap
+signature: coroutine.wrap(f)
+summary: A coroutine you call like a function.
+description: 'Makes a coroutine out of `f` and returns a function that resumes it: calling it returns what the coroutine yields, without the leading `true`. An error inside is raised in the caller instead of being returned. It is the short way to write a generator.'
+params:
+  - name: f
+    type: function
+    description: The body of the coroutine.
+    required: true
+returns: A function that resumes it.
+returnType: function
+examples:
+  - |-
+    local next_wave = coroutine.wrap(function()
+      for n = 1, 3 do coroutine.yield(n * 4) end
+    end)
+    print(next_wave(), next_wave())   --> 4 8
+seeAlso:
+  - coroutine.create
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-coroutine.wrap

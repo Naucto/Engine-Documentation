@@ -1,0 +1,26 @@
+name: next
+signature: next(t[, key])
+summary: The key after a given one in a table, and its value.
+description: 'Returns the key that follows `key` in the table, with its value, in the same undefined order `pairs` uses; with no `key`, the first one. Its common use is the test for an empty table, `next(t) == nil`, which `#t` cannot do for a table with named keys.'
+params:
+  - name: t
+    type: table
+    description: The table.
+    required: true
+  - name: key
+    type: any
+    description: A key of the table; left out, the walk starts.
+    optional: true
+returns: The next key and its value, or `nil` after the last one.
+returnType: any
+examples:
+  - |-
+    local inventory = { key = true }
+    print(next(inventory) == nil)   --> false
+    inventory.key = nil
+    print(next(inventory) == nil)   --> true
+aliases: []
+seeAlso:
+  - pairs
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-next

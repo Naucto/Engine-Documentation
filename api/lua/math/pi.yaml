@@ -1,0 +1,13 @@
+name: pi
+signature: math.pi
+summary: The number pi.
+description: 'The ratio of a circle to its diameter, `3.14159…`: half a turn in radians.'
+examples:
+  - |-
+    local turn = 2 * math.pi
+    print(math.deg(turn))   --> 360
+seeAlso:
+  - math.rad
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.pi

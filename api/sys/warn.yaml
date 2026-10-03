@@ -1,0 +1,22 @@
+name: warn
+signature: sys.warn(...)
+summary: Write a warning to the console.
+description: Writes a warning line to the console, in the warning colour.
+params:
+  - name: ...
+    type: any
+    description: One or more values to write.
+    required: true
+returns: null
+examples:
+  - >-
+    local enemies = {}
+
+    if #enemies > 64 then sys.warn("too many enemies: " .. #enemies) end  -- one string: a comma
+    would put a tab between the two
+notes: []
+aliases: []
+seeAlso:
+  - sys.log
+  - sys.error
+since: "2.0"

@@ -1,0 +1,20 @@
+name: lower
+signature: string.lower(s)
+summary: A copy of a string in small letters.
+description: 'Returns `s` with every ASCII letter in small letters, which makes a comparison ignore case.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+returns: The string in small letters.
+returnType: string
+examples:
+  - |-
+    local answer = "YES"
+    print(answer:lower() == "yes")   --> true
+aliases: []
+seeAlso:
+  - string.upper
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.lower

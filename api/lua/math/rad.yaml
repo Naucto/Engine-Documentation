@@ -1,0 +1,19 @@
+name: rad
+signature: math.rad(x)
+summary: An angle in degrees, in radians.
+description: 'Converts degrees to radians, the unit [[math.sin]] and its kin expect: `90` becomes `math.pi / 2`.'
+params:
+  - name: x
+    type: number
+    description: An angle in degrees.
+    required: true
+returns: The angle in radians.
+returnType: number
+examples:
+  - |-
+    print(math.rad(180) == math.pi)   --> true
+seeAlso:
+  - math.deg
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.rad

@@ -1,0 +1,32 @@
+name: set_volume
+signature: sound.set_volume(master[, music, sfx])
+summary: Mixer levels 0..1.
+description: "Sets the mixer levels, each `0` to `1`: `music` and `sfx` left out keep their value,
+  `master` left out is `1`. Pass `master` alone to duck everything, or all three to balance music
+  against effects. A level above `1` is not refused: the mix is soft-clipped, so it gets louder and
+  rounder rather than breaking up. The levels survive `sound.stop()`."
+params:
+  - name: master
+    type: number
+    optional: true
+    description: Overall level 0..1; left out, `1`.
+  - name: music
+    type: number
+    optional: true
+    description: Music level 0..1.
+  - name: sfx
+    type: number
+    optional: true
+    description: Sound effect level 0..1.
+returns: null
+examples:
+  - |-
+    -- half volume while the pause menu is up
+    local paused = true
+    sound.set_volume(paused and 0.5 or 1)
+notes: []
+aliases: []
+seeAlso:
+  - sound.play_music
+  - sound.stop
+since: "2.0"

@@ -1,0 +1,23 @@
+name: type
+signature: type(v)
+summary: The type of a value, as a string.
+description: 'Names the type of any value: `"nil"`, `"number"`, `"string"`, `"boolean"`, `"table"`, `"function"` or `"thread"` for a coroutine. Integers and floats are both `"number"`; [[math.type]] tells them apart.'
+params:
+  - name: v
+    type: any
+    description: Any value, `nil` included.
+    required: true
+returns: One of the type names above.
+returnType: string
+examples:
+  - |-
+    print(type(42))         --> number
+    print(type("hi"))       --> string
+    print(type({}))         --> table
+    print(type(nil))        --> nil
+aliases: []
+seeAlso:
+  - math.type
+  - tostring
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-type

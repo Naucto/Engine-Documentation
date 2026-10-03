@@ -1,0 +1,19 @@
+name: deg
+signature: math.deg(x)
+summary: An angle in radians, in degrees.
+description: 'Converts radians to degrees, which read better in the console: `math.pi` becomes `180`.'
+params:
+  - name: x
+    type: number
+    description: An angle in radians.
+    required: true
+returns: The angle in degrees.
+returnType: number
+examples:
+  - |-
+    print(math.deg(math.pi / 2))   --> 90
+seeAlso:
+  - math.rad
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.deg

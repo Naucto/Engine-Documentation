@@ -1,0 +1,27 @@
+name: assert
+signature: assert(v[, message])
+summary: Stop with an error when a value is false or nil, or hand it back.
+description: 'Checks that something holds and stops the game with `message` when it does not, which points the console at the line that broke the rule rather than at the later line that tripped over it. When the check passes, `assert` returns every argument it was given, so it can wrap a call: `local n = assert(tonumber(s))`.'
+params:
+  - name: v
+    type: any
+    description: The value that must be neither `false` nor `nil`.
+    required: true
+  - name: message
+    type: string
+    description: What the error says; left out, `"assertion failed!"`.
+    optional: true
+returns: Its arguments, when `v` holds.
+returnType: any
+examples:
+  - |-
+    local level = { width = 40 }
+    assert(level.width > 0, "a level needs a width")
+    local ok, err = pcall(assert, false, "no spawn point")
+    print(ok, err)   --> false no spawn point
+aliases: []
+seeAlso:
+  - error
+  - pcall
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-assert

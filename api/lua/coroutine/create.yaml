@@ -1,0 +1,28 @@
+name: create
+signature: coroutine.create(f)
+summary: A new coroutine that will run f.
+description: 'Makes a coroutine out of `f`: a function that can stop half way with [[coroutine.yield]] and go on later from that point with [[coroutine.resume]]. It suits whatever spans several frames, such as a cutscene or an enemy''s patrol, written as one function from top to bottom rather than as a state machine. Nothing runs until the first resume.'
+params:
+  - name: f
+    type: function
+    description: The body of the coroutine.
+    required: true
+returns: The coroutine.
+returnType: thread
+examples:
+  - |-
+    local intro = coroutine.create(function()
+      coroutine.yield("the door opens")
+      coroutine.yield("a figure steps in")
+    end)
+    print(select(2, coroutine.resume(intro)))   --> the door opens
+    print(select(2, coroutine.resume(intro)))   --> a figure steps in
+notes:
+  - kind: warning
+    text: '**The console''s own functions cannot be called from inside a coroutine**: `print`, `gfx`, `sound` and the rest stop it with `Unsupported Lua type thread`, which [[coroutine.resume]] returns as its error. Yield what has to be shown, and draw it in `_draw`. Printing a coroutine itself fails the same way; print `tostring(co)`.'
+seeAlso:
+  - coroutine.resume
+  - coroutine.wrap
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-coroutine.create

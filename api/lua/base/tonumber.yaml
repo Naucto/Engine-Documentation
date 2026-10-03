@@ -1,0 +1,27 @@
+name: tonumber
+signature: tonumber(v[, base])
+summary: A string read as a number, or nil when it is not one.
+description: 'Reads a number out of a string, such as a score typed in a field or a digit in a level string, and returns `nil` when the text is not a number, so the result can be tested before it is used. With a `base` from `2` to `36`, the text is read as a whole number in that base.'
+params:
+  - name: v
+    type: any
+    description: The text to read; a number is returned as it is.
+    required: true
+  - name: base
+    type: number
+    description: The base of a whole number, `2` to `36`; left out, decimal, with `0x` for hexadecimal.
+    optional: true
+returns: The number, or `nil`.
+returnType: number|nil
+examples:
+  - |-
+    print(tonumber("42") + 1)    --> 43
+    print(tonumber("0x10"))      --> 16
+    print(tonumber("101", 2))    --> 5
+    print(tonumber("ten"))       --> nil
+aliases: []
+seeAlso:
+  - tostring
+  - math.tointeger
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-tonumber

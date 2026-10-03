@@ -1,0 +1,27 @@
+name: select
+signature: select(n, ...)
+summary: The arguments from the nth on, or how many there are.
+description: 'Works on a variable list of arguments, the `...` of a function. `select(n, ...)` returns every argument from the `n`th on, and a negative `n` counts from the end; `select("#", ...)` counts them, `nil` ones included, which `#{...}` does not.'
+params:
+  - name: "n"
+    type: number|string
+    description: An index from `1`, a negative one from the end, or `"#"` for the count.
+    required: true
+  - name: "..."
+    type: any
+    description: The arguments to pick from.
+    optional: true
+returns: The arguments from the `n`th on, or their count.
+returnType: any
+examples:
+  - |-
+    local function count(...)
+      return select("#", ...)
+    end
+    print(count(1, nil, 3))          --> 3
+    print(select(2, "a", "b", "c"))  --> b c
+aliases: []
+seeAlso:
+  - table.pack
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-select

@@ -1,0 +1,60 @@
+name: host
+signature: net.host([config, callback])
+summary: Open the host dialog; callback() once the session exists.
+description: >-
+  Ask the player to create (host) a new session by opening the platform's host dialog.
+
+
+  Both arguments are optional, and `net.host(callback)` is also accepted. The `config` table
+  supports two keys; any other key is ignored:
+
+
+  | Key | Type | Meaning |
+
+  |----|----|----|
+
+  | `max_players` | number | Session capacity, **including the host**. A whole number from `2` to
+  `16`; defaults to `2`. The engine passes it on as written and the server refuses anything else:
+  the dialog reports the failure and no session starts. The player cannot change it: capacity
+  belongs to the game. |
+
+  | `title` | string | Default session title offered in the dialog. The player can edit it. |
+
+
+  The callback fires only when the session is actually created. If the player cancels the dialog,
+  the callback is never called and no session starts: design your game so it stays in its menu state
+  in that case.
+
+
+  Raises `net: already in a session; call net.leave() first` if a session is active. A second call
+  made while a host/join dialog is still open is silently ignored (a no-op), not an error. Where the
+  game runs without the platform's network dialogs, the call does nothing at all.
+params:
+  - name: config
+    type: table
+    description: Optional session settings, the table above.
+    optional: true
+  - name: callback
+    type: function
+    description: Optional function called once, with no arguments, when the session has been created.
+    optional: true
+returns: null
+examples:
+  - |-
+    local state = "menu"
+    net.host({ max_players = 4, title = "Tag arena" }, function()
+      state = "playing"
+      print("session created, my id is " .. net.id())
+    end)
+notes:
+  - kind: warning
+    text: 'While the dialog is open a repeat call is ignored, but once the session is created an
+      unconditional `net.host` from `_update()` raises `net: already in a session` on the very next
+      frame. Guard it so it runs once, for example by switching to a `"waiting"` state before the
+      call.'
+aliases: []
+seeAlso:
+  - net.join
+  - net.leave
+  - net.id
+since: "1.0"

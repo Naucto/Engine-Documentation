@@ -1,0 +1,67 @@
+name: draw_region
+signature: gfx.draw_region(sx, sy, sw, sh, dx, dy[, dw, dh, flip_h, flip_v, transparent])
+summary: Draw a pixel rectangle of the sprite sheet, optionally scaled.
+picture: ../img/frames/gfx-draw-region.png
+caption: The moon of a new game as one 16 × 16 region of the sheet, at its own size on the left and
+  stretched to 32 × 32 by dw and dh on the right.
+description: Copy any rectangle of pixels out of the sheet, rather than whole 8 × 8 sprites. Give
+  `dw`/`dh` to stretch it; leave them out and it lands at its own size. Reads the first sheet only.
+  A region past the sheet's edge repeats the edge pixels.
+params:
+  - name: sx
+    type: number
+    required: true
+    description: Left edge in sheet pixels.
+  - name: sy
+    type: number
+    required: true
+    description: Top edge in sheet pixels.
+  - name: sw
+    type: number
+    required: true
+    description: Width in sheet pixels.
+  - name: sh
+    type: number
+    required: true
+    description: Height in sheet pixels.
+  - name: dx
+    type: number
+    required: true
+    description: Left edge on screen.
+  - name: dy
+    type: number
+    required: true
+    description: Top edge on screen.
+  - name: dw
+    type: number
+    optional: true
+    description: Destination width; defaults to `sw`.
+  - name: dh
+    type: number
+    optional: true
+    description: Destination height; defaults to `sh`.
+  - name: flip_h
+    type: boolean
+    optional: true
+    description: Mirror horizontally.
+  - name: flip_v
+    type: boolean
+    optional: true
+    description: Mirror vertically.
+  - name: transparent
+    type: number
+    optional: true
+    description: Which colour the region keeps clear. Left out, index `0`; an index keys that colour out
+      instead; `nil` draws every colour.
+returns: null
+examples:
+  - |-
+    -- the moon of a new game, sprites 1, 2, 17 and 18, as one 16 × 16 rectangle of the sheet
+    gfx.draw_region(8, 0, 16, 16, 152, 82)
+    -- the same at double size
+    gfx.draw_region(8, 0, 16, 16, 20, 12, 32, 32)
+notes: []
+aliases: []
+seeAlso:
+  - gfx.draw_sprite
+since: "2.0"

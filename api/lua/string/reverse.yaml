@@ -1,0 +1,19 @@
+name: reverse
+signature: string.reverse(s)
+summary: A string with its bytes in the opposite order.
+description: 'Returns `s` back to front, byte by byte; a character of several bytes, outside ASCII, does not survive it.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+returns: The reversed string.
+returnType: string
+examples:
+  - |-
+    print(("stressed"):reverse())   --> desserts
+aliases: []
+seeAlso:
+  - string.sub
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.reverse

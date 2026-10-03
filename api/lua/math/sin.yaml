@@ -1,0 +1,22 @@
+name: sin
+signature: math.sin(x)
+summary: The sine of an angle in radians.
+description: 'Returns the sine of `x`, between `-1` and `1`. With [[math.cos]] it turns an angle into a direction; alone, fed a time, it makes something bob up and down.'
+params:
+  - name: x
+    type: number
+    description: An angle in radians; a full turn is `2 * math.pi`.
+    required: true
+returns: Its sine.
+returnType: number
+examples:
+  - |-
+    local angle, speed = math.rad(90), 2
+    local vy = math.sin(angle) * speed
+    print(vy)   --> 2
+seeAlso:
+  - math.cos
+  - math.rad
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.sin

@@ -1,0 +1,32 @@
+namespace: math
+title: Numbers
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#6.7
+order:
+  - floor
+  - ceil
+  - abs
+  - min
+  - max
+  - random
+  - randomseed
+  - sqrt
+  - sin
+  - cos
+  - tan
+  - atan
+  - asin
+  - acos
+  - rad
+  - deg
+  - exp
+  - log
+  - fmod
+  - modf
+  - tointeger
+  - type
+values:
+  - pi
+  - huge
+  - maxinteger
+  - mininteger

@@ -1,0 +1,26 @@
+namespace: gfx
+title: Graphics
+order:
+  - clear
+  - draw_sprite
+  - draw_region
+  - pixel
+  - get_pixel
+  - line
+  - rect
+  - fill_rect
+  - circle
+  - fill_circle
+  - print
+  - camera
+  - clip
+  - set_col
+  - reset_col
+  - set_color
+  - get_color
+  - reset_palette
+  - screen_col
+  - shift
+  - blank
+  - width
+  - height

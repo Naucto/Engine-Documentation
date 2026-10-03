@@ -5,6 +5,8 @@ import { dirname, join, relative, resolve } from 'node:path';
 
 import { parse } from 'yaml';
 
+import { fullName, loadApi } from './api.mjs';
+
 const root = resolve(import.meta.dirname, '..');
 const errors = [];
 
@@ -34,7 +36,7 @@ function declaredParams(signature) {
 }
 
 /** The type names a `returnType` may be made of, alone or in a union like `number|nil`. */
-const TYPES = new Set(['number', 'string', 'boolean', 'table', 'function', 'nil', 'any']);
+const TYPES = new Set(['number', 'string', 'boolean', 'table', 'function', 'thread', 'nil', 'any']);
 
 const exists = (p) =>
   stat(p).then(
@@ -55,21 +57,30 @@ const refer = (from, href) => referenced.add(resolve(dirname(from), href));
 
 const known = new Set();
 const legacyGlobals = new Map();
-for (const file of (await readdir(resolve(root, 'api'))).filter((f) => f.endsWith('.yaml'))) {
-  const ns = parse(await readFile(resolve(root, 'api', file), 'utf8'));
-  if (!ns?.namespace) errors.push(`${file}: missing namespace`);
+/** The section of the Lua 5.3 manual a standard entry links to; fengari is Lua 5.3. */
+const MANUAL = 'https://www.lua.org/manual/5.3/manual.html#';
+const namespaces = await loadApi(resolve(root, 'api')).catch((e) => {
+  errors.push(...e.message.split('\n'));
+  return [];
+});
+for (const ns of namespaces) {
+  const where = relative(root, ns.dir);
+  if (!ns.namespace) errors.push(`${where}: _namespace.yaml has no namespace`);
+  if (ns.standard && !String(ns.manual ?? '').startsWith(MANUAL)) errors.push(`${where}: a standard library links its section of ${MANUAL}`);
   for (const kind of ['functions', 'values'])
-    for (const f of ns?.[kind] ?? []) {
-      const full = `${ns.namespace}.${f.name}`;
+    for (const f of ns[kind]) {
+      const full = fullName(ns, f);
       known.add(full);
       for (const a of f.aliases ?? []) {
         known.add(a);
         if (!REAL_GLOBALS.has(a)) legacyGlobals.set(a, full);
       }
       if (!f.signature) errors.push(`${full}: missing signature`);
+      if (Boolean(f.standard) !== Boolean(ns.standard)) errors.push(`${full}: standard is ${Boolean(f.standard)}, its namespace's is ${Boolean(ns.standard)}`);
+      if (f.standard && !String(f.manual ?? '').startsWith(MANUAL)) errors.push(`${full}: a standard entry links its place in ${MANUAL}`);
       if (f.picture) {
-        refer(resolve(root, 'api', file), f.picture);
-        if (!(await exists(resolve(root, 'api', f.picture)))) errors.push(`${full}: picture ${f.picture} is not there`);
+        refer(f.file, f.picture);
+        if (!(await exists(resolve(ns.dir, f.picture)))) errors.push(`${full}: picture ${f.picture} is not there`);
       }
       if (!f.summary) errors.push(`${full}: missing summary`);
       const declared = declaredParams(f.signature);
@@ -321,8 +332,8 @@ for (const { file, body, offset, meta } of pages) {
     errors.push(`${file}:${line + offset}: lua example calls the v0 global ${name}(), use ${use}()`);
   for (const { line, word } of retiredWordsIn(body))
     errors.push(`${file}:${line + offset}: prose says "${word === '\u2014' ? 'an em-dash' : word}", which the docs do not use`);
-  for (const [, ref] of body.matchAll(/\[\[([a-z]+\.[a-z_]+)\]\]/g)) if (!known.has(ref)) errors.push(`${file}: unknown api ref [[${ref}]]`);
-  for (const [, ref] of body.matchAll(/\{\{api:([a-z]+\.[a-z_]+)\}\}/g)) if (!known.has(ref)) errors.push(`${file}: unknown api card {{api:${ref}}}`);
+  for (const [, ref] of body.matchAll(/\[\[([a-z][a-z0-9]*\.[a-z_][a-z0-9_]*)\]\]/g)) if (!known.has(ref)) errors.push(`${file}: unknown api ref [[${ref}]]`);
+  for (const [, ref] of body.matchAll(/\{\{api:([a-z_][a-z0-9_]*(?:\.[a-z_][a-z0-9_]*)?)\}\}/g)) if (!known.has(ref)) errors.push(`${file}: unknown api card {{api:${ref}}}`);
   for (const [, target] of body.matchAll(/\]\(\/learn\/([^)#]+)/g)) if (!slugs.has(target)) errors.push(`${file}: broken link /learn/${target}`);
 }
 

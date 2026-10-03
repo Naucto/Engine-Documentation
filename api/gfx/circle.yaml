@@ -1,0 +1,33 @@
+name: circle
+signature: gfx.circle(cx, cy, r, colour)
+summary: Draw a circle outline.
+picture: ../img/frames/gfx-shapes.png
+caption: rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.
+description: Draw the outline of a circle. The radius is floored; `0` draws one pixel, and the
+  circle spans `2r + 1` pixels.
+params:
+  - name: cx
+    type: number
+    required: true
+    description: Centre x.
+  - name: cy
+    type: number
+    required: true
+    description: Centre y.
+  - name: r
+    type: number
+    required: true
+    description: Radius in pixels.
+  - name: colour
+    type: number
+    required: true
+    description: Palette index 0..15.
+returns: null
+examples:
+  - gfx.circle(160, 90, 24, 7)
+notes: []
+aliases: []
+seeAlso:
+  - gfx.fill_circle
+  - gfx.rect
+since: "2.0"

@@ -1,0 +1,31 @@
+name: camera
+signature: gfx.camera([x, y])
+summary: Offset every later draw call; no arguments resets.
+picture: ../img/frames/gfx-camera.png
+caption: "The map and a sprite drawn with the camera at (-40, -20): the pink outline is where the
+  sprite lands without it, and everything is 40 pixels right and 20 down from that."
+description: Move the view. Everything drawn after it is shifted by `-x`, `-y`, so a camera at `(40,
+  0)` scrolls the world 40 pixels to the left. `gfx.camera()` puts it back at the origin, and
+  `gfx.camera(x)` alone sets `y` to `0`. Values are floored.
+params:
+  - name: x
+    type: number
+    description: Horizontal offset in pixels; `0` when left out.
+    optional: true
+  - name: y
+    type: number
+    description: Vertical offset in pixels; `0` when left out.
+    optional: true
+returns: null
+examples:
+  - |-
+    -- keep the player in the middle of the 320 × 180 screen
+    local player = { x = 500, y = 120 }
+    gfx.camera(player.x - 160, player.y - 90)
+notes: []
+aliases:
+  - camera
+seeAlso:
+  - gfx.clip
+  - map.draw
+since: "1.0"

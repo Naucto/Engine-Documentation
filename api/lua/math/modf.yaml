@@ -1,0 +1,21 @@
+name: modf
+signature: math.modf(x)
+summary: The whole part and the fractional part of x.
+description: 'Splits `x` in two: its whole part, rounded towards zero, and what is left over. The whole part comes back as a float.'
+params:
+  - name: x
+    type: number
+    description: The number to split.
+    required: true
+returns: The whole part, then the fraction.
+returnType: number
+examples:
+  - |-
+    local whole, frac = math.modf(3.75)
+    print(whole, frac)   --> 3 0.75
+seeAlso:
+  - math.floor
+  - math.fmod
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.modf

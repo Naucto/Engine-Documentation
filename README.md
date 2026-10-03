@@ -13,8 +13,10 @@ submodule (`docs/`) and builds it at compile time.
 | `content/tutorials/<name>/steps/<n>.lua` | The whole game at the end of `## Step n`, for every step that shows code; every lua block of the step is a verbatim run of it, and `docs:shots` plays each one for the frame under the step |
 | `content/tutorials/<name>/assets.json` | The rest of a tutorial's game (sprites as rows of hex colours, flags, map spans), named by the page's `assets:` field and copied along with the code |
 | `content/**/img/`                   | The pictures a page shows, next to the page (see below)                                                                  |
-| `api/<ns>.yaml`                     | The Lua API manifest, one file per namespace (`gfx`, `map`, `input`, `sound`, `sys`, `net`)                              |
-| `scripts/`                          | `validate` (front-matter, refs, links, pictures and diagrams, params and return types, retired words and calls, tutorial steps) and `build` (`dist/manifest.json`) |
+| `api/<ns>/_namespace.yaml`          | A namespace of the console (`gfx`, `map`, `input`, `sound`, `sys`, `net`): its `namespace`, `title`, and the `order:` its functions are listed in, `values:` for the rest |
+| `api/<ns>/<name>.yaml`              | One function or value, named after it (`gfx/fill_rect.yaml`); a `picture` is relative to the file                         |
+| `api/lua/<lib>/`                    | The standard Lua libraries a game can reach (`base`, `string`, `table`, `math`, `utf8`, `coroutine`, `os`), same layout, marked `standard: true` |
+| `scripts/`                          | `validate` (front-matter, refs, links, pictures and diagrams, params and return types, retired words and calls, tutorial steps) and `build` (`dist/manifest.json`), both reading `api/` through `api.mjs` |
 
 ## Writing a page
 
@@ -60,8 +62,15 @@ the Frontend runs a parity test so every engine function is documented here with
 and summary, and nothing documented here is missing from the engine. Every parameter says
 `required: true` or `optional: true`. A function says what comes back twice: `returns` is the prose,
 and `returnType` is the type the cards colour it by, one of `number`, `string`, `boolean`, `table`,
-`function`, `nil`, `any`, or a union of them such as `number|nil`; a function that returns nothing
+`function`, `thread`, `nil`, `any`, or a union of them such as `number|nil`; a function that returns nothing
 says `returns: null` and no `returnType`. A parameter's `type` uses the same names.
+
+The standard Lua entries under `api/lua/` have no counterpart in `luaApiTable.ts`: they carry
+`standard: true` and a `manual` link to their place in the Lua 5.3 reference manual, and the base
+library's `_namespace.yaml` says `globals: true`, since `pairs` is called by its bare name. The
+Frontend's test checks that each one exists in a running game, that every other library function a
+game can reach is documented or listed there as left out on purpose, and runs every example: a
+`-->` comment is the line the example prints, and the test holds it to it.
 
 ## Working on it
 
