@@ -1,6 +1,4 @@
 name: join
-signature: net.join(callback)
-summary: Open the join dialog.
 description: >-
   Ask the player to join an existing session by opening the platform's join dialog, where they can
   enter an invite code or browse public sessions.
@@ -11,10 +9,7 @@ description: >-
   when a session is already active, and silently ignores a repeat call made while a dialog is still
   open. Where the game runs without the platform's network dialogs, the call does nothing at all.
 params:
-  - name: callback
-    type: function
-    description: Optional function called once, with no arguments, after the session has been joined.
-    optional: true
+  callback: Optional function called once, with no arguments, after the session has been joined.
 returns: null
 examples:
   - |-
@@ -24,7 +19,6 @@ examples:
       print("joined, my id is " .. net.id())
     end)
 notes: []
-aliases: []
 seeAlso:
   - net.host
   - net.leave

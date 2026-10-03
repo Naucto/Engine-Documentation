@@ -1,6 +1,4 @@
 name: on
-signature: net.on(pattern, callback)
-summary: React to net.state changes or events.
 description: >-
   Register a callback for a network event. It needs a session, so call it from the host or join
   callback, not from `_init`. What arrives depends on the pattern:
@@ -41,15 +39,9 @@ description: >-
   push or a queue pop refused by the permissions fires `"error"` too, with the path and
   `"forbidden"`: a refused acquire's callback never runs, and a refused pop's callback gets `nil`.
 params:
-  - name: pattern
-    type: string
-    description: A reserved name from the table above, an `event:<name>` subscription, or a dotted
-      [[net.state]] key path, where `*` matches one segment and `**` any number.
-    required: true
-  - name: callback
-    type: function
-    description: Called with the arguments the table above gives for that pattern.
-    required: true
+  pattern: A reserved name from the table above, an `event:<name>` subscription, or a dotted
+    [[net.state]] key path, where `*` matches one segment and `**` any number.
+  callback: Called with the arguments the table above gives for that pattern.
 returns: null
 examples:
   - |-
@@ -77,7 +69,6 @@ notes:
   - kind: note
     text: "An error raised inside a `net.on` callback (or a lock/queue callback) is printed to the
       Console, as `Error: …`, but does **not** stop the game."
-aliases: []
 seeAlso:
   - net.emit
   - net.id

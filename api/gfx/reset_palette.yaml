@@ -1,11 +1,8 @@
 name: reset_palette
-signature: gfx.reset_palette()
-summary: Restore the game palette; inside `_scanline`, put the line back to the frame palette.
 description: "Called anywhere but `_scanline`, put the game's own palette back: every `set_color`
   and `screen_col` of the **frame** is undone. Called inside `_scanline(y)`, put line `y` and the
   lines below it back to the frame palette as it was when this pass began. Neither touches `set_col`
   or the shift. The game stopping does the first on its own."
-params: []
 returns: null
 examples:
   - >-
@@ -35,7 +32,6 @@ examples:
       if y == 120 then gfx.reset_palette() end
     end
 notes: []
-aliases: []
 seeAlso:
   - gfx.set_color
   - gfx.screen_col

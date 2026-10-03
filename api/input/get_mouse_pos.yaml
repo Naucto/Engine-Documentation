@@ -1,18 +1,13 @@
 name: get_mouse_pos
-signature: input.get_mouse_pos()
-summary: Mouse x, y in screen pixels (nil when outside).
 description: "Mouse position in screen pixels, or `nil` when the pointer is outside the screen. The
   camera does not apply: to aim at the world, add the camera offset you keep in a variable."
-params: []
 returns: x, y in screen pixels, or nil.
-returnType: number|nil
 examples:
   - |-
     local cam = { x = 0, y = 0 }   -- what gfx.camera was last given
     local mx, my = input.get_mouse_pos()
     if mx then gfx.draw_sprite(4, cam.x + mx - 4, cam.y + my - 4) end
 notes: []
-aliases: []
 seeAlso:
   - input.mouse_pressed
   - input.mouse_down

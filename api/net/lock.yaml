@@ -1,6 +1,4 @@
 name: lock
-signature: net.lock()
-summary: Create a replicated lock value.
 description: >-
   Create a mutual-exclusion lock. Locks let players compete for something safely: only one peer at a
   time can hold a given lock, however close together they ask.
@@ -24,9 +22,7 @@ description: >-
   (see [permissions](/learn/tutorials/permissions)) can only be acquired by the host, just like a
   write to that path: a guest's `acquire` there is refused, its callback never runs, and
   `net.on("error")` fires with the path and `"forbidden"`.
-params: []
 returns: "A lock handle: a table with an `acquire` and an `is_locked` function."
-returnType: table
 examples:
   - |-
     -- inside the host callback
@@ -45,7 +41,6 @@ notes:
   - kind: warning
     text: Nothing prevents a peer from writing a lock-protected [[net.state]] key without acquiring the
       lock first. A lock only protects against peers that also use it.
-aliases: []
 seeAlso:
   - net.queue
   - net.on

@@ -4,15 +4,13 @@ slug: api/index
 section: api
 order: 0
 description: Every function of the Naucto Lua API in one line each, grouped by namespace, with a link to its full card.
-legacy_slugs:
-- api/index.html
 ---
 
 # API Reference
 
 Every function of the Lua API, one line each, by namespace. Click a name for its card: signature, parameters, what it does, an example.
 
-The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net`, so a call reads `gfx.clear(0)`, never `clear(0)`. **The bare names older games used, `clear(0)` or `sprite(…)`, are kept for those games only**, each with a deprecation warning in the console; a game created today does not have them. The one global is `print`, the same function as [[sys.log]].
+The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net`, so **a call reads `gfx.clear(0)`**, never `clear(0)`. The one global is `print`, the same function as [[sys.log]].
 
 ## gfx · Rendering and palette
 

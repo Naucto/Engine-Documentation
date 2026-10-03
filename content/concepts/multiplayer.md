@@ -4,8 +4,6 @@ slug: concepts/multiplayer
 section: concepts
 order: 2
 description: The model behind the net API, so that a game played online by several people stays consistent on every screen.
-legacy_slugs:
-- multiplayer.html
 ---
 
 # Multiplayer

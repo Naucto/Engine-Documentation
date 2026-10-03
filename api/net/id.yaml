@@ -1,21 +1,16 @@
 name: id
-signature: net.id()
-summary: Your player id in the session.
 description: "The id this player holds in the session, the same id the host receives in
   `peer.joined` / `peer.left` and every peer gets as the `from` of an event, so it is the natural
   key for per-player data in [[net.state]]. It is the player's account id, except for the second
   client of the NET tab's test rig, which runs on your account under an id of its own. It is not a
   seat number from `1` to `max_players`: ids are not contiguous, and an account holds one seat in a
   session."
-params: []
 returns: Your own player id in the session, as an integer.
-returnType: number
 examples:
   - |-
     -- inside the host or join callback
     print("my id is " .. net.id())
 notes: []
-aliases: []
 seeAlso:
   - net.on
   - net.state

@@ -1,6 +1,4 @@
 name: host
-signature: net.host([config, callback])
-summary: Open the host dialog; callback() once the session exists.
 description: >-
   Ask the player to create (host) a new session by opening the platform's host dialog.
 
@@ -30,14 +28,8 @@ description: >-
   made while a host/join dialog is still open is silently ignored (a no-op), not an error. Where the
   game runs without the platform's network dialogs, the call does nothing at all.
 params:
-  - name: config
-    type: table
-    description: Optional session settings, the table above.
-    optional: true
-  - name: callback
-    type: function
-    description: Optional function called once, with no arguments, when the session has been created.
-    optional: true
+  config: Optional session settings, the table above.
+  callback: Optional function called once, with no arguments, when the session has been created.
 returns: null
 examples:
   - |-
@@ -52,7 +44,6 @@ notes:
       unconditional `net.host` from `_update()` raises `net: already in a session` on the very next
       frame. Guard it so it runs once, for example by switching to a `"waiting"` state before the
       call.'
-aliases: []
 seeAlso:
   - net.join
   - net.leave

@@ -1,6 +1,4 @@
 name: set_pattern
-signature: sound.set_pattern(n, fields)
-summary: Change the tempo or length of a pattern for this run.
 description: >-
   Change the tempo or the length of a pattern **for this run only**: the SOUND tab and the saved
   game keep theirs. On the music it takes effect at once, even while the pattern plays: the next
@@ -17,15 +15,9 @@ description: >-
 
   | `steps` | Length, in steps; notes past it are not played | `1` to `64` |
 params:
-  - name: n
-    type: number
-    required: true
-    description: The pattern's number, as the PATTERN field of the SOUND tab shows it. A number no
-      pattern has warns once and changes nothing.
-  - name: fields
-    type: table
-    required: true
-    description: "`bpm`, `steps`, or both; the other keeps its value."
+  n: The pattern's number, as the PATTERN field of the SOUND tab shows it. A number no pattern has
+    warns once and changes nothing.
+  fields: "`bpm`, `steps`, or both; the other keeps its value."
 returns: null
 examples:
   - |-
@@ -39,7 +31,6 @@ examples:
       end
     end
 notes: []
-aliases: []
 seeAlso:
   - sound.play_music
   - sound.set_instrument

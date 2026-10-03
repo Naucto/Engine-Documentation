@@ -1,6 +1,4 @@
 name: screen_col
-signature: gfx.screen_col(from, to)
-summary: Screen palette remap applied at display time, for the frame or from this line on.
 description: "Show one colour as another on the finished frame, after everything is drawn: the
   colour currently shown at `to` is copied over `from`, and a later change of `to` does not follow.
   Unlike `set_col` it costs nothing per draw call and leaves the drawn numbers alone. **It stays**:
@@ -11,14 +9,8 @@ picture: ../img/frames/gfx-silhouette.png
 caption: "From line 90 down every colour but the background shows as colour 1: the same scene in
   silhouette on its lower half."
 params:
-  - name: from
-    type: number
-    required: true
-    description: Palette index drawn.
-  - name: to
-    type: number
-    required: true
-    description: Palette index shown.
+  from: Palette index drawn.
+  to: Palette index shown.
 returns: null
 examples:
   - |-
@@ -46,7 +38,6 @@ examples:
       end
     end
 notes: []
-aliases: []
 seeAlso:
   - gfx.set_col
   - gfx.set_color

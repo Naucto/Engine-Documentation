@@ -4,8 +4,6 @@ slug: getting-started
 section: start
 order: 1
 description: Create a game, draw a sprite, write ten lines of Lua and play it, without leaving the browser.
-legacy_slugs:
-- getting-started.html
 ---
 
 # Getting Started

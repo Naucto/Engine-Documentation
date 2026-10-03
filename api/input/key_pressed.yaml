@@ -1,17 +1,11 @@
 name: key_pressed
-signature: input.key_pressed(key)
-summary: True while a keyboard key (event.key name) is held.
 description: "True for every step a keyboard key is held, despite the name: the edge is
   [[input.key_down]]. Keys are named by the browser's `event.key` value, so the exact string
   matters: with Shift held the A key is `\"A\"`, and the letters follow the keyboard's layout. Every
   key is released when the game loses focus."
 params:
-  - name: key
-    type: string
-    description: Key name from the browser keyboard event.
-    required: true
+  key: Key name from the browser keyboard event.
 returns: True while held.
-returnType: boolean
 examples:
   - |-
     local speed = 2
@@ -22,8 +16,6 @@ notes:
       choice read with it repeats every step. Read the press with [[input.key_down]]."
   - kind: tip
     text: "Prefer actions over raw keys: they work with a gamepad and can be rebound."
-aliases:
-  - key_pressed
 seeAlso:
   - input.key_down
   - input.held

@@ -1,19 +1,14 @@
 name: players
-signature: input.players()
-summary: Number of connected players (keyboard counts as one).
 description: How many players have a controller. The keyboard and the first gamepad are one player
   together; a second gamepad is player 2, and so on. A second keyboard layout (J, L, I, K…) plays as
   player 2 without counting here.
-params: []
 returns: Player count, at least 1.
-returnType: number
 examples:
   - |-
     for p = 1, input.players() do
       if input.pressed("a", p) then print("player " .. p .. " fires") end
     end
 notes: []
-aliases: []
 seeAlso:
   - input.held
   - net.id

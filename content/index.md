@@ -4,8 +4,6 @@ slug: index
 section: start
 order: 0
 description: The documentation of Naucto, a fantasy console in the browser where you draw, compose, code in Lua, play with friends and publish, all in one place.
-legacy_slugs:
-- index.html
 ---
 
 # Naucto Game Engine

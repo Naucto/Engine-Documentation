@@ -4,8 +4,6 @@ slug: api/input
 section: api
 order: 3
 description: The input functions read the player's actions, raw keyboard keys and the mouse, for up to four players on keyboard and gamepads.
-legacy_slugs:
-- api/input.html
 namespace: input
 ---
 

@@ -4,8 +4,6 @@ slug: editors/index
 section: editors
 order: 0
 description: The six tabs of the Naucto editor, what each one is for, and the layout, header, shortcuts and collaboration they share.
-legacy_slugs:
-- editors/index.html
 ---
 
 # Editors

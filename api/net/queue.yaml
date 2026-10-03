@@ -1,6 +1,4 @@
 name: queue
-signature: net.queue()
-summary: Create a replicated queue value.
 description: >-
   Create a shared FIFO queue. All players see the same queue and pops are ordered by the session
   host, so an item is delivered to exactly one popper.
@@ -23,9 +21,7 @@ description: >-
   A pushed table arrives with its keys as strings, like an event payload. On a path a guest may not
   write, its `push` and its `pop` are refused: `net.on("error")` fires with the path and
   `"forbidden"`, and the `pop` callback still gets `nil`, as on an empty queue.
-params: []
 returns: "A queue handle: a table with `push`, `pop`, `length` and `peek`."
-returnType: table
 examples:
   - |-
     -- inside the host callback
@@ -43,7 +39,6 @@ notes:
   - kind: note
     text: "A queue you never assign into `net.state` is a **local** queue: usable without a session, but
       private to this player."
-aliases: []
 seeAlso:
   - net.lock
   - net.on

@@ -4,8 +4,6 @@ slug: reference/structure
 section: reference
 order: 2
 description: How to lay out the Lua of a game that has outgrown one screen of code, across functions, tabs and a state variable.
-legacy_slugs:
-- structure.html
 ---
 
 # Code Structure Guide

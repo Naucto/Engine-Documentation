@@ -1,16 +1,10 @@
 name: get_color
-signature: gfx.get_color(index)
-summary: Current screen colour as "#rrggbb", of the frame or of the line being scanned.
 description: 'The colour currently shown for a palette index, as lowercase `"#rrggbb"`: the **frame
   palette**, or, inside `_scanline`, the line palette as the lines above have left it on this pass.
   It reflects `set_color` and `screen_col`, not `set_col`.'
 params:
-  - name: index
-    type: number
-    required: true
-    description: Palette index 0..15.
+  index: Palette index 0..15.
 returns: Colour string "#rrggbb".
-returnType: string
 examples:
   - local lime = gfx.get_color(12)  -- "#bfff3c" on Bubblegum 16
   - |-
@@ -19,7 +13,6 @@ examples:
       if y == 90 and sys.frame() == 1 then print(gfx.get_color(0)) end
     end
 notes: []
-aliases: []
 seeAlso:
   - gfx.set_color
 since: "2.0"

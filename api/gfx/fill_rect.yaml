@@ -1,39 +1,20 @@
 name: fill_rect
-signature: gfx.fill_rect(x, y, w, h, colour)
-summary: Draw a filled rectangle.
 picture: ../img/frames/gfx-shapes.png
 caption: rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.
 description: Fill a rectangle. `x`, `y` is its top-left corner and `w`, `h` its size, floored to
   whole pixels; a width or height of `0` draws nothing.
 params:
-  - name: x
-    type: number
-    description: Top-left x position.
-    required: true
-  - name: y
-    type: number
-    description: Top-left y position.
-    required: true
-  - name: w
-    type: number
-    description: Width in pixels.
-    required: true
-  - name: h
-    type: number
-    description: Height in pixels.
-    required: true
-  - name: colour
-    type: number
-    description: Palette index 0..15.
-    required: true
+  x: Top-left x position.
+  y: Top-left y position.
+  w: Width in pixels.
+  h: Height in pixels.
+  colour: Palette index 0..15.
 returns: null
 examples:
   - |-
     gfx.fill_rect(0, 160, 320, 20, 13)  -- a green ground strip
     gfx.fill_rect(30, 40, 10, 10, 2)    -- a small red square
 notes: []
-aliases:
-  - fill_rect
 seeAlso:
   - gfx.rect
   - gfx.clear

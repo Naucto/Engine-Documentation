@@ -1,6 +1,4 @@
 name: print
-signature: gfx.print(text, x, y[, colour])
-summary: Draw text with the built-in 4×6 font; returns its width.
 picture: ../img/frames/gfx-print.png
 caption: Text in the default white, in colours 4 and 11, and a number joined to a string in colour 7.
 description: "Draw text with the built-in 4 × 6 font. The font has capitals only: lowercase is drawn
@@ -8,24 +6,11 @@ description: "Draw text with the built-in 4 × 6 font. The font has capitals onl
   is written as text. A `\\n` in the text starts a new line 6 pixels lower. Returns the width of the
   last line drawn, which is what centring needs."
 params:
-  - name: text
-    type: string
-    required: true
-    description: The text to draw.
-  - name: x
-    type: number
-    required: true
-    description: Left edge.
-  - name: y
-    type: number
-    required: true
-    description: Top edge.
-  - name: colour
-    type: number
-    optional: true
-    description: Palette index; left out, `5` (white in the default palette).
+  text: The text to draw.
+  x: Left edge.
+  y: Top edge.
+  colour: Palette index; left out, `5` (white in the default palette).
 returns: Width of the last line drawn, in pixels.
-returnType: number
 examples:
   - |-
     local score = 0
@@ -35,7 +20,6 @@ examples:
     local text = "GAME OVER"
     gfx.print(text, (gfx.width() - #text * 4) // 2, 80, 7)
 notes: []
-aliases: []
 seeAlso:
   - gfx.width
   - gfx.set_col

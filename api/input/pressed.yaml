@@ -1,21 +1,12 @@
 name: pressed
-signature: input.pressed(action[, player])
-summary: True on the step an action was pressed.
 description: "True only on the step an action went down: what you want for a jump or a menu choice,
   so holding the button does not repeat it."
 params:
-  - name: action
-    type: string
-    required: true
-    description: One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.
-  - name: player
-    type: number
-    optional: true
-    description: Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first
-      gamepad are player 1 together, the second keyboard layout and the second gamepad player 2. A
-      number past `4` answers `false`.
+  action: One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.
+  player: Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first gamepad
+    are player 1 together, the second keyboard layout and the second gamepad player 2. A number past
+    `4` answers `false`.
 returns: True on the press step.
-returnType: boolean
 examples:
   - |-
     local player = { vy = 0, on_ground = true }
@@ -23,7 +14,6 @@ examples:
       player.vy = -6
     end
 notes: []
-aliases: []
 seeAlso:
   - input.held
   - input.released

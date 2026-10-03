@@ -5,7 +5,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 
 import { parse } from 'yaml';
 
-import { fullName, loadApi } from './api.mjs';
+import { engineApiPath, fullName, loadApi, readEngineApi, withEngine } from './api.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const errors = [];
@@ -17,13 +17,6 @@ async function* walk(dir) {
     else yield p;
   }
 }
-
-/**
- * The aliases the engine installs unconditionally, real names in their own right: every other
- * alias is a v0 global that exists only under the compat prelude, which a project created today
- * does not get, so an example calling one errors.
- */
-const REAL_GLOBALS = new Set(['print']);
 
 /** Parameters written as a plain identifier list; a table, a union or `...` is skipped, not judged. */
 function declaredParams(signature) {
@@ -56,13 +49,30 @@ const referenced = new Set();
 const refer = (from, href) => referenced.add(resolve(dirname(from), href));
 
 const known = new Set();
-const legacyGlobals = new Map();
 /** The section of the Lua 5.3 manual a standard entry links to; fengari is Lua 5.3. */
 const MANUAL = 'https://www.lua.org/manual/5.3/manual.html#';
-const namespaces = await loadApi(resolve(root, 'api')).catch((e) => {
+/** What a console entry's file may not say: the engine says it, and a second copy drifts. */
+const ENGINE_OWNED = ['signature', 'summary', 'returnType', 'kind'];
+const written = await loadApi(resolve(root, 'api')).catch((e) => {
   errors.push(...e.message.split('\n'));
   return [];
 });
+for (const ns of written.filter((each) => !each.standard))
+  for (const f of [...ns.functions, ...ns.values]) {
+    const where = relative(root, f.file);
+    for (const key of ENGINE_OWNED) if (key in f) errors.push(`${where}: ${key} is the engine's; the file keeps the prose`);
+    if (f.params !== undefined && (Array.isArray(f.params) || typeof f.params !== 'object' || Object.values(f.params).some((d) => typeof d !== 'string')))
+      errors.push(`${where}: params is each parameter's description, keyed by its name`);
+  }
+// Without the engine's description, as in a checkout of the docs alone, a console entry has no
+// signature to check, so only its prose is.
+const engine = await readEngineApi();
+let namespaces = written;
+if (engine) {
+  const merged = withEngine(written, engine);
+  namespaces = merged.namespaces;
+  errors.push(...merged.problems);
+} else console.warn(`validate: no engine API at ${engineApiPath}; console signatures and parameters go unchecked`);
 for (const ns of namespaces) {
   const where = relative(root, ns.dir);
   if (!ns.namespace) errors.push(`${where}: _namespace.yaml has no namespace`);
@@ -71,17 +81,14 @@ for (const ns of namespaces) {
     for (const f of ns[kind]) {
       const full = fullName(ns, f);
       known.add(full);
-      for (const a of f.aliases ?? []) {
-        known.add(a);
-        if (!REAL_GLOBALS.has(a)) legacyGlobals.set(a, full);
-      }
-      if (!f.signature) errors.push(`${full}: missing signature`);
       if (Boolean(f.standard) !== Boolean(ns.standard)) errors.push(`${full}: standard is ${Boolean(f.standard)}, its namespace's is ${Boolean(ns.standard)}`);
       if (f.standard && !String(f.manual ?? '').startsWith(MANUAL)) errors.push(`${full}: a standard entry links its place in ${MANUAL}`);
       if (f.picture) {
         refer(f.file, f.picture);
         if (!(await exists(resolve(ns.dir, f.picture)))) errors.push(`${full}: picture ${f.picture} is not there`);
       }
+      if (!ns.standard && !engine) continue;
+      if (!f.signature) errors.push(`${full}: missing signature`);
       if (!f.summary) errors.push(`${full}: missing summary`);
       const declared = declaredParams(f.signature);
       const documented = (f.params ?? []).map((p) => p.name);
@@ -90,13 +97,14 @@ for (const ns of namespaces) {
       for (const p of f.params ?? [])
         if (p.required === undefined && p.optional === undefined)
           errors.push(`${full}: param ${p.name} says neither required nor optional`);
+      for (const p of f.params ?? []) if (!p.description) errors.push(`${full}: param ${p.name} has no description`);
       for (const name of declared ?? [])
         if (!documented.includes(name)) errors.push(`${full}: signature takes ${name}, params does not document it`);
       for (const name of declared ? documented : [])
         if (!declared.includes(name)) errors.push(`${full}: params documents ${name}, which the signature does not take`);
       // The prose says what comes back; the type is what the cards colour it by, so one without
       // the other is a card with a hole in it.
-      if (kind === 'functions' && f.returns && !f.returnType) errors.push(`${full}: returns something but says no returnType`);
+      if (kind === 'functions' && f.returns && !f.returnType) errors.push(`${full}: says what it returns but has no returnType`);
       if (f.returnType && !f.returns) errors.push(`${full}: has a returnType but returns nothing`);
       for (const t of f.returnType ? String(f.returnType).split('|') : [])
         if (!TYPES.has(t)) errors.push(`${full}: returnType ${t} is not one of ${[...TYPES].join(', ')}`);
@@ -128,22 +136,6 @@ for await (const file of walk(resolve(root, 'content'))) {
   }
   pages.push({ file, meta, body: src.slice(m[0].length), offset: m[0].split('\n').length - 1 });
 }
-/** The v0 globals a body's Lua blocks call, outside Lua comments, by line of the body. */
-function legacyCallsIn(body) {
-  const found = [];
-  let inLua = false;
-  body.split('\n').forEach((line, i) => {
-    if (/^\s*```/.test(line)) {
-      inLua = /^\s*```\s*lua\b/.test(line);
-      return;
-    }
-    if (!inLua) return;
-    for (const [, name] of line.replace(/--.*$/, '').matchAll(/(?<![\w.:])([a-z_][a-z0-9_]*)\s*\(/g))
-      if (legacyGlobals.has(name)) found.push({ line: i + 1, name, use: legacyGlobals.get(name) });
-  });
-  return found;
-}
-
 /**
  * Words a page must not say, as prose. Each names an implementation the reader never sees, a panel
  * by a name the app does not use, or an em-dash, which the house writes as a full stop or a colon.
@@ -328,8 +320,6 @@ for (const { file, body, offset, meta } of pages) {
     if (/(fill|stroke)="#|style="[^"]*#/.test(svg))
       errors.push(`${file}: diagram ${href} writes a colour; use the d-* classes`);
   }
-  for (const { line, name, use } of legacyCallsIn(body))
-    errors.push(`${file}:${line + offset}: lua example calls the v0 global ${name}(), use ${use}()`);
   for (const { line, word } of retiredWordsIn(body))
     errors.push(`${file}:${line + offset}: prose says "${word === '\u2014' ? 'an em-dash' : word}", which the docs do not use`);
   for (const [, ref] of body.matchAll(/\[\[([a-z][a-z0-9]*\.[a-z_][a-z0-9_]*)\]\]/g)) if (!known.has(ref)) errors.push(`${file}: unknown api ref [[${ref}]]`);

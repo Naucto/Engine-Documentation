@@ -1,10 +1,7 @@
 name: reset_col
-signature: gfx.reset_col()
-summary: Clear the draw palette remap.
 description: Undo every `set_col` remap. Without it the remap stays on for the frames that follow,
   which is the usual way a whole game turns white by accident. It does not touch `set_color` or
   `screen_col`, which change what is shown rather than what is drawn.
-params: []
 returns: null
 examples:
   - |-
@@ -13,8 +10,6 @@ examples:
     gfx.reset_col()              -- the next sprite is drawn plain
     gfx.draw_sprite(1, 60, 40)
 notes: []
-aliases:
-  - reset_col
 seeAlso:
   - gfx.set_col
 since: "1.0"

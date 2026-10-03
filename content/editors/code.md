@@ -4,8 +4,6 @@ slug: editors/code
 section: editors
 order: 2
 description: The CODE tab is where you write the Lua of your game, with the running game and its console beside the editor and the reference one key away.
-legacy_slugs:
-- editors/code-editor.html
 ---
 
 # CODE

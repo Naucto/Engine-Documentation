@@ -1,6 +1,4 @@
 name: clip
-signature: gfx.clip([x, y, w, h])
-summary: Restrict drawing to a rectangle; no arguments resets.
 picture: ../img/frames/gfx-clip.png
 caption: A full-screen fill and a row of circles, only visible inside the clip rectangle, outlined
   in pink (colour 6) once the clip is reset.
@@ -8,22 +6,10 @@ description: Keep every later draw call inside a rectangle of the screen; the re
   pixels, the camera does not move it. `gfx.clip()` draws to the whole screen again. A new clip
   replaces the old one, it stays from one frame to the next, and [[gfx.clear]] ignores it.
 params:
-  - name: x
-    type: number
-    optional: true
-    description: Left edge.
-  - name: y
-    type: number
-    optional: true
-    description: Top edge.
-  - name: w
-    type: number
-    optional: true
-    description: Width.
-  - name: h
-    type: number
-    optional: true
-    description: Height.
+  x: Left edge.
+  y: Top edge.
+  w: Width.
+  h: Height.
 returns: null
 examples:
   - |-
@@ -37,7 +23,6 @@ notes:
     text: "All four numbers or none: `gfx.clip(x)` sets the missing ones to `0`, a rectangle nothing
       fits in, and so does a negative width or height. The screen then stays blank until
       `gfx.clip()`."
-aliases: []
 seeAlso:
   - gfx.camera
 since: "2.0"

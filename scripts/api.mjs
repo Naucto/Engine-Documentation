@@ -1,7 +1,9 @@
 // Reads the API manifest under api/: every directory holding a `_namespace.yaml` is a namespace,
-// and every other `.yaml` beside it is one of its entries, named after the entry.
+// and every other `.yaml` beside it is one of its entries, named after the entry. A console entry
+// holds only prose; its signature, summary, parameter types and return type are the engine's, merged
+// in by `withEngine`.
 import { readdir, readFile } from 'node:fs/promises';
-import { join, relative } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 
 import { parse } from 'yaml';
 
@@ -63,4 +65,63 @@ export async function loadApi(apiDir) {
   if (problems.length) throw new Error(problems.join('\n'));
   const rank = (ns) => (ORDER.includes(ns.namespace) ? ORDER.indexOf(ns.namespace) : ORDER.length);
   return namespaces.sort((a, b) => rank(a) - rank(b) || a.namespace.localeCompare(b.namespace));
+}
+
+/**
+ * Where the Frontend writes the engine's own description of the console API (`npm run docs:api`),
+ * unless `DOCS_ENGINE_API` names another file.
+ */
+export const engineApiPath =
+  process.env.DOCS_ENGINE_API ?? resolve(import.meta.dirname, '..', '..', 'node_modules', '.cache', 'docs', 'api-manifest.json');
+
+/** The engine's description of the console API, or null where there is none, as in a checkout of the docs alone. */
+export async function readEngineApi(path = engineApiPath) {
+  try {
+    return JSON.parse(await readFile(path, 'utf8'));
+  } catch (e) {
+    if (e.code === 'ENOENT') return null;
+    throw e;
+  }
+}
+
+/**
+ * The namespaces with each console entry completed from the engine: its signature, summary and
+ * parameters (type, optional, default) are the engine's, a parameter's description is the page's,
+ * looked up by name, and a function's return type is the engine's. The standard Lua libraries have
+ * no engine counterpart and pass through as they are.
+ *
+ * `problems` names every engine member no page documents, every page the engine has no member for,
+ * every entry listed as a function where the engine has a value or the reverse, and every parameter
+ * a page describes that the engine does not take.
+ */
+export function withEngine(namespaces, engine) {
+  const own = new Map(engine.map((e) => [`${e.ns}.${e.name}`, e]));
+  const documented = new Set();
+  const problems = [];
+  const merged = namespaces.map((ns) => {
+    if (ns.standard) return ns;
+    const merge = (kind) => (entry) => {
+      const full = fullName(ns, entry);
+      documented.add(full);
+      const member = own.get(full);
+      if (!member) {
+        problems.push(`${full}: documented, but the engine has no such ${kind}`);
+        return entry;
+      }
+      if (member.kind !== kind) problems.push(`${full}: listed as a ${kind}, the engine has a ${member.kind}`);
+      const prose = new Map(Object.entries(entry.params ?? {}));
+      for (const name of prose.keys())
+        if (!member.params.some((p) => p.name === name)) problems.push(`${full}: params describes ${name}, which the engine does not take`);
+      return {
+        ...entry,
+        signature: member.signature,
+        summary: member.summary,
+        params: member.params.map((p) => ({ ...p, description: prose.get(p.name) })),
+        ...(member.kind === 'function' && member.returns ? { returnType: member.returns } : {}),
+      };
+    };
+    return { ...ns, functions: ns.functions.map(merge('function')), values: ns.values.map(merge('value')) };
+  });
+  for (const name of own.keys()) if (!documented.has(name)) problems.push(`${name}: the engine has it, no page documents it`);
+  return { namespaces: merged, problems };
 }

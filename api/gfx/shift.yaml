@@ -1,7 +1,4 @@
 name: shift
-signature: gfx.shift(dx[, dy][, wrap])
-summary: "Shift the display by whole pixels: the frame from anywhere but `_scanline`, this line on
-  from inside it."
 picture: ../img/frames/gfx-shift.png
 caption: "The whole frame shifted 12 pixels right and 6 down by gfx.shift(12, 6): the band it
   uncovers along the left and the top shows colour 0."
@@ -18,19 +15,10 @@ description: >-
   Called inside `_scanline(y)`, it shifts **line `y` and the lines below it** for this frame, until
   another call changes it: a wave is a shift of a sine of `y`.
 params:
-  - name: dx
-    type: number
-    required: true
-    description: Pixels to the right; negative to the left.
-  - name: dy
-    type: number
-    optional: true
-    description: Pixels down; negative up. `0` when left out.
-  - name: wrap
-    type: boolean
-    optional: true
-    description: "`true` to bring back on the other side what the sideways shift pushes off the screen.
-      `false` when left out."
+  dx: Pixels to the right; negative to the left.
+  dy: Pixels down; negative up. `0` when left out.
+  wrap: "`true` to bring back on the other side what the sideways shift pushes off the screen. `false`
+    when left out."
 returns: null
 examples:
   - |-
@@ -57,7 +45,6 @@ examples:
 notes:
   - kind: note
     text: "A shift is whole pixels: a fraction is rounded to the nearest one."
-aliases: []
 seeAlso:
   - gfx.blank
   - gfx.set_color

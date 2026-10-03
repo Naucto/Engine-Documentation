@@ -1,21 +1,14 @@
 name: key_down
-signature: input.key_down(key)
-summary: True on the step a key went down.
 description: "True only on the step a key went down. Keys are named by the browser's `event.key`
   value: `\"a\"`, `\"Escape\"`, `\"ArrowLeft\"`."
 params:
-  - name: key
-    type: string
-    required: true
-    description: A key name as the browser reports it.
+  key: A key name as the browser reports it.
 returns: True on the press step.
-returnType: boolean
 examples:
   - if input.key_down("r") then print("restart") end
 notes:
   - kind: tip
     text: "Prefer actions over raw keys: they work with a gamepad and can be rebound."
-aliases: []
 seeAlso:
   - input.key_pressed
   - input.pressed

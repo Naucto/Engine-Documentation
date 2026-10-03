@@ -5,8 +5,6 @@ lua: pong/main.lua
 section: tutorials
 order: 4
 description: A complete two-player online Pong, where one player hosts, a friend joins, and each controls a paddle on their own machine; the best first tutorial for the net API.
-legacy_slugs:
-- tutorials/pong.html
 ---
 
 # Build Multiplayer Pong

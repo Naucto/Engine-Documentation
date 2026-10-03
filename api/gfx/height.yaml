@@ -1,14 +1,9 @@
 name: height
-signature: gfx.height()
-summary: Screen height (180).
 description: Screen height in pixels. Always 180.
-params: []
 returns: "180."
-returnType: number
 examples:
   - gfx.fill_rect(0, gfx.height() - 8, gfx.width(), 8, 1)
 notes: []
-aliases: []
 seeAlso:
   - gfx.width
 since: "2.0"

@@ -4,8 +4,6 @@ slug: api/map
 section: api
 order: 2
 description: The map functions draw the levels painted in the MAP tab, read and change their tiles while the game runs, and read the flags the ART tab puts on sprites.
-legacy_slugs:
-- api/tilemap.html
 namespace: map
 ---
 

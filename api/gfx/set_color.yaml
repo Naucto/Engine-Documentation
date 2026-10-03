@@ -1,6 +1,4 @@
 name: set_color
-signature: gfx.set_color(index, hex | r, g, b)
-summary: "Change a screen colour: for the frame, or from this line on inside `_scanline`."
 picture: ../img/frames/gfx-palette.png
 caption: The sixteen palette entries; colour 4 redefined to a cyan by set_color, so the row and the
   box both change; colour 9 drawn as colour 2 by set_col.
@@ -18,23 +16,11 @@ description: >-
   below it until another call changes it, for this frame only. The next frame's beam starts from the
   frame palette again.
 params:
-  - name: index
-    type: number
-    required: true
-    description: Palette index, `0` to `15`.
-  - name: hex
-    type: string|number
-    required: true
-    description: The colour as `"#rrggbb"`, or, with three numbers, the red component `0` to `255`. A
-      single number is read as red alone.
-  - name: g
-    type: number
-    optional: true
-    description: Green 0..255.
-  - name: b
-    type: number
-    optional: true
-    description: Blue 0..255.
+  index: Palette index, `0` to `15`.
+  hex: The colour as `"#rrggbb"`, or, with three numbers, the red component `0` to `255`. A single
+    number is read as red alone.
+  g: Green 0..255.
+  b: Blue 0..255.
 returns: null
 examples:
   - |-
@@ -57,7 +43,6 @@ notes:
     text: The beam calls `_scanline` 180 times per frame, and those calls spend `_draw`'s instruction
       budget (ten million a step); keep the work per line small, and do the arithmetic once in
       `_init` where you can.
-aliases: []
 seeAlso:
   - gfx.get_color
   - gfx.reset_palette

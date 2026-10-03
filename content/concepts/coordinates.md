@@ -4,8 +4,6 @@ slug: concepts/coordinates
 section: concepts
 order: 1
 description: Where things are on the 320 × 180 screen, how the camera and clip move and cut it, and how sprites and map tiles are numbered.
-legacy_slugs:
-- coordinates.html
 ---
 
 # Coordinates and Rendering Model

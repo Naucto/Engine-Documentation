@@ -4,8 +4,6 @@ slug: concepts/game-loop
 section: concepts
 order: 0
 description: How a game runs, from the loading of the code tabs to the sixty fixed steps a second that call _update and _draw.
-legacy_slugs:
-- game-loop.html
 ---
 
 # Game Loop

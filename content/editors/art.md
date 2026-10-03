@@ -4,8 +4,6 @@ slug: editors/art
 section: editors
 order: 3
 description: The ART tab is where you draw the sprites of your game on one or more sheets, set their flags and edit the palette they are drawn with.
-legacy_slugs:
-- editors/sprite-editor.html
 ---
 
 # ART

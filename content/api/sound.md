@@ -4,8 +4,6 @@ slug: api/sound
 section: api
 order: 4
 description: The sound functions play the sound effects, notes and music made in the SOUND tab, and set the mixer levels.
-legacy_slugs:
-- api/audio.html
 namespace: sound
 ---
 

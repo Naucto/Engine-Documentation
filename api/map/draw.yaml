@@ -1,6 +1,4 @@
 name: draw
-signature: map.draw(x, y[, tx, ty, tw, th, m])
-summary: Draw a map (or a sub-rectangle of its tiles) at a pixel position. m picks the map, from 1.
 picture: ../img/frames/map-draw.png
 caption: The whole first map drawn with map.draw(0, y), y chosen so its last row, the floor, sits on
   the bottom of the screen.
@@ -16,34 +14,13 @@ description: >-
   map it works on as its last argument, counted from `1` in the order of the strip in that tab, and
   works on the first one when that argument is left out.
 params:
-  - name: x
-    type: number
-    description: X position in pixels where the map starts.
-    required: true
-  - name: y
-    type: number
-    description: Y position in pixels where the map starts.
-    required: true
-  - name: tx
-    type: number
-    description: Optional first map column to draw, in tiles. Defaults to `0`.
-    optional: true
-  - name: ty
-    type: number
-    description: Optional first map row to draw, in tiles. Defaults to `0`.
-    optional: true
-  - name: tw
-    type: number
-    description: Optional number of columns to draw. Defaults to the whole map width.
-    optional: true
-  - name: th
-    type: number
-    description: Optional number of rows to draw. Defaults to the whole map height.
-    optional: true
-  - name: m
-    type: number
-    description: Which map to draw, counted from `1` in the order of the MAP tab's strip. Defaults to the first.
-    optional: true
+  x: X position in pixels where the map starts.
+  y: Y position in pixels where the map starts.
+  tx: Optional first map column to draw, in tiles. Defaults to `0`.
+  ty: Optional first map row to draw, in tiles. Defaults to `0`.
+  tw: Optional number of columns to draw. Defaults to the whole map width.
+  th: Optional number of rows to draw. Defaults to the whole map height.
+  m: Which map to draw, counted from `1` in the order of the MAP tab's strip. Defaults to the first.
 returns: null
 examples:
   - >-
@@ -52,8 +29,6 @@ examples:
     map.draw(0, 0, 0, 0, 40, 23, 2)  -- the top-left screen of the second map (a warning, and
     nothing drawn, in a game with one map)
 notes: []
-aliases:
-  - map
 seeAlso:
   - gfx.camera
   - map.get

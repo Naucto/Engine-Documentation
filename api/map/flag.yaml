@@ -1,23 +1,14 @@
 name: flag
-signature: map.flag(n[, bit])
-summary: Flags byte of sprite n, or one bit of it.
 description: "Read the flags the ART tab stores on a sprite: eight bits the engine never reads,
   whose meaning is yours (bit `0` solid, bit `2` water). Without `bit` it is the whole byte, `0` to
   `255`; with it, `true` or `false`. Only the first sheet's flags are read: a sprite on another
   sheet, or past the end, answers `0` (`false` with `bit`), without an error. The usual pattern
   reads a tile with [[map.get]] and asks its sprite."
 params:
-  - name: n
-    type: number
-    description: Sprite index in the sprite sheet. A new game has 256 of them, numbered from `0`; a
-      larger sheet has more.
-    required: true
-  - name: bit
-    type: number
-    description: Optional bit index from `0` to `7`.
-    optional: true
+  n: Sprite index in the sprite sheet. A new game has 256 of them, numbered from `0`; a larger sheet
+    has more.
+  bit: Optional bit index from `0` to `7`.
 returns: The full flag value when `bit` is omitted, or `true`/`false` for a single bit.
-returnType: number|boolean
 examples:
   - |-
     local tile_sprite = map.get(4, 6)
@@ -28,8 +19,6 @@ examples:
 
     local flags = map.flag(tile_sprite)  -- the whole byte, 0 to 255
 notes: []
-aliases:
-  - fget
 seeAlso:
   - map.get
   - gfx.get_pixel

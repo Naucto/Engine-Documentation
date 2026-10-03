@@ -1,13 +1,8 @@
 name: stop_note
-signature: sound.stop_note(channel)
-summary: Release a voice.
 description: Releases a voice, letting its envelope fade out. Use it for notes started with a length
   of `0`; it releases a voice the music is using just the same.
 params:
-  - name: channel
-    type: number
-    required: true
-    description: Voice 0..4.
+  channel: Voice 0..4.
 returns: null
 examples:
   - |-
@@ -15,7 +10,6 @@ examples:
     -- ... later
     sound.stop_note(2)
 notes: []
-aliases: []
 seeAlso:
   - sound.play_note
   - sound.is_playing

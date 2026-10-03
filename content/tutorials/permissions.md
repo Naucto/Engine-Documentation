@@ -4,8 +4,6 @@ slug: tutorials/permissions
 section: tutorials
 order: 7
 description: By default any peer can write any net.state key; this tutorial turns the ownership convention into a rule the host enforces, using the NET tab's read and write flags.
-legacy_slugs:
-- tutorials/permissions.html
 ---
 
 # Permissions & authority

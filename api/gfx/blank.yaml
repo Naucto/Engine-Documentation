@@ -1,6 +1,4 @@
 name: blank
-signature: gfx.blank([on])
-summary: "Show black instead: the whole frame from anywhere but `_scanline`, this line on from inside it."
 picture: ../img/frames/gfx-blank.png
 caption: "A letterbox: gfx.blank() on line 0 and again on line 160, gfx.blank(false) on line 20, so
   the picture shows between them."
@@ -16,10 +14,7 @@ description: >-
   `gfx.blank(false)` on a later line: a letterbox is a `blank()` on the first line and a
   `blank(false)` where the picture starts.
 params:
-  - name: on
-    type: boolean
-    optional: true
-    description: "`false` to show the picture again; left out, `true`."
+  on: "`false` to show the picture again; left out, `true`."
 returns: null
 examples:
   - |-
@@ -35,7 +30,6 @@ examples:
       if y == 160 then gfx.blank() end
     end
 notes: []
-aliases: []
 seeAlso:
   - gfx.shift
   - gfx.clear

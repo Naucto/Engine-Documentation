@@ -1,26 +1,12 @@
 name: fill_circle
-signature: gfx.fill_circle(cx, cy, r, colour)
-summary: Draw a filled circle.
 picture: ../img/frames/gfx-shapes.png
 caption: rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.
 description: Fill a disc centred on `cx`, `cy`. The radius is floored; `0` draws one pixel.
 params:
-  - name: cx
-    type: number
-    required: true
-    description: Centre x.
-  - name: cy
-    type: number
-    required: true
-    description: Centre y.
-  - name: r
-    type: number
-    required: true
-    description: Radius in pixels.
-  - name: colour
-    type: number
-    required: true
-    description: Palette index 0..15.
+  cx: Centre x.
+  cy: Centre y.
+  r: Radius in pixels.
+  colour: Palette index 0..15.
 returns: null
 examples:
   - |-
@@ -36,7 +22,6 @@ examples:
       if boom.life > 0 then gfx.fill_circle(boom.x, boom.y, boom.life, 3) end
     end
 notes: []
-aliases: []
 seeAlso:
   - gfx.circle
   - gfx.fill_rect

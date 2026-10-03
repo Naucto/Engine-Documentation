@@ -4,8 +4,6 @@ slug: tutorials/index
 section: tutorials
 order: 0
 description: Seven guided builds, from a ten-minute coin hunt to a host-refereed online game, each teaching one idea of the engine at a time.
-legacy_slugs:
-- tutorials/index.html
 ---
 
 # Tutorials

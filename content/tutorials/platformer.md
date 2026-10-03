@@ -7,8 +7,6 @@ section: tutorials
 order: 2
 description: This tutorial walks you through building a complete platformer with animated
   sprites, gravity, jumping, platform collision, and camera scrolling.
-legacy_slugs:
-- tutorials/platformer.html
 ---
 
 # Build a Platformer Game

@@ -8,15 +8,15 @@ submodule (`docs/`) and builds it at compile time.
 
 | Path                                | What                                                                                                                     |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `content/**/*.md`                   | Pages. Front-matter: `title`, `slug`, `section`, `order`, `description`, `legacy_slugs`, and on API pages `namespace`    |
+| `content/**/*.md`                   | Pages. Front-matter: `title`, `slug`, `section`, `order`, `description`, and on API pages `namespace`                    |
 | `content/tutorials/<name>/main.lua` | The complete code of a tutorial, named by the page's `lua:` field: what Copy to new game installs, byte-identical to the last step file |
 | `content/tutorials/<name>/steps/<n>.lua` | The whole game at the end of `## Step n`, for every step that shows code; every lua block of the step is a verbatim run of it, and `docs:shots` plays each one for the frame under the step |
 | `content/tutorials/<name>/assets.json` | The rest of a tutorial's game (sprites as rows of hex colours, flags, map spans), named by the page's `assets:` field and copied along with the code |
 | `content/**/img/`                   | The pictures a page shows, next to the page (see below)                                                                  |
 | `api/<ns>/_namespace.yaml`          | A namespace of the console (`gfx`, `map`, `input`, `sound`, `sys`, `net`): its `namespace`, `title`, and the `order:` its functions are listed in, `values:` for the rest |
-| `api/<ns>/<name>.yaml`              | One function or value, named after it (`gfx/fill_rect.yaml`); a `picture` is relative to the file                         |
+| `api/<ns>/<name>.yaml`              | One function or value, named after it (`gfx/fill_rect.yaml`): its prose, and a `picture` relative to the file             |
 | `api/lua/<lib>/`                    | The standard Lua libraries a game can reach (`base`, `string`, `table`, `math`, `utf8`, `coroutine`, `os`), same layout, marked `standard: true` |
-| `scripts/`                          | `validate` (front-matter, refs, links, pictures and diagrams, params and return types, retired words and calls, tutorial steps) and `build` (`dist/manifest.json`), both reading `api/` through `api.mjs` |
+| `scripts/`                          | `validate` (front-matter, refs, links, pictures and diagrams, the console entries against the engine, params and return types, retired words and calls, tutorial steps) and `build` (`dist/manifest.json`), both reading `api/` through `api.mjs` |
 
 ## Writing a page
 
@@ -57,16 +57,21 @@ the file: the palette is the theme's.
 
 ## API manifest
 
-The engine's `luaApiTable.ts` is the source of truth for names, signatures and one-line summaries;
-the Frontend runs a parity test so every engine function is documented here with the same signature
-and summary, and nothing documented here is missing from the engine. Every parameter says
-`required: true` or `optional: true`. A function says what comes back twice: `returns` is the prose,
-and `returnType` is the type the cards colour it by, one of `number`, `string`, `boolean`, `table`,
-`function`, `thread`, `nil`, `any`, or a union of them such as `number|nil`; a function that returns nothing
-says `returns: null` and no `returnType`. A parameter's `type` uses the same names.
+A console entry holds **only its prose**: `description`, `params` as each parameter's description
+keyed by its name, `returns` as the prose of what comes back (`null` when nothing does), `examples`,
+`notes`, `picture`, `caption`, `seeAlso` and `since`. The engine declares each function once, and
+the Frontend's `npm run docs:api` writes that declaration to `node_modules/.cache/docs/api-manifest.json`:
+the signature, the one-line summary, each parameter's type, whether it is optional and its default,
+and the return type. `docs:build` merges the two, and `validate` refuses a console entry that writes
+any of the engine's part, an engine function no page documents, a page for a function the engine
+does not have, and a parameter described here that the engine does not take. Checked out alone,
+without the engine's file (`DOCS_ENGINE_API` names another one), `validate` checks the prose only.
 
-The standard Lua entries under `api/lua/` have no counterpart in `luaApiTable.ts`: they carry
-`standard: true` and a `manual` link to their place in the Lua 5.3 reference manual, and the base
+The standard Lua entries under `api/lua/` have no counterpart in the engine, so they carry the
+whole entry: a `signature`, a `summary`, `params` as a list where each says `required: true` or
+`optional: true` and its `type`, and a `returnType` beside `returns`, one of `number`, `string`,
+`boolean`, `table`, `function`, `thread`, `nil`, `any` or a union such as `number|nil`. They also
+carry `standard: true` and a `manual` link to their place in the Lua 5.3 reference manual, and the base
 library's `_namespace.yaml` says `globals: true`, since `pairs` is called by its bare name. The
 Frontend's test checks that each one exists in a running game, that every other library function a
 game can reach is documented or listed there as left out on purpose, and runs every example: a

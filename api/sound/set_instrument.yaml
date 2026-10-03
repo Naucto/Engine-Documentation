@@ -1,6 +1,4 @@
 name: set_instrument
-signature: sound.set_instrument(name, fields)
-summary: Change an instrument for this run.
 description: >-
   Change some settings of an instrument **for this run only**: the SOUND tab and the saved game keep
   theirs, and the next run starts from them again. A note already sounding keeps the instrument it
@@ -47,15 +45,9 @@ description: >-
   A field it does not know, or a value of the wrong kind, is skipped with one warning in the
   console.
 params:
-  - name: name
-    type: string
-    required: true
-    description: The instrument's name exactly as the SOUND tab shows it, case included. A name no
-      instrument has warns once and changes nothing.
-  - name: fields
-    type: table
-    required: true
-    description: The settings to change, any of the table above; the others keep their value.
+  name: The instrument's name exactly as the SOUND tab shows it, case included. A name no instrument
+    has warns once and changes nothing.
+  fields: The settings to change, any of the table above; the others keep their value.
 returns: null
 examples:
   - |-
@@ -71,7 +63,6 @@ examples:
       sound.set_instrument("Square lead", { osc = "saw", detune = 0.1, vibrato_depth = 0.2, filter = "lp" })
     end
 notes: []
-aliases: []
 seeAlso:
   - sound.play_note
   - sound.set_pattern

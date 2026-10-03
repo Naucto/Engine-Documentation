@@ -4,8 +4,6 @@ slug: api/sys
 section: api
 order: 6
 description: The sys functions give the game its clock, the fixed step, the frame count and the measured frame rate, and write to the console under the viewer.
-legacy_slugs:
-- api/debug.html
 namespace: sys
 ---
 

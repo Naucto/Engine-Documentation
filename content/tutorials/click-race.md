@@ -5,8 +5,6 @@ lua: click-race/main.lua
 section: tutorials
 order: 5
 description: Up to four players race to collect coins, and when two touch the same coin on the same frame only one may score; a tutorial about net.lock and net.queue.
-legacy_slugs:
-- tutorials/click-race.html
 ---
 
 # Build a Coin Rush

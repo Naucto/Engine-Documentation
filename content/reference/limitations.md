@@ -4,8 +4,6 @@ slug: reference/limitations
 section: reference
 order: 1
 description: The numbers a game lives within, the things the API leaves to you, and what to do about each.
-legacy_slugs:
-- limitations.html
 ---
 
 # Current Limitations

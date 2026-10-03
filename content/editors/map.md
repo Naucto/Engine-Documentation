@@ -4,8 +4,6 @@ slug: editors/map
 section: editors
 order: 4
 description: The MAP tab is where you lay out levels and backgrounds by stamping the sprites of your sheets onto a grid of tiles that your code draws with map.draw.
-legacy_slugs:
-- editors/map-editor.html
 ---
 
 # MAP

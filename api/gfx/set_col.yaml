@@ -1,6 +1,4 @@
 name: set_col
-signature: gfx.set_col(from, to)
-summary: "Draw palette remap: pixels of colour `from` are drawn as `to`."
 picture: ../img/frames/gfx-set-col.png
 caption: The same sprite plain, with its yellow drawn as white by set_col(4, 5), and plain again
   after reset_col.
@@ -9,14 +7,8 @@ description: "Draw one colour as another, from this call on: sprites, shapes, th
   before the next thing you draw plain. A sprite's transparent colour stays transparent whatever it
   is mapped to."
 params:
-  - name: from
-    type: number
-    description: Palette slot to replace.
-    required: true
-  - name: to
-    type: number
-    description: Palette slot to copy into it.
-    required: true
+  from: Palette slot to replace.
+  to: Palette slot to copy into it.
 returns: null
 examples:
   - |-
@@ -29,8 +21,6 @@ examples:
     gfx.draw_sprite(player.spr, player.x, player.y)
     gfx.reset_col()
 notes: []
-aliases:
-  - set_col
 seeAlso:
   - gfx.reset_col
   - gfx.screen_col

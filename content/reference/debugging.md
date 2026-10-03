@@ -4,8 +4,6 @@ slug: reference/debugging
 section: reference
 order: 0
 description: What the Console shows when a game misbehaves, and the usual reasons a screen stays empty, a key does nothing or a colour is wrong.
-legacy_slugs:
-- debugging.html
 ---
 
 # Debugging Tips

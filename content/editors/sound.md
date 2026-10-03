@@ -4,8 +4,6 @@ slug: editors/sound
 section: editors
 order: 5
 description: The SOUND tab is where you build instruments, write patterns on a piano roll, and chain those patterns into the musics and sound effects your game plays.
-legacy_slugs:
-- editors/sound-editor.html
 ---
 
 # SOUND

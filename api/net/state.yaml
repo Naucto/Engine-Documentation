@@ -1,7 +1,4 @@
 name: state
-signature: net.state
-summary: A table shared by every player in the session. Writes replicate to all peers automatically;
-  reads always return the latest replicated value.
 description: "A table shared by every player in the session. Writes replicate to all peers; reads
   answer the latest replicated value. A player who joins mid-game receives everything they may read.
   Stored values are numbers, strings, booleans and nested tables; a function raises `net: cannot
@@ -9,7 +6,6 @@ description: "A table shared by every player in the session. Writes replicate to
   numeric ones included: compare a player key with `tonumber(id) == net.id()`. Writing `nil` to a
   key deletes it, and everything under it. Reading it outside a session raises `net: no active
   session`."
-params: []
 returns: null
 examples:
   - |-
@@ -33,5 +29,4 @@ notes:
       host: a refused write is undone on the peer that made it, and its `net.on(\"error\")` fires
       with the reason `\"forbidden\"`, or `\"conflict\"` when another write got there first. A
       guest's write is applied locally at once and confirmed or undone afterwards."
-aliases: []
 since: "1.0"

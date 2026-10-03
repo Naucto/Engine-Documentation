@@ -4,10 +4,6 @@ slug: api/gfx
 section: api
 order: 1
 description: The gfx functions draw every frame of the game on its 320 by 180 screen, from clearing it to sprites, shapes and text, and drive the palette and the display beam that shows it.
-legacy_slugs:
-- api/rendering.html
-- api/gfx-palette
-- api/palette.html
 namespace: gfx
 ---
 

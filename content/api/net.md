@@ -4,8 +4,6 @@ slug: api/net
 section: api
 order: 5
 description: The net functions host or join an online session, share a state table between its players, send events, and order locks and queues through the host.
-legacy_slugs:
-- api/networking.html
 namespace: net
 ---
 

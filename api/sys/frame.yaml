@@ -1,18 +1,13 @@
 name: frame
-signature: sys.frame()
-summary: Frames since _init.
 description: "The number of steps the game has taken: `0` in `_init`, `1` on the first `_update`. It
   counts fixed steps, not frames shown, and stops while the game is paused."
-params: []
 returns: Frame count.
-returnType: number
 examples:
   - |-
     -- four-frame walk cycle, one frame every 8 steps
     local player = { sprite = 4 }
     player.sprite = 4 + (sys.frame() // 8) % 4
 notes: []
-aliases: []
 seeAlso:
   - sys.time
   - sys.dt
