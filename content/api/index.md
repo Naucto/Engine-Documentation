@@ -220,7 +220,7 @@ The part of Lua 5.3's own library a game uses, documented on the [Lua](/learn/ap
 | [[coroutine.running]] | The running coroutine, and whether it is the main one |
 | [[coroutine.isyieldable]] | Whether the running code may call yield |
 
-### os · OS
+### os · Operating system
 
 | Function | What it does |
 | --- | --- |
