@@ -1,5 +1,5 @@
 ---
-title: Lua · table
+title: Tables
 slug: api/table
 section: api
 order: 9
@@ -7,7 +7,7 @@ description: The table library of standard Lua, for the lists a game keeps, enem
 namespace: table
 ---
 
-# table · Lists
+# table · Tables
 
 A list in Lua is a table numbered from `1`, and `#t` is its length. The `table` functions keep such a list without gaps while things are added and removed, and put it in order.
 

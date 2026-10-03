@@ -1,5 +1,5 @@
 namespace: math
-title: Numbers
+title: Mathematics
 standard: true
 manual: https://www.lua.org/manual/5.3/manual.html#6.7
 order:

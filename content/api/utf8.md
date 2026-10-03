@@ -1,5 +1,5 @@
 ---
-title: Lua · utf8
+title: UTF-8
 slug: api/utf8
 section: api
 order: 11
@@ -7,7 +7,7 @@ description: The utf8 library of standard Lua, for text counted in characters ra
 namespace: utf8
 ---
 
-# utf8 · Unicode text
+# utf8 · UTF-8
 
 A Lua string is a row of bytes, and a letter such as `é` takes two of them, so `#s` and [[string.sub]] count bytes. The `utf8` functions count characters instead, which matters for text a player typed.
 

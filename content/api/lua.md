@@ -1,5 +1,5 @@
 ---
-title: Standard Lua
+title: Lua
 slug: api/lua
 section: api
 order: 7
@@ -7,7 +7,7 @@ description: What a game can use of standard Lua 5.3 beside the console's own na
 namespace: base
 ---
 
-# Standard Lua
+# Lua
 
 Beside `gfx`, `map`, `input`, `sound`, `sys` and `net`, a game has the standard library of **Lua 5.3**, the version the console runs. These pages document the part a game uses, each function with an example that runs in the console; the [Lua 5.3 reference manual](https://www.lua.org/manual/5.3/manual.html#6) is the full text, and every card links its own place in it.
 

@@ -1,5 +1,5 @@
 namespace: os
-title: Clock and date
+title: OS
 standard: true
 manual: https://www.lua.org/manual/5.3/manual.html#6.9
 order:

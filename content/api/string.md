@@ -1,5 +1,5 @@
 ---
-title: Lua · string
+title: String manipulation
 slug: api/string
 section: api
 order: 8
@@ -7,7 +7,7 @@ description: The string library of standard Lua, for cutting, searching, formatt
 namespace: string
 ---
 
-# string · Text
+# string · String manipulation
 
 The `string` functions work on text: a score written in a fixed width, a name cut to fit, a level read out of a string. Every one of them can also be called on the string itself, `name:upper()` for `string.upper(name)`. Positions count bytes from `1`, and a negative one counts from the end.
 

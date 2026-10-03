@@ -1,5 +1,5 @@
 namespace: base
-title: Basic functions
+title: Lua
 standard: true
 globals: true
 manual: https://www.lua.org/manual/5.3/manual.html#6.1

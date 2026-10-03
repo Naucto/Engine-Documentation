@@ -1,5 +1,5 @@
 namespace: utf8
-title: Unicode text
+title: UTF-8
 standard: true
 manual: https://www.lua.org/manual/5.3/manual.html#6.5
 order:

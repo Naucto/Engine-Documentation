@@ -1,5 +1,5 @@
 ---
-title: Lua · coroutine
+title: Coroutines
 slug: api/coroutine
 section: api
 order: 12
@@ -7,7 +7,7 @@ description: The coroutine library of standard Lua, for sequences that span many
 namespace: coroutine
 ---
 
-# coroutine · Functions that pause
+# coroutine · Coroutines
 
 A coroutine is a function that can stop half way and go on later from the same point. Resumed once per `_update`, it turns a sequence that spans many frames, a cutscene or a patrol, into one function read from top to bottom.
 

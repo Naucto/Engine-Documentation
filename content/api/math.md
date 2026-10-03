@@ -1,5 +1,5 @@
 ---
-title: Lua · math
+title: Mathematics
 slug: api/math
 section: api
 order: 10
@@ -7,7 +7,7 @@ description: The math library of standard Lua, for rounding positions, drawing r
 namespace: math
 ---
 
-# math · Numbers
+# math · Mathematics
 
 A game's numbers are positions, speeds, angles and dice. The `math` functions round them, bound them and draw them at random. Lua has two kinds of number, integers and floats, which compare equal and differ in how far they reach: **integers are 32 bits on the console**, see [[math.maxinteger]].
 

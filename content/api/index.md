@@ -110,11 +110,11 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 | [[net.queue]] | Create a replicated queue value |
 | [[net.state]] | A table shared by every player in the session. Writes replicate to all peers automatically; reads always return the latest replicated value |
 
-## Standard Lua
+## Lua
 
-The part of Lua 5.3's own library a game uses, documented on the [Standard Lua](/learn/api/lua) pages with an example each.
+The part of Lua 5.3's own library a game uses, documented on the [Lua](/learn/api/lua) pages with an example each.
 
-### Basic functions
+### Lua
 
 | Function | What it does |
 | --- | --- |
@@ -136,7 +136,7 @@ The part of Lua 5.3's own library a game uses, documented on the [Standard Lua](
 | [`rawequal`](/learn/api/lua#rawequal) | Whether two values are the same, without the __eq metamethod |
 | [`rawlen`](/learn/api/lua#rawlen) | The length of a table or a string, without the __len metamethod |
 
-### string · Text
+### string · String manipulation
 
 | Function | What it does |
 | --- | --- |
@@ -154,7 +154,7 @@ The part of Lua 5.3's own library a game uses, documented on the [Standard Lua](
 | [[string.byte]] | The numeric codes of characters in a string |
 | [[string.char]] | A string made of the characters with the given codes |
 
-### table · Lists
+### table · Tables
 
 | Function | What it does |
 | --- | --- |
@@ -166,7 +166,7 @@ The part of Lua 5.3's own library a game uses, documented on the [Standard Lua](
 | [[table.pack]] | Its arguments gathered in a new list, with their count in n |
 | [[table.move]] | Copy a run of elements within a list or into another one |
 
-### math · Numbers
+### math · Mathematics
 
 | Function | What it does |
 | --- | --- |
@@ -197,7 +197,7 @@ The part of Lua 5.3's own library a game uses, documented on the [Standard Lua](
 | [[math.maxinteger]] | The largest integer, 2147483647 |
 | [[math.mininteger]] | The smallest integer, -2147483648 |
 
-### utf8 · Unicode text
+### utf8 · UTF-8
 
 | Function | What it does |
 | --- | --- |
@@ -220,7 +220,7 @@ The part of Lua 5.3's own library a game uses, documented on the [Standard Lua](
 | [[coroutine.running]] | The running coroutine, and whether it is the main one |
 | [[coroutine.isyieldable]] | Whether the running code may call yield |
 
-### os · Clock and date
+### os · OS
 
 | Function | What it does |
 | --- | --- |
