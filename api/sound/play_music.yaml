@@ -1,10 +1,10 @@
 name: play_music
-description: "Play one of the sixteen musics of the SOUND tab, replacing the one playing. A number
-  outside `0` to `15`, or an empty one, plays nothing and raises no error. A music loops from its
+description: "Play a music of the SOUND tab, replacing the one playing. A number that holds no
+  music plays nothing and raises no error. A music loops from its
   start unless the code says otherwise: `loop` here, or [[sound.set_music]] for that music."
 params:
-  song: Music number, as the `#` field of the SOUND tab shows it, `0` to `15`; left out, `0`. An empty
-    number plays nothing.
+  song: Music number, as the `#` field of the SOUND tab shows it; left out, `0`. An empty number plays
+    nothing.
   loop: "Whether the music restarts when it reaches its end. Left out, it loops, unless
     [[sound.set_music]] said otherwise for this music. Lua truth applies: only `false` means no, so
     `0` loops; a `nil` is the same as leaving it out."

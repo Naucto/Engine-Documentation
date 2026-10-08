@@ -40,7 +40,7 @@ A **flag** is one of the eight bits, `0` to `7`, every sprite carries. The FLAGS
 
 ## Pattern
 
-A **pattern** is one page of the piano roll, numbered `00` to `99`, with a tempo and a length of its own. Every number is already a pattern, most of them empty. A sound effect is a pattern kept in an SFX slot; a music is a chain of them. See [SOUND](/learn/editors/sound).
+A **pattern** is one page of the piano roll, numbered from `00` with no last one, with a tempo and a length of its own. Every number is already a pattern, most of them empty. A sound effect is a pattern kept in an SFX slot; a music is a chain of them. See [SOUND](/learn/editors/sound).
 
 ## Step and frame
 
@@ -66,7 +66,7 @@ An **SFX slot** is a numbered entry of the SFX SLOTS bank in SOUND, counted from
 
 ## Music
 
-A **music** is a chain of patterns, one of the sixteen the MUSIC bank holds, numbered `0` to `15`. Its grid is played left to right, then top to bottom, and stops at the first empty box that has more after it. [[sound.play_music]] starts one by number, looping by default. See [SOUND](/learn/editors/sound).
+A **music** is a chain of patterns, numbered from `0` with no last one. Its grid is played left to right, then top to bottom, and stops at the first empty box that has more after it. [[sound.play_music]] starts one by number, looping by default. See [SOUND](/learn/editors/sound).
 
 ## Instrument
 

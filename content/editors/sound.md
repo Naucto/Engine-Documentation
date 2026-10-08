@@ -68,7 +68,7 @@ ROOT is the note at which the sample plays at its recorded pitch, C4 by default.
 
 ### The piano roll
 
-The roll holds 72 pitches, **C1 to B6**, the highest at the top, with a keyboard at the left; steps run across. The number field at the head of the bar is the PATTERN, from `0` to `99`. Every number is already a pattern, most of them empty: you go to one the way you turn a page, by typing its number or stepping with the arrows.
+The roll holds 72 pitches, **C1 to B6**, the highest at the top, with a keyboard at the left; steps run across. The number field at the head of the bar is the PATTERN, numbered from `0` with no last one. Every number is already a pattern, most of them empty: you go to one the way you turn a page, by typing its number or stepping with the arrows.
 
 ![The piano roll](img/sound-roll.png "The piano roll: pitches down the side, steps across, each note in its instrument's colour.")
 
@@ -130,7 +130,7 @@ A sound effect takes the first free voice of the five. When none is free it take
 
 ### MUSIC
 
-A music is a chain of patterns. The `#` field picks which of the **16 musics**, `0` to `15`, the grid shows; the game starts one with [[sound.play_music]] and the same number.
+A music is a chain of patterns. The `#` field picks which **music** the grid shows, numbered from `0` with no last one; the game starts one with [[sound.play_music]] and the same number.
 
 ![The music panel](img/sound-music.png "MUSIC: a numbered music, its own transport, and the grid of pattern numbers it plays; the empty box before more patterns is the orange hole the music stops at.")
 

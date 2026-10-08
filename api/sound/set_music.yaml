@@ -13,8 +13,8 @@ description: >-
 
   | `loop` | `true` to start over at the end, `false` to stop there |
 params:
-  n: Music number, as the `#` field of the SOUND tab shows it, `0` to `15`. An empty number warns once
-    and changes nothing.
+  n: Music number, as the `#` field of the SOUND tab shows it. An empty number warns once and changes
+    nothing.
   fields: "`loop`, `true` or `false`."
 returns: null
 examples:

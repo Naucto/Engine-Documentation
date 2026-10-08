@@ -13,7 +13,7 @@ The SOUND tab writes instruments and patterns; the game plays them. A sound effe
 
 ## The audio model
 
-The synth has **five voices, numbered `0` to `4`**, and everything sounding is on one of them. Musics are numbered `0` to `15`, sound effect slots from `0` with no last one, and an instrument is named by the name the SOUND tab shows.
+The synth has **five voices, numbered `0` to `4`**, and everything sounding is on one of them. Musics and sound effect slots are numbered from `0` with no last one, and an instrument is named by the name the SOUND tab shows.
 
 Music plays at priority 0, sound effects and notes at priority 1, above it. A new sound takes the first free voice; when none is free it takes a voice from the music first, oldest first. Forcing a `channel` puts the whole sound on that one voice.
 

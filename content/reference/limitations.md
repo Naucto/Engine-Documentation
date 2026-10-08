@@ -17,9 +17,11 @@ The Naucto API is small on purpose. This page lists what a game cannot exceed an
 | Screen | 320 × 180 pixels, 16 colours, one 4 × 6 font |
 | Sprite sheet | 8 to 256 pixels a side, in steps of 8; several sheets, their sprite numbers running on from one sheet to the next |
 | Map | 1 to 256 tiles a side; several maps, numbered from 1 |
-| Sound | 5 voices; 100 patterns (`00` to `99`); 16 musics (`0` to `15`); a PCM sample of at most 8 KB |
+| Sound | 5 voices; a PCM sample of at most 8 KB |
 | Code | 10 million Lua instructions per call; a tab name of at most 24 characters |
 | Publishing | 1 MB for the whole game (code, art, maps, sound); a name and a one-line summary |
+
+**Nothing in a game is counted, only weighed**: patterns, musics, sound effects, instruments, sheets, maps and code tabs come in any number, and the 1 MB budget is the one ceiling on all of them together. A game can spend it on code and draw little, or on music and code little.
 
 Two small ones that bite: only the first sheet's sprite **flags** are read, so [[map.flag]] answers `false` (`0` with no bit) for any sprite of another sheet; and tile `0` is always drawn empty, so sprite `0` never appears on a map.
 

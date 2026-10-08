@@ -71,7 +71,7 @@ A music is a chain of patterns. One pattern is a bar; two make something that go
 
 ### Pattern 1
 
-Type `1` in the PATTERN field, or step to it with the arrow. Every number from `0` to `99` is already a pattern, most of them empty; you go to one the way you turn a page. Set STEPS to `16` and BPM to `120` again, they are this pattern's own, and write an answer to the first bar, two steps a note as before:
+Type `1` in the PATTERN field, or step to it with the arrow. Every number from `0` up is already a pattern, most of them empty; you go to one the way you turn a page. Set STEPS to `16` and BPM to `120` again, they are this pattern's own, and write an answer to the first bar, two steps a note as before:
 
 | Beat | 1 | 2 | 3 | 4 |
 | --- | --- | --- | --- | --- |
@@ -79,7 +79,7 @@ Type `1` in the PATTERN field, or step to it with the arrow. Every number from `
 
 ### The MUSIC grid
 
-The MUSIC bank at the bottom left is the chain. The `#` field says which of the **16 musics**, `0` to `15`, the grid shows; leave it at `0`, the one the game will ask for. Each box is a place in the chain and takes a pattern number, played left to right, then top to bottom. Type `0` in the first box and `1` in the second: they read `00` and `01`.
+The MUSIC bank at the bottom left is the chain. The `#` field says which **music** the grid shows, numbered from `0`; leave it at `0`, the one the game will ask for. Each box is a place in the chain and takes a pattern number, played left to right, then top to bottom. Type `0` in the first box and `1` in the second: they read `00` and `01`.
 
 ![The music panel with the chain](img/sound-music-chain.png "MUSIC #0 with two places filled, 00 then 01, and the transport of its own at its head.")
 
