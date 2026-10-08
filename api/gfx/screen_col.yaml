@@ -1,0 +1,45 @@
+name: screen_col
+description: "Show one colour as another on the finished frame, after everything is drawn: the
+  colour currently shown at `to` is copied over `from`, and a later change of `to` does not follow.
+  Unlike `set_col` it costs nothing per draw call and leaves the drawn numbers alone. **It stays**:
+  called anywhere but `_scanline`, until `gfx.reset_palette()` (which undoes every `set_color` as
+  well) or a `set_color` of `from`; inside `_scanline(y)`, for line `y` and the lines below it, for
+  this frame."
+picture: ../img/frames/gfx-silhouette.png
+caption: "From line 90 down every colour but the background shows as colour 1: the same scene in
+  silhouette on its lower half."
+params:
+  from: Palette index drawn.
+  to: Palette index shown.
+returns: null
+examples:
+  - |-
+    -- a hit flash: every colour 8 shows as white for a few frames
+    local hit_timer = 6
+    if hit_timer > 0 then
+      gfx.screen_col(8, 5)
+    else
+      gfx.reset_palette()
+    end
+  - >-
+    -- the lower half in silhouette: every colour but the background shows as colour 1 from line 90
+    down
+
+    function _draw()
+      gfx.clear(0)
+      map.draw(0, 180 - map.height() * 8)
+      gfx.draw_sprite(1, 100, 60, 1, 1, false, false, 4)
+    end
+
+
+    function _scanline(y)
+      if y == 90 then
+        for i = 2, 15 do gfx.screen_col(i, 1) end
+      end
+    end
+notes: []
+seeAlso:
+  - gfx.set_col
+  - gfx.set_color
+  - gfx.reset_palette
+since: "2.0"

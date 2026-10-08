@@ -1,0 +1,19 @@
+name: line
+picture: ../img/frames/gfx-shapes.png
+caption: rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.
+description: Draw a straight line between two points, both ends included. Coordinates are floored;
+  the camera and the clip apply.
+params:
+  x0: Start x position.
+  y0: Start y position.
+  x1: End x position.
+  y1: End y position.
+  colour: Palette index 0..15.
+returns: null
+examples:
+  - gfx.line(0, 0, 319, 179, 8)  -- diagonal across the screen
+notes: []
+seeAlso:
+  - gfx.rect
+  - gfx.pixel
+since: "1.0"

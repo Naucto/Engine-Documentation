@@ -1,0 +1,23 @@
+name: get_pixel
+description: "Read the palette index at a position, in the same coordinates the drawing calls use:
+  the camera applies. Off screen it answers `0`. It reads what was drawn, after any `set_col` remap
+  and before the display effects."
+params:
+  x: Horizontal position, before the camera offset.
+  y: Vertical position, before the camera offset.
+returns: Palette index 0..15.
+examples:
+  - |-
+    -- treat colour 2 as solid ground
+    local player = { x = 40, y = 60, vy = 1 }
+    if gfx.get_pixel(player.x, player.y + 8) == 2 then
+      player.vy = 0
+    end
+notes:
+  - kind: warning
+    text: "Slow: it pulls the frame back from the GPU. Read what you need once a frame, never in a loop
+      over pixels."
+seeAlso:
+  - gfx.pixel
+  - map.flag
+since: "2.0"

@@ -1,0 +1,19 @@
+name: rect
+picture: ../img/frames/gfx-shapes.png
+caption: rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.
+description: Draw the outline of a rectangle. `x`, `y` is its top-left corner and `w`, `h` its size,
+  not a second corner. The outline stays inside the box; a width or height of `0` draws nothing.
+params:
+  x: Top-left x position.
+  y: Top-left y position.
+  w: Width in pixels.
+  h: Height in pixels.
+  colour: Palette index 0..15.
+returns: null
+examples:
+  - gfx.rect(20, 20, 32, 16, 5)  -- a white outline
+notes: []
+seeAlso:
+  - gfx.fill_rect
+  - gfx.circle
+since: "1.0"

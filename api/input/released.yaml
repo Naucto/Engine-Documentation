@@ -1,0 +1,19 @@
+name: released
+description: True only on the step an action was released. Pair it with [[input.pressed]] to measure
+  how long a button was held.
+params:
+  action: One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.
+  player: Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first gamepad
+    are player 1 together, the second keyboard layout and the second gamepad player 2. A number past
+    `4` answers `false`.
+returns: True on the release step.
+examples:
+  - |-
+    -- variable jump height: cut the rise when the button is let go
+    local player = { vy = -6 }
+    if input.released("a") and player.vy < 0 then player.vy = player.vy / 2 end
+notes: []
+seeAlso:
+  - input.held
+  - input.pressed
+since: "2.0"

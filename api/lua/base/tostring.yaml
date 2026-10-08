@@ -1,0 +1,25 @@
+name: tostring
+signature: tostring(v)
+summary: A value turned into text.
+description: 'Turns any value into a string, the way Lua itself would show it: `3.0` keeps its decimal point, where `print` would write `3`. A table with a `__tostring` metamethod is shown by that function, so a vector or a card can describe itself.'
+params:
+  - name: v
+    type: any
+    description: The value to turn into text.
+    required: true
+returns: The text.
+returnType: string
+examples:
+  - |-
+    print(tostring(3.0))    --> 3.0
+    print("hp: " .. tostring(nil))  --> hp: nil
+    local v = setmetatable({ x = 1, y = 2 }, {
+      __tostring = function(p) return "(" .. p.x .. ", " .. p.y .. ")" end,
+    })
+    print(tostring(v))      --> (1, 2)
+aliases: []
+seeAlso:
+  - tonumber
+  - string.format
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-tostring

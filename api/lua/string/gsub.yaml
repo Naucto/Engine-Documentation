@@ -1,0 +1,36 @@
+name: gsub
+signature: string.gsub(s, pattern, repl[, n])
+summary: A copy of a string with the matches of a pattern replaced.
+description: 'Replaces every match of `pattern` in `s`, or the first `n` of them, and also returns how many it replaced. `repl` is a string, where `%1` stands for the first capture; a table, looked up with the match; or a function, called with it. When the replacement is `nil` or `false`, the match is kept.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+  - name: pattern
+    type: string
+    description: A Lua pattern.
+    required: true
+  - name: repl
+    type: string|table|function
+    description: What replaces each match.
+    required: true
+  - name: "n"
+    type: number
+    description: The most replacements to make; left out, all of them.
+    optional: true
+returns: The new string, then the number of replacements.
+returnType: string
+examples:
+  - |-
+    local text = string.gsub("Hello NAME, welcome", "NAME", "Mira")
+    print(text)                                        --> Hello Mira, welcome
+    print(string.gsub("a-b-c", "-", "+", 1))           --> a+b-c 1
+    local names = { p1 = "Mira", p2 = "Odo" }
+    print((string.gsub("p1 vs p2", "p%d", names)))     --> Mira vs Odo
+aliases: []
+seeAlso:
+  - string.find
+  - string.gmatch
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.gsub

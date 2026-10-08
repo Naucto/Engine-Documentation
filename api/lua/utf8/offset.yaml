@@ -1,0 +1,29 @@
+name: offset
+signature: utf8.offset(s, n[, i])
+summary: The byte position where the nth character of a UTF-8 string starts.
+description: 'Returns the byte at which character `n` begins, counting from byte `i`; a negative `n` counts back from the end. Its use is to cut a string by characters with [[string.sub]], which counts bytes.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+  - name: "n"
+    type: number
+    description: Which character, from `1`, or from the end when negative.
+    required: true
+  - name: i
+    type: number
+    description: The byte to count from; left out, `1`, or the end when `n` is negative.
+    optional: true
+returns: The byte position, or `nil` when there is no such character.
+returnType: number|nil
+examples:
+  - |-
+    local name = "Zoé Martin"
+    print(name:sub(1, utf8.offset(name, 4) - 1))   --> Zoé
+seeAlso:
+  - utf8.len
+  - string.sub
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-utf8.offset

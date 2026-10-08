@@ -1,0 +1,27 @@
+name: error
+signature: error(message[, level])
+summary: Stop the current function with an error.
+description: 'Raises an error: the game halts and the console shows `message`, unless a `pcall` further up catches it. A string message is prefixed with the file and line it was raised at; `level` `2` blames the caller instead, which is what a function checking its own arguments wants, and `0` adds no position.'
+params:
+  - name: message
+    type: any
+    description: The error, most often a string; `pcall` hands back whatever it is.
+    required: true
+  - name: level
+    type: number
+    description: Which call the position names, `1` (this one) by default, `2` the caller, `0` none.
+    optional: true
+returns: null
+examples:
+  - |-
+    local function spawn(kind)
+      if kind ~= "bat" then error("unknown enemy " .. kind, 0) end
+    end
+    print(pcall(spawn, "dragon"))   --> false unknown enemy dragon
+aliases: []
+seeAlso:
+  - assert
+  - pcall
+  - sys.error
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-error

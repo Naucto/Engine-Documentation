@@ -1,0 +1,30 @@
+name: match
+signature: string.match(s, pattern[, init])
+summary: The first match of a pattern in a string, or its captures.
+description: 'Returns the part of `s` the pattern matches, or the captures, the parts in parentheses, when the pattern has some; `nil` when it does not match. `%d` matches a digit, `%a` a letter, `%s` a space, `%w` either of the first two, and `+` one or more of what comes before.'
+params:
+  - name: s
+    type: string
+    description: The string to search.
+    required: true
+  - name: pattern
+    type: string
+    description: A Lua pattern.
+    required: true
+  - name: init
+    type: number
+    description: Where to start, from `1`; left out, `1`.
+    optional: true
+returns: The match or its captures, or `nil`.
+returnType: string|nil
+examples:
+  - |-
+    local key, value = string.match("speed=12", "(%w+)=(%d+)")
+    print(key, tonumber(value) * 2)        --> speed 24
+    print(("level 7"):match("%d+"))        --> 7
+aliases: []
+seeAlso:
+  - string.find
+  - string.gmatch
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.match

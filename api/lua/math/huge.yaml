@@ -1,0 +1,14 @@
+name: huge
+signature: math.huge
+summary: A float larger than any other number.
+description: 'Positive infinity: larger than every number, so it starts a search for the smallest of several values. `-math.huge` is below every number.'
+examples:
+  - |-
+    local nearest = math.huge
+    for _, d in ipairs({ 40, 12, 90 }) do nearest = math.min(nearest, d) end
+    print(nearest)   --> 12
+seeAlso:
+  - math.maxinteger
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.huge

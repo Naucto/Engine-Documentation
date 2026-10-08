@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 176" role="img" aria-label="The art holds the sprites and their flags, the map is painted with the tile sprites, and the code reads tiles and flags from the map">
+  <title>The art holds the sprites and their flags, the map is painted with the tile sprites, and the code reads tiles and flags from the map</title>
+  <g class="d-box">
+    <rect x="8.5" y="8.5" width="144" height="128"/>
+    <rect x="208.5" y="8.5" width="144" height="128"/>
+    <rect x="408.5" y="8.5" width="144" height="128"/>
+  </g>
+  <g class="d-stroke">
+    <line x1="152.5" y1="72.5" x2="200.5" y2="72.5"/>
+    <line x1="352.5" y1="72.5" x2="400.5" y2="72.5"/>
+    <polyline points="80.5,136.5 80.5,152.5 480.5,152.5 480.5,144.5"/>
+  </g>
+  <g class="d-head">
+    <polygon points="200,68.5 208,72.5 200,76.5"/>
+    <polygon points="400,68.5 408,72.5 400,76.5"/>
+    <polygon points="476.5,144 480.5,136 484.5,144"/>
+  </g>
+  <g class="d-label">
+    <text x="80" y="28" text-anchor="middle" class="d-gold">ART</text>
+    <text x="16" y="52" class="d-mono">0-3</text>
+    <text x="72" y="52">player</text>
+    <text x="16" y="68" class="d-mono">32-34</text>
+    <text x="72" y="68">tiles</text>
+    <text x="16" y="84">flags</text>
+    <text x="72" y="84" class="d-mono">0, 1, 2</text>
+    <text x="280" y="28" text-anchor="middle" class="d-gold">MAP</text>
+    <text x="216" y="52">the level,</text>
+    <text x="216" y="68">painted with</text>
+    <text x="216" y="84" class="d-mono">32 33 34</text>
+    <text x="480" y="28" text-anchor="middle" class="d-gold">CODE</text>
+    <text x="416" y="52" class="d-mono">map.get</text>
+    <text x="416" y="68" class="d-mono">map.flag</text>
+    <text x="432" y="84" class="d-quiet">collision</text>
+    <text x="416" y="100" class="d-mono">draw_sprite</text>
+    <text x="416" y="116">camera</text>
+    <text x="180" y="64" text-anchor="middle" class="d-quiet">tiles</text>
+    <text x="380" y="64" text-anchor="middle" class="d-quiet">tiles</text>
+    <text x="280" y="168" text-anchor="middle" class="d-quiet">flags</text>
+  </g>
+</svg>

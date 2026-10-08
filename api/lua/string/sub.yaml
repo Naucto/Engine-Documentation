@@ -1,0 +1,30 @@
+name: sub
+signature: string.sub(s, i[, j])
+summary: The part of a string from position i to position j.
+description: 'Cuts `s` from byte `i` to byte `j`, both included, counting from `1`. A negative position counts from the end, so `-1` is the last character; `j` left out goes to the end. Like every function of `string`, it can be called on the string itself: `s:sub(1, 3)`.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+  - name: i
+    type: number
+    description: The first position, from `1`, or from the end when negative.
+    required: true
+  - name: j
+    type: number
+    description: The last position, included; left out, `-1`, the end.
+    optional: true
+returns: The part, empty when `i` is past `j`.
+returnType: string
+examples:
+  - |-
+    local line = "GAME OVER"
+    print(line:sub(1, 4))    --> GAME
+    print(line:sub(-4))      --> OVER
+aliases: []
+seeAlso:
+  - string.len
+  - string.find
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.sub

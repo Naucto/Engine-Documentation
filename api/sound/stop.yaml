@@ -1,0 +1,13 @@
+name: stop
+description: "Stops everything at once: music, sound effects and any held notes."
+returns: null
+examples:
+  - |-
+    function game_over()
+      sound.stop()
+    end
+notes: []
+seeAlso:
+  - sound.stop_music
+  - sound.stop_note
+since: "2.0"

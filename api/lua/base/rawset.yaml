@@ -1,0 +1,33 @@
+name: rawset
+signature: rawset(t, key, value)
+summary: Set a field of a table, without its metatable's __newindex.
+description: 'Writes `t[key] = value` straight into the table, skipping a `__newindex` metamethod. A `__newindex` that watches writes uses it to store the value it was handed without calling itself again.'
+params:
+  - name: t
+    type: table
+    description: The table.
+    required: true
+  - name: key
+    type: any
+    description: The key, anything but `nil`.
+    required: true
+  - name: value
+    type: any
+    description: The value to store.
+    required: true
+returns: The table `t`.
+returnType: table
+examples:
+  - |-
+    local changed = 0
+    local save = setmetatable({}, {
+      __newindex = function(t, k, v) changed = changed + 1; rawset(t, k, v) end,
+    })
+    save.level = 2
+    print(save.level, changed)   --> 2 1
+aliases: []
+seeAlso:
+  - rawget
+  - setmetatable
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-rawset

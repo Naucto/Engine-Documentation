@@ -1,0 +1,75 @@
+name: on
+description: >-
+  Register a callback for a network event. It needs a session, so call it from the host or join
+  callback, not from `_init`. What arrives depends on the pattern:
+
+
+  | Pattern | Callback arguments | Fires when |
+
+  |----|----|----|
+
+  | `"peer.joined"` | `(playerId)` | A player joins the session. **Host only**: a guest is not told
+  about the other guests |
+
+  | `"peer.left"` | `(playerId)` | A player leaves or disconnects. **Host only** |
+
+  | `"ended"` | *(none)* | The session ends, in particular when the host leaves |
+
+  | `"event:<name>"` | `(from, payload)` | A peer calls `net.emit("<name>", payload)`; `from` is its
+  player id |
+
+  | `"error"` | `(path, reason)` | The host refuses one of your writes and rolls it back, or refuses
+  a lock acquire, a queue push or a queue pop. **Guest only**; `reason` is `"forbidden"` (the path
+  is not writable by guests) or `"conflict"` (another write got there first) |
+
+  | anything else (a state path) | `(path, newValue)` | A matching [[net.state]] key changes |
+
+
+  State patterns match dotted key paths and support two wildcards: `*` matches exactly one path
+  segment, `**` any number of segments. A change callback fires only when the value actually changes
+  (rewriting an identical value is silent), and it fires for your own writes too.
+
+
+  The names in the table are reserved: `net.on("error", ...)` always registers the rejection
+  listener, so it never observes a [[net.state]] key literally named `error`.
+
+
+  Listening for `"error"` is how a game learns that the host rolled back one of its writes; the
+  [permissions](/learn/tutorials/permissions) tutorial shows it happening. A lock acquire, a queue
+  push or a queue pop refused by the permissions fires `"error"` too, with the path and
+  `"forbidden"`: a refused acquire's callback never runs, and a refused pop's callback gets `nil`.
+params:
+  pattern: A reserved name from the table above, an `event:<name>` subscription, or a dotted
+    [[net.state]] key path, where `*` matches one segment and `**` any number.
+  callback: Called with the arguments the table above gives for that pattern.
+returns: null
+examples:
+  - |-
+    -- inside the host or join callback
+    net.on("score", function(path, value)
+      print("score is now " .. value)
+    end)
+
+    net.on("players.*.x", function(path, value)
+      -- fires for players.7.x but not for players.7.inventory.gold
+    end)
+
+    net.on("players.**", function(path, value)
+      -- fires for any change anywhere under players
+    end)
+
+    net.on("event:serve", function(from, payload)
+      print("serve from " .. from .. " towards " .. payload.direction)
+    end)
+
+    net.on("peer.left", function(playerId)  -- on the host only
+      if net.state.players then net.state.players[playerId] = nil end
+    end)
+notes:
+  - kind: note
+    text: "An error raised inside a `net.on` callback (or a lock/queue callback) is printed to the
+      Console, as `Error: …`, but does **not** stop the game."
+seeAlso:
+  - net.emit
+  - net.id
+since: "1.0"

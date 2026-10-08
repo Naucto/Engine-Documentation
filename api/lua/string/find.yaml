@@ -1,0 +1,34 @@
+name: find
+signature: string.find(s, pattern[, init, plain])
+summary: Where a pattern first occurs in a string.
+description: 'Searches `s` for `pattern` from position `init` and returns where the first match starts and ends, then any captures, or `nil` when there is none. `pattern` is a Lua pattern, where `.`, `%`, `-` and a few others are special; `plain` set to `true` searches for the text exactly as written.'
+params:
+  - name: s
+    type: string
+    description: The string to search.
+    required: true
+  - name: pattern
+    type: string
+    description: A Lua pattern, or plain text when `plain` is `true`.
+    required: true
+  - name: init
+    type: number
+    description: Where to start, from `1`; left out, `1`.
+    optional: true
+  - name: plain
+    type: boolean
+    description: '`true` to search for the text as it is; needs `init` before it.'
+    optional: true
+returns: The start and end of the match and its captures, or `nil`.
+returnType: number|nil
+examples:
+  - |-
+    print(string.find("hello world", "wor"))   --> 7 9
+    print(string.find("1.5", ".", 1, true))    --> 2 2
+    print(string.find("hello", "z"))           --> nil
+aliases: []
+seeAlso:
+  - string.match
+  - string.gsub
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.find

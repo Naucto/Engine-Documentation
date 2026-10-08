@@ -1,0 +1,26 @@
+name: print
+picture: ../img/frames/gfx-print.png
+caption: Text in the default white, in colours 4 and 11, and a number joined to a string in colour 7.
+description: "Draw text with the built-in 4 × 6 font. The font has capitals only: lowercase is drawn
+  as uppercase, and a character outside plain ASCII takes its 4 pixels and shows nothing. A number
+  is written as text. A `\\n` in the text starts a new line 6 pixels lower. Returns the width of the
+  last line drawn, which is what centring needs."
+params:
+  text: The text to draw.
+  x: Left edge.
+  y: Top edge.
+  colour: Palette index; left out, `5` (white in the default palette).
+returns: Width of the last line drawn, in pixels.
+examples:
+  - |-
+    local score = 0
+    gfx.print("score " .. score, 4, 4)
+
+    -- centred: every glyph is 4 pixels wide
+    local text = "GAME OVER"
+    gfx.print(text, (gfx.width() - #text * 4) // 2, 80, 7)
+notes: []
+seeAlso:
+  - gfx.width
+  - gfx.set_col
+since: "2.0"

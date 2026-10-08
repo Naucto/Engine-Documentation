@@ -1,0 +1,69 @@
+name: set_instrument
+description: >-
+  Change some settings of an instrument **for this run only**: the SOUND tab and the saved game keep
+  theirs, and the next run starts from them again. A note already sounding keeps the instrument it
+  started with; the change lands from the next note on, in music, in a sound effect or from
+  [[sound.play_note]] alike. Calling it again adds to what it set before, and a value outside its
+  range is kept at the nearest end.
+
+
+  | Field | What it is | Range |
+
+  | --- | --- | --- |
+
+  | `osc` | Waveform: `"square"`, `"sine"`, `"triangle"`, `"saw"`, `"noise"` or `"sample"` | |
+
+  | `duty` | Width of the square wave, `0.5` is even | `0.05` to `0.95` |
+
+  | `detune` | Semitones added to every note | `-12` to `12` |
+
+  | `glide` | Seconds the pitch takes to reach a new note, `0` is none | `0` to `0.5` |
+
+  | `attack`, `decay`, `release` | Envelope times, in seconds | `0` to `3` |
+
+  | `sustain` | Level held after the decay | `0` to `1` |
+
+  | `vibrato_rate` | Wobbles a second | `1` to `20` |
+
+  | `vibrato_depth` | Depth of the wobble | `0` to `1` |
+
+  | `vibrato_delay` | Seconds before it starts | `0` to `1` |
+
+  | `arp_rate` | Chord notes walked a second, `0` sounds them together | `0` to `30` |
+
+  | `filter` | `"off"`, `"lp"`, `"hp"` or `"bp"` | |
+
+  | `cutoff` | Filter frequency, in Hz | `100` to `12000` |
+
+  | `resonance` | Filter peak | `0` to `1` |
+
+  | `volume` | Level | `0` to `1` |
+
+  | `pan` | Left to right | `-1` to `1` |
+
+
+  A field it does not know, or a value of the wrong kind, is skipped with one warning in the
+  console.
+params:
+  name: The instrument's name exactly as the SOUND tab shows it, case included. A name no instrument
+    has warns once and changes nothing.
+  fields: The settings to change, any of the table above; the others keep their value.
+returns: null
+examples:
+  - |-
+    -- the lead thins out as health drops
+    local hp = 3
+    function _update()
+      sound.set_instrument("Square lead", { cutoff = 400 + hp * 2000, resonance = 0.6 })
+    end
+  - >-
+    -- the same lead, slightly detuned and buzzier, for this run
+
+    function _init()
+      sound.set_instrument("Square lead", { osc = "saw", detune = 0.1, vibrato_depth = 0.2, filter = "lp" })
+    end
+notes: []
+seeAlso:
+  - sound.play_note
+  - sound.set_pattern
+since: "2.0"

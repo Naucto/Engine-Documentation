@@ -1,0 +1,22 @@
+name: len
+signature: string.len(s)
+summary: The length of a string in bytes.
+description: 'The number of bytes in `s`, the same as `#s`. A letter outside plain ASCII, such as `é`, takes more than one byte; [[utf8.len]] counts characters.'
+params:
+  - name: s
+    type: string
+    description: The string.
+    required: true
+returns: Its length in bytes.
+returnType: number
+examples:
+  - |-
+    local name = "Mira"
+    print(string.len(name))   --> 4
+    print(#name)              --> 4
+aliases: []
+seeAlso:
+  - utf8.len
+  - string.sub
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.len

@@ -1,0 +1,22 @@
+name: type
+signature: math.type(x)
+summary: Whether a number is an integer or a float.
+description: 'Returns `"integer"` or `"float"`, and `nil` when `x` is not a number. `7 / 2` is always a float, `7 // 2` an integer: the two kinds compare equal, `3 == 3.0`, and differ in how `tostring` writes them and in how far they reach, see [[math.maxinteger]].'
+params:
+  - name: x
+    type: any
+    description: The value.
+    required: true
+returns: '`"integer"`, `"float"`, or `nil`.'
+returnType: string|nil
+examples:
+  - |-
+    print(math.type(7 // 2))   --> integer
+    print(math.type(7 / 2))    --> float
+    print(math.type("7"))      --> nil
+seeAlso:
+  - math.tointeger
+  - type
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.type

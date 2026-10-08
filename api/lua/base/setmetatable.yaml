@@ -1,0 +1,31 @@
+name: setmetatable
+signature: setmetatable(t, mt)
+summary: Give a table a metatable, the table of its special behaviours.
+description: 'Attaches `mt` to `t` and returns `t`. The metatable says what the table does where a plain one would fail: `__index` supplies the fields it lacks, which is how a class shares its methods with every object, `__add` or `__eq` define operators, `__tostring` how it prints. `nil` removes the metatable.'
+params:
+  - name: t
+    type: table
+    description: The table to change.
+    required: true
+  - name: mt
+    type: table|nil
+    description: Its new metatable, or `nil` to remove the current one.
+    required: true
+returns: The table `t`.
+returnType: table
+examples:
+  - |-
+    local Enemy = {}
+    Enemy.__index = Enemy
+    function Enemy.new(x) return setmetatable({ x = x, hp = 3 }, Enemy) end
+    function Enemy:hit() self.hp = self.hp - 1 end
+
+    local bat = Enemy.new(40)
+    bat:hit()
+    print(bat.hp)   --> 2
+aliases: []
+seeAlso:
+  - getmetatable
+  - rawget
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-setmetatable

@@ -1,0 +1,20 @@
+name: exp
+signature: math.exp(x)
+summary: e raised to the power x.
+description: 'Returns e, about `2.718`, to the power `x`. A growth or a decay that goes by a fixed share per step is easier written with `^`; `exp` is there for the formulas that call for it.'
+params:
+  - name: x
+    type: number
+    description: The power.
+    required: true
+returns: e to the power `x`.
+returnType: number
+examples:
+  - |-
+    print(math.exp(0))                 --> 1
+    print(math.floor(math.exp(1) * 1000))   --> 2718
+seeAlso:
+  - math.log
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.exp

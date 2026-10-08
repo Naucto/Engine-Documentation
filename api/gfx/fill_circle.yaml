@@ -1,0 +1,28 @@
+name: fill_circle
+picture: ../img/frames/gfx-shapes.png
+caption: rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.
+description: Fill a disc centred on `cx`, `cy`. The radius is floored; `0` draws one pixel.
+params:
+  cx: Centre x.
+  cy: Centre y.
+  r: Radius in pixels.
+  colour: Palette index 0..15.
+returns: null
+examples:
+  - |-
+    -- a shrinking explosion: the radius is the life left
+    local boom = { x = 160, y = 90, life = 12 }
+
+    function _update()
+      if boom.life > 0 then boom.life = boom.life - 1 end
+    end
+
+    function _draw()
+      gfx.clear(0)
+      if boom.life > 0 then gfx.fill_circle(boom.x, boom.y, boom.life, 3) end
+    end
+notes: []
+seeAlso:
+  - gfx.circle
+  - gfx.fill_rect
+since: "2.0"

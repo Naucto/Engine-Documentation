@@ -1,0 +1,26 @@
+name: ipairs
+signature: ipairs(t)
+summary: The numbered entries of a table, from 1 up to the first nil, in order.
+description: 'Walks `t[1]`, `t[2]` and on, in order, and stops at the first missing index. It is the loop for a list: enemies to update, lines of a dialogue, points of a path.'
+params:
+  - name: t
+    type: table
+    description: The list to walk.
+    required: true
+returns: What a generic for needs to walk the list, one index and its value per turn.
+returnType: function
+examples:
+  - |-
+    local path = { "left", "left", "jump" }
+    for i, move in ipairs(path) do
+      print(i, move)
+    end
+    --> 1 left
+    --> 2 left
+    --> 3 jump
+aliases: []
+seeAlso:
+  - pairs
+  - table.insert
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-ipairs

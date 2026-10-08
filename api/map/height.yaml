@@ -1,0 +1,13 @@
+name: height
+description: Map height in tiles, from `1` to `256`. A game chooses its own map size, and each of
+  its maps has its own, so read this rather than assuming one. A map the game does not have answers
+  `0`, with a warning in the console.
+params:
+  m: Which map, counted from `1` in the order of the MAP tab's strip. Defaults to the first.
+returns: The map's height in tiles.
+examples:
+  - local floor = map.height() * 8
+notes: []
+seeAlso:
+  - map.width
+since: "2.0"

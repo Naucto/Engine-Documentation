@@ -1,0 +1,25 @@
+name: min
+signature: math.min(x, ...)
+summary: The smallest of its arguments.
+description: 'Returns the smallest of the numbers it is given. With [[math.max]] it keeps a value between two bounds: `math.max(0, math.min(x, 312))` holds a sprite on the screen.'
+params:
+  - name: x
+    type: number
+    description: The first number.
+    required: true
+  - name: "..."
+    type: number
+    description: The others.
+    optional: true
+returns: The smallest.
+returnType: number
+examples:
+  - |-
+    local hp, max_hp = 3, 5
+    hp = math.min(hp + 4, max_hp)
+    print(hp)   --> 5
+seeAlso:
+  - math.max
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.min

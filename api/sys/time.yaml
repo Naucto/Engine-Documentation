@@ -1,0 +1,10 @@
+name: time
+description: Seconds elapsed since `_init`, counted in fixed steps so it never drifts from the game's own clock.
+returns: Seconds since `_init`.
+examples:
+  - local bob = math.sin(sys.time() * 3) * 2
+notes: []
+seeAlso:
+  - sys.frame
+  - sys.dt
+since: "2.0"

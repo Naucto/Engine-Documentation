@@ -1,0 +1,17 @@
+name: dt
+description: "Length of one fixed step in seconds, always 1/60. The console runs `_update` at a
+  fixed rate, so there is nothing to scale by: speeds are written per step. `sys.dt` tells you how
+  long a step is, for a clock or a timer that counts in seconds."
+returns: 1/60.
+examples:
+  - |-
+    -- a ten-second countdown, one step's worth per _update
+    local time_left = 10
+    function _update()
+      time_left = time_left - sys.dt()
+    end
+notes: []
+seeAlso:
+  - sys.time
+  - sys.frame
+since: "2.0"

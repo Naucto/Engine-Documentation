@@ -1,0 +1,25 @@
+name: date
+signature: os.date([format, t])
+summary: A date written as text, or as a table of its parts.
+description: 'Writes the time `t`, by default now, following `format`, where `%Y` is the year, `%m` the month, `%d` the day, `%H:%M` the hour and minute. `"*t"` returns a table with `year`, `month`, `day`, `hour`, `min`, `sec`, `wday` and `yday` instead. A format starting with `!` gives the time in UTC rather than the player''s own zone.'
+params:
+  - name: format
+    type: string
+    description: The format; left out, `"%c"`, the date and time in full.
+    optional: true
+  - name: t
+    type: number
+    description: A time from [[os.time]]; left out, now.
+    optional: true
+returns: The text, or the table for `"*t"`.
+returnType: string|table
+examples:
+  - |-
+    local launch = os.time({ year = 2026, month = 10, day = 3, hour = 12 })
+    print(os.date("%Y-%m-%d", launch))   --> 2026-10-03
+    print(os.date("*t", launch).month)   --> 10
+seeAlso:
+  - os.time
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-os.date

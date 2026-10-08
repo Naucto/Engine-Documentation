@@ -1,0 +1,51 @@
+name: set_color
+picture: ../img/frames/gfx-palette.png
+caption: The sixteen palette entries; colour 4 redefined to a cyan by set_color, so the row and the
+  box both change; colour 9 drawn as colour 2 by set_col.
+description: >-
+  Change what one of the sixteen colours shows, as `"#rrggbb"` (the `#` may be left out) or as three
+  components `0` to `255`, each clamped to that range and rounded to a whole number. The change
+  applies when the frame is shown, to everything drawn in it; the game's saved palette is untouched.
+
+
+  Called anywhere but `_scanline`, it changes the **frame palette**: what every line shows, kept
+  from frame to frame until `gfx.reset_palette()`.
+
+
+  Called inside `_scanline(y)`, it changes the **line palette**: what line `y` shows, and every line
+  below it until another call changes it, for this frame only. The next frame's beam starts from the
+  frame palette again.
+params:
+  index: Palette index, `0` to `15`.
+  hex: The colour as `"#rrggbb"`, or, with three numbers, the red component `0` to `255`. A single
+    number is read as red alone.
+  g: Green 0..255.
+  b: Blue 0..255.
+returns: null
+examples:
+  - |-
+    gfx.set_color(4, "#00ffcc")    -- colour 4 is now a cyan, for the whole frame
+    gfx.set_color(4, 255, 209, 0)  -- and back to the default yellow
+  - |-
+    -- a sky gradient: the scene draws colour 0, the beam repaints it on every line
+    function _draw()
+      gfx.clear(0)
+      gfx.fill_rect(0, 120, 320, 60, 3)
+    end
+
+    function _scanline(y)
+      gfx.set_color(0, 20, 40 + y // 2, 90 + y // 2)
+    end
+notes:
+  - kind: note
+    text: An unreadable string gives black, without an error.
+  - kind: tip
+    text: The beam calls `_scanline` 180 times per frame, and those calls spend `_draw`'s instruction
+      budget (ten million a step); keep the work per line small, and do the arithmetic once in
+      `_init` where you can.
+seeAlso:
+  - gfx.get_color
+  - gfx.reset_palette
+  - gfx.screen_col
+  - gfx.shift
+since: "2.0"

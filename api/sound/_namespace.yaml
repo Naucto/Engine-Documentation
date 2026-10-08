@@ -1,0 +1,15 @@
+namespace: sound
+title: Sound
+order:
+  - play_sfx
+  - play_note
+  - stop_note
+  - play_music
+  - stop_music
+  - stop
+  - set_volume
+  - music_pos
+  - is_playing
+  - set_instrument
+  - set_pattern
+  - set_music

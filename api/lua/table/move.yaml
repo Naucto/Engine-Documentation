@@ -1,0 +1,38 @@
+name: move
+signature: table.move(a1, f, e, t[, a2])
+summary: Copy a run of elements within a list or into another one.
+description: 'Copies `a1[f]` to `a1[e]` to positions `t` and on of `a2`, by default `a1` itself, and returns `a2`. It copies a list, or appends one list to another, in a single call.'
+params:
+  - name: a1
+    type: table
+    description: The list to copy from.
+    required: true
+  - name: f
+    type: number
+    description: The first element to copy.
+    required: true
+  - name: e
+    type: number
+    description: The last element to copy.
+    required: true
+  - name: t
+    type: number
+    description: Where the first one goes.
+    required: true
+  - name: a2
+    type: table
+    description: The list to copy into; left out, `a1`.
+    optional: true
+returns: The list copied into.
+returnType: table
+examples:
+  - |-
+    local deck = { "A", "B", "C" }
+    local copy = table.move(deck, 1, #deck, 1, {})
+    table.move({ "D", "E" }, 1, 2, #deck + 1, deck)
+    print(#copy, table.concat(deck))   --> 3 ABCDE
+aliases: []
+seeAlso:
+  - table.insert
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-table.move

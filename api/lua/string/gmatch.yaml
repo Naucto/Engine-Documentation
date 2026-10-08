@@ -1,0 +1,28 @@
+name: gmatch
+signature: string.gmatch(s, pattern)
+summary: Every match of a pattern in a string, for a for loop.
+description: 'Returns an iterator over the successive matches of `pattern` in `s`: each turn of the loop gets the next match, or its captures. It is the way to split a string, such as a level written as words or a list of numbers.'
+params:
+  - name: s
+    type: string
+    description: The string to walk.
+    required: true
+  - name: pattern
+    type: string
+    description: A Lua pattern.
+    required: true
+returns: An iterator, one match per turn.
+returnType: function
+examples:
+  - |-
+    local total = 0
+    for n in string.gmatch("3, 10, 2", "%d+") do
+      total = total + tonumber(n)
+    end
+    print(total)   --> 15
+aliases: []
+seeAlso:
+  - string.match
+  - string.gsub
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.gmatch

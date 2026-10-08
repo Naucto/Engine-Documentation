@@ -1,0 +1,32 @@
+name: state
+description: "A table shared by every player in the session. Writes replicate to all peers; reads
+  answer the latest replicated value. A player who joins mid-game receives everything they may read.
+  Stored values are numbers, strings, booleans and nested tables; a function raises `net: cannot
+  store a function in net.state`. Iterated with `pairs`, a shared table gives its keys as strings,
+  numeric ones included: compare a player key with `tonumber(id) == net.id()`. Writing `nil` to a
+  key deletes it, and everything under it. Reading it outside a session raises `net: no active
+  session`."
+returns: null
+examples:
+  - |-
+    -- inside the host or join callback, or later in the session
+    net.state.score = 0                          -- write a value
+    net.state.ball = { x = 160, y = 90, dx = 2 } -- assign a whole table at once
+    net.state.ball.x = 42                        -- update a nested field
+    net.state.ball = nil                         -- delete the key and everything under it
+  - |-
+    -- inside the host or join callback
+    local me = net.id()
+    local entry = { x = 24, y = 40 }
+    if net.state.players then
+      net.state.players[me] = entry
+    else
+      net.state.players = { [me] = entry }
+    end
+notes:
+  - kind: note
+    text: "What a joined player may read or write is decided per path in the NET tab, and applied by the
+      host: a refused write is undone on the peer that made it, and its `net.on(\"error\")` fires
+      with the reason `\"forbidden\"`, or `\"conflict\"` when another write got there first. A
+      guest's write is applied locally at once and confirmed or undone afterwards."
+since: "1.0"

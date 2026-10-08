@@ -1,0 +1,20 @@
+name: asin
+signature: math.asin(x)
+summary: The angle, in radians, whose sine is x.
+description: 'The reverse of [[math.sin]]: from a sine between `-1` and `1`, the angle between `-math.pi / 2` and `math.pi / 2`.'
+params:
+  - name: x
+    type: number
+    description: A sine, `-1` to `1`.
+    required: true
+returns: The angle in radians.
+returnType: number
+examples:
+  - |-
+    print(math.deg(math.asin(1)))   --> 90
+seeAlso:
+  - math.sin
+  - math.acos
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.asin

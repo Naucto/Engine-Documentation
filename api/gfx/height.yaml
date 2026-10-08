@@ -1,0 +1,9 @@
+name: height
+description: Screen height in pixels. Always 180.
+returns: "180."
+examples:
+  - gfx.fill_rect(0, gfx.height() - 8, gfx.width(), 8, 1)
+notes: []
+seeAlso:
+  - gfx.width
+since: "2.0"

@@ -1,0 +1,24 @@
+name: sort
+signature: table.sort(t[, comp])
+summary: Sort a list in place.
+description: 'Puts the elements of `t` in order, smallest first, changing the list itself. `comp(a, b)` returns `true` when `a` has to come before `b`: it sorts a high-score table by score, or sprites by their `y` so the nearer ones are drawn last. The sort is not stable: two equal elements may swap.'
+params:
+  - name: t
+    type: table
+    description: The list to sort.
+    required: true
+  - name: comp
+    type: function
+    description: The order, `true` when its first argument comes first; left out, `<`.
+    optional: true
+returns: null
+examples:
+  - |-
+    local scores = { { name = "Odo", pts = 80 }, { name = "Mira", pts = 120 } }
+    table.sort(scores, function(a, b) return a.pts > b.pts end)
+    print(scores[1].name)   --> Mira
+aliases: []
+seeAlso:
+  - table.insert
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-table.sort

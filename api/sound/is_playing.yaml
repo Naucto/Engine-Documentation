@@ -1,0 +1,14 @@
+name: is_playing
+description: "Whether a voice is currently sounding, music included. The answer comes back from the
+  audio thread a frame or two late: right after `play_sfx` it is still `false`, so do not use it to
+  avoid a double trigger."
+params:
+  channel: Voice 0..4.
+returns: True while the voice sounds.
+examples:
+  - if sound.is_playing(4) then gfx.fill_rect(0, 0, 8, 8, 5) end  -- a light while voice 4 sounds
+notes: []
+seeAlso:
+  - sound.play_note
+  - sound.music_pos
+since: "2.0"

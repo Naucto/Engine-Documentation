@@ -1,0 +1,20 @@
+name: sqrt
+signature: math.sqrt(x)
+summary: The square root of x.
+description: 'Returns the square root of `x`, the step that turns two distances along the axes into one straight-line distance. To compare distances, comparing their squares is enough and saves the root.'
+params:
+  - name: x
+    type: number
+    description: A number, zero or more.
+    required: true
+returns: Its square root, a float.
+returnType: number
+examples:
+  - |-
+    local dx, dy = 3, 4
+    print(math.sqrt(dx * dx + dy * dy))   --> 5
+seeAlso:
+  - math.abs
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.sqrt

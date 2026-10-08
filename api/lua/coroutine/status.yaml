@@ -1,0 +1,23 @@
+name: status
+signature: coroutine.status(co)
+summary: Whether a coroutine is suspended, running, normal or dead.
+description: 'Returns `"suspended"` before its first resume and after each yield, `"running"` for the one asking, `"normal"` for one that resumed another and waits for it, and `"dead"` once its function has returned or raised an error. A dead coroutine cannot be resumed: test for it before resuming each frame.'
+params:
+  - name: co
+    type: thread
+    description: The coroutine.
+    required: true
+returns: The status.
+returnType: string
+examples:
+  - |-
+    local co = coroutine.create(function() coroutine.yield() end)
+    print(coroutine.status(co))   --> suspended
+    coroutine.resume(co)
+    coroutine.resume(co)
+    print(coroutine.status(co))   --> dead
+seeAlso:
+  - coroutine.resume
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-coroutine.status

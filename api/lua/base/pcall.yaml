@@ -1,0 +1,29 @@
+name: pcall
+signature: pcall(f, ...)
+summary: Call a function and catch the error it raises instead of halting.
+description: 'Calls `f` with the remaining arguments in protected mode. When `f` returns, `pcall` returns `true` followed by its results; when it raises an error, `false` and the error, and the game goes on. Use it around what may fail for a reason outside the code, such as a value read from a level string.'
+params:
+  - name: f
+    type: function
+    description: The function to call.
+    required: true
+  - name: "..."
+    type: any
+    description: Its arguments.
+    optional: true
+returns: '`true` and the results of `f`, or `false` and the error.'
+returnType: boolean
+examples:
+  - |-
+    local ok, err = pcall(function()
+      local enemy = nil
+      return enemy.hp
+    end)
+    print(ok)    --> false
+    print(err)   --> main:3: attempt to index a nil value (local 'enemy')
+aliases: []
+seeAlso:
+  - xpcall
+  - error
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-pcall

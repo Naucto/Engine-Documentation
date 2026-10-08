@@ -1,0 +1,18 @@
+namespace: string
+title: String manipulation
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#6.4
+order:
+  - len
+  - sub
+  - upper
+  - lower
+  - rep
+  - reverse
+  - format
+  - find
+  - match
+  - gmatch
+  - gsub
+  - byte
+  - char

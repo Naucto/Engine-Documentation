@@ -1,0 +1,17 @@
+name: mouse_down
+description: True only on the step a mouse button went down. `0` is the left button, `1` the right,
+  `2` the middle.
+params:
+  button: Button `0` (left), `1` (right) or `2` (middle); left out, `0`.
+returns: True on the press step.
+examples:
+  - |-
+    if input.mouse_down() then
+      local mx, my = input.get_mouse_pos()
+      if mx then map.set(mx // 8, my // 8, 1) end
+    end
+notes: []
+seeAlso:
+  - input.mouse_pressed
+  - input.get_mouse_pos
+since: "2.0"

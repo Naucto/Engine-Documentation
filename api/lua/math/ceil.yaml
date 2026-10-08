@@ -1,0 +1,20 @@
+name: ceil
+signature: math.ceil(x)
+summary: The smallest whole number not below x.
+description: 'Rounds `x` up, towards plus infinity, and returns an integer: how many screens a level of 330 pixels needs, for instance.'
+params:
+  - name: x
+    type: number
+    description: The number to round.
+    required: true
+returns: '`x` rounded up.'
+returnType: number
+examples:
+  - |-
+    print(math.ceil(330 / 320))   --> 2
+    print(math.ceil(-0.5))        --> 0
+seeAlso:
+  - math.floor
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.ceil

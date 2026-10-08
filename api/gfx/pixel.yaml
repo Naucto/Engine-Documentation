@@ -1,0 +1,22 @@
+name: pixel
+picture: ../img/frames/gfx-shapes.png
+caption: rect, fill_rect, circle, fill_circle, line and pixel, each in its own colour.
+description: "Set one pixel. The position is in the world: the camera applies to it, and the clip
+  keeps it inside its rectangle. Coordinates are floored."
+params:
+  x: Horizontal position, in pixels, before the camera offset.
+  y: Vertical position, in pixels, before the camera offset.
+  colour: Palette index `0` to `15`.
+returns: null
+examples:
+  - |-
+    -- a starfield
+    local stars = { { x = 12, y = 30 }, { x = 80, y = 12 }, { x = 200, y = 44 } }
+    for _, s in ipairs(stars) do
+      gfx.pixel(s.x, s.y, 5)
+    end
+notes: []
+seeAlso:
+  - gfx.get_pixel
+  - gfx.line
+since: "2.0"

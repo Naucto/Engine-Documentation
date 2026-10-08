@@ -1,0 +1,29 @@
+name: rep
+signature: string.rep(s, n[, sep])
+summary: A string repeated n times, with an optional separator between copies.
+description: 'Joins `n` copies of `s`, with `sep` between two copies when it is given: a bar of hearts, a row of dots, a line of dashes.'
+params:
+  - name: s
+    type: string
+    description: The string to repeat.
+    required: true
+  - name: "n"
+    type: number
+    description: How many copies; `0` or less gives an empty string.
+    required: true
+  - name: sep
+    type: string
+    description: What goes between two copies; left out, nothing.
+    optional: true
+returns: The repeated string.
+returnType: string
+examples:
+  - |-
+    local hp = 3
+    print(string.rep("#", hp) .. string.rep(".", 5 - hp))   --> ###..
+    print(string.rep("ab", 3, "-"))                        --> ab-ab-ab
+aliases: []
+seeAlso:
+  - table.concat
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-string.rep

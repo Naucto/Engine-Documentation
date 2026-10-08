@@ -1,0 +1,27 @@
+name: remove
+signature: table.remove(t[, pos])
+summary: Take a value out of a list, the last one or the one at a position.
+description: 'Removes the element at `pos`, by default the last one, shifts the ones after it down, and returns it. **Removing while walking a list forwards skips the element after each one removed**: walk it backwards, from `#t` down to `1`.'
+params:
+  - name: t
+    type: table
+    description: The list.
+    required: true
+  - name: pos
+    type: number
+    description: Which element; left out, the last.
+    optional: true
+returns: The removed value.
+returnType: any
+examples:
+  - |-
+    local enemies = { { hp = 0 }, { hp = 2 }, { hp = 0 } }
+    for i = #enemies, 1, -1 do
+      if enemies[i].hp <= 0 then table.remove(enemies, i) end
+    end
+    print(#enemies)   --> 1
+aliases: []
+seeAlso:
+  - table.insert
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-table.remove

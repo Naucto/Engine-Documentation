@@ -1,0 +1,10 @@
+namespace: sys
+title: System
+order:
+  - dt
+  - frame
+  - time
+  - fps
+  - log
+  - warn
+  - error

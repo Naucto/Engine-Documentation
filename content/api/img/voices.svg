@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 208" role="img" aria-label="Five voices; music holds 0, 1 and 2; a first play_sfx takes the free voice 3, a second takes 4, a third finds none free and takes voice 0, the oldest music voice">
+  <title>Five voices: a sound effect takes a free voice, then the oldest music voice</title>
+  <g class="d-box">
+    <rect x="104.5" y="24.5" width="64" height="32"/>
+    <rect x="184.5" y="24.5" width="64" height="32"/>
+    <rect x="264.5" y="24.5" width="64" height="32"/>
+    <rect x="344.5" y="24.5" width="64" height="32"/>
+    <rect x="424.5" y="24.5" width="64" height="32"/>
+  </g>
+  <g class="d-stroke">
+    <polyline points="248.5,96.5 376.5,96.5 376.5,56.5"/>
+    <polyline points="248.5,136.5 456.5,136.5 456.5,56.5"/>
+    <polyline points="168.5,176.5 136.5,176.5 136.5,56.5"/>
+  </g>
+  <g class="d-head">
+    <polygon points="372.5,64 376.5,56 380.5,64"/>
+    <polygon points="452.5,64 456.5,56 460.5,64"/>
+    <polygon points="132.5,64 136.5,56 140.5,64"/>
+  </g>
+  <g class="d-label">
+    <text x="8" y="16" class="d-quiet">voice</text>
+    <text x="136.5" y="16" text-anchor="middle" class="d-quiet">0</text>
+    <text x="216.5" y="16" text-anchor="middle" class="d-quiet">1</text>
+    <text x="296.5" y="16" text-anchor="middle" class="d-quiet">2</text>
+    <text x="376.5" y="16" text-anchor="middle" class="d-quiet">3</text>
+    <text x="456.5" y="16" text-anchor="middle" class="d-quiet">4</text>
+    <text x="8" y="39">music</text>
+    <text x="8" y="53" class="d-quiet">priority 0</text>
+    <text x="136.5" y="45" text-anchor="middle">bass</text>
+    <text x="216.5" y="45" text-anchor="middle">lead</text>
+    <text x="296.5" y="45" text-anchor="middle">pad</text>
+    <text x="8" y="101">sound effects</text>
+    <text x="8" y="115" class="d-quiet">priority 1</text>
+    <text x="176" y="101" class="d-mono">play_sfx</text>
+    <text x="176" y="117" class="d-quiet">3 is free: it takes 3</text>
+    <text x="176" y="141" class="d-mono">play_sfx</text>
+    <text x="176" y="157" class="d-quiet">3 is busy now: it takes 4</text>
+    <text x="176" y="181" class="d-mono">play_sfx</text>
+    <text x="176" y="197" class="d-quiet">none free: the oldest music voice, 0</text>
+  </g>
+</svg>

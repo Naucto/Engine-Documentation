@@ -1,0 +1,18 @@
+name: music_pos
+description: "Where the music has got to: its place in the music's chain of patterns, counted from
+  `0` (not the pattern's own number), and the step now sounding inside that pattern, counted from
+  `0` too. Both are `nil` when nothing plays. The value comes back from the audio thread a frame or
+  two late, and a step lasts several frames, so a test like `step % 4 == 0` is true for a few frames
+  in a row: fine for a beat light, late for anything that must land on the step."
+returns: place, step, or nil.
+examples:
+  - |-
+    -- a beat light: the first step of every beat, four steps to the beat
+    local pulse = 0
+    local place, step = sound.music_pos()
+    if step and step % 4 == 0 then pulse = 1 end
+notes: []
+seeAlso:
+  - sound.play_music
+  - sound.is_playing
+since: "2.0"

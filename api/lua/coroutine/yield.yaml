@@ -1,0 +1,34 @@
+name: yield
+signature: coroutine.yield(...)
+summary: Pause the running coroutine and hand values back to resume.
+description: 'Stops the coroutine it is called from; the [[coroutine.resume]] that ran it returns `true` and the values given here. Calling `yield` once per frame, in a coroutine resumed from `_update`, spreads a sequence over frames: a loop of `yield` calls is a wait. The coroutine changes the game''s state; `_draw` shows it.'
+params:
+  - name: "..."
+    type: any
+    description: Values handed out to `resume`.
+    optional: true
+returns: What the next `resume` passes in.
+returnType: any
+examples:
+  - |-
+    local function wait(frames)
+      for _ = 1, frames do coroutine.yield() end
+    end
+    local message = ""
+    local intro = coroutine.create(function()
+      wait(30)
+      message = "half a second later"
+    end)
+    function _update()
+      if coroutine.status(intro) ~= "dead" then coroutine.resume(intro) end
+    end
+    function _draw()
+      gfx.clear()
+      gfx.print(message, 8, 8, 7)
+    end
+seeAlso:
+  - coroutine.resume
+  - coroutine.isyieldable
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-coroutine.yield

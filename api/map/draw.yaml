@@ -1,0 +1,35 @@
+name: draw
+picture: ../img/frames/map-draw.png
+caption: The whole first map drawn with map.draw(0, y), y chosen so its last row, the floor, sits on
+  the bottom of the screen.
+description: >-
+  Draw the map, or the part of it that `tx`, `ty`, `tw`, `th` name, with its top-left corner at `x`,
+  `y`. Tiles are the sheet's 8 × 8 sprites; a tile of sprite `0` is empty. The camera moves it like
+  anything else, and a tile changed with [[map.set]] is drawn changed. `tw` and `th` left out are
+  the whole width and height even when `tx`, `ty` are not `0`, so give them with `tx`, `ty`: a
+  window that runs past the map's edge repeats the map's last pixels.
+
+
+  A game may keep several maps, made in the MAP tab. Every `map.*` call but [[map.flag]] takes the
+  map it works on as its last argument, counted from `1` in the order of the strip in that tab, and
+  works on the first one when that argument is left out.
+params:
+  x: X position in pixels where the map starts.
+  y: Y position in pixels where the map starts.
+  tx: Optional first map column to draw, in tiles. Defaults to `0`.
+  ty: Optional first map row to draw, in tiles. Defaults to `0`.
+  tw: Optional number of columns to draw. Defaults to the whole map width.
+  th: Optional number of rows to draw. Defaults to the whole map height.
+  m: Which map to draw, counted from `1` in the order of the MAP tab's strip. Defaults to the first.
+returns: null
+examples:
+  - >-
+    map.draw(0, 0)  -- draw the first map at the world origin
+
+    map.draw(0, 0, 0, 0, 40, 23, 2)  -- the top-left screen of the second map (a warning, and
+    nothing drawn, in a game with one map)
+notes: []
+seeAlso:
+  - gfx.camera
+  - map.get
+since: "1.0"

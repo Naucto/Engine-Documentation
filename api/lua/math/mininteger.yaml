@@ -1,0 +1,12 @@
+name: mininteger
+signature: math.mininteger
+summary: The smallest integer, -2147483648.
+description: 'The smallest integer the console holds; below it an integer wraps round to [[math.maxinteger]].'
+examples:
+  - |-
+    print(math.mininteger)   --> -2147483648
+seeAlso:
+  - math.maxinteger
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.mininteger

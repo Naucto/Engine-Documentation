@@ -1,0 +1,30 @@
+name: resume
+signature: coroutine.resume(co, ...)
+summary: Run a coroutine until it yields or ends.
+description: 'Starts `co`, or goes on from where it last yielded, until it yields again or returns. The first resume passes its extra arguments to the coroutine''s function; a later one makes them what [[coroutine.yield]] returns inside. An error inside does not halt the game: `resume` returns `false` and the message.'
+params:
+  - name: co
+    type: thread
+    description: The coroutine.
+    required: true
+  - name: "..."
+    type: any
+    description: Values handed in.
+    optional: true
+returns: '`true` and what the coroutine yielded or returned, or `false` and the error.'
+returnType: boolean
+examples:
+  - |-
+    local counter = coroutine.create(function(start)
+      local step = coroutine.yield(start)
+      return start + step
+    end)
+    print(coroutine.resume(counter, 10))   --> true 10
+    print(coroutine.resume(counter, 5))    --> true 15
+    print(coroutine.resume(counter))       --> false cannot resume dead coroutine
+seeAlso:
+  - coroutine.yield
+  - coroutine.status
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-coroutine.resume

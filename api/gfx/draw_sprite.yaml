@@ -1,0 +1,43 @@
+name: draw_sprite
+picture: ../img/frames/gfx-draw-sprite.png
+caption: "Sprite 1 plain, flipped horizontally, flipped vertically, at scale 3, and the 2 × 2 block
+  from it: sprites 1, 2, 17 and 18 drawn as one."
+description: "Draw one sprite, or a block of them, from the sheet the ART tab edits. `w` and `h`
+  count sprites: left out, one 8 × 8 sprite. A flip mirrors the whole block, tiles included.
+  Transparency is tested on the sheet's own colour, before any `set_col` remap. Positions are
+  floored to whole pixels. A sprite number past the end of the sheet draws stretched edge pixels
+  rather than failing."
+params:
+  n: Sprite index in the sprite sheet. A new game has 256 of them, numbered from `0`; a larger sheet
+    has more.
+  x: Destination x position in pixels.
+  y: Destination y position in pixels.
+  w: Optional width in sprite units (1 unit = 8 pixels). Defaults to `1`.
+  h: Optional height in sprite units (1 unit = 8 pixels). Defaults to `1`.
+  flip_h: Mirror the sprite horizontally. Defaults to `false`.
+  flip_v: Mirror the sprite vertically. Defaults to `false`.
+  scale: Magnification of the drawn block; `1` by default. Whole numbers keep pixels square; `0` draws
+    nothing.
+  transparent: "Which colour the sprite keeps clear. Left out, it is index `0`, the sheet's
+    transparency channel. Give an index to key that colour out instead, or `nil` to draw every
+    colour: leaving the argument off and passing `nil` are different answers here."
+returns: null
+examples:
+  - >-
+    -- a new game's moon is sprites 1, 2, 17 and 18: a 2 × 2 block from sprite 1
+
+    gfx.draw_sprite(1, 10, 20)                              -- its top-left quarter alone
+
+    gfx.draw_sprite(1, 40, 20, 2, 2)                        -- the whole moon, 16 × 16 pixels
+
+    gfx.draw_sprite(1, 80, 20, 2, 2, true)                  -- mirrored
+
+    gfx.draw_sprite(1, 120, 20, 2, 2, false, false, 3)      -- three times the size
+
+    gfx.draw_sprite(1, 200, 20, 2, 2, false, false, 1, nil) -- every colour drawn: a black square
+    with the moon in it
+notes: []
+seeAlso:
+  - gfx.draw_region
+  - map.draw
+since: "1.0"

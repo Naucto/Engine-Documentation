@@ -1,0 +1,52 @@
+name: shift
+picture: ../img/frames/gfx-shift.png
+caption: "The whole frame shifted 12 pixels right and 6 down by gfx.shift(12, 6): the band it
+  uncovers along the left and the top shows colour 0."
+description: >-
+  Move the finished picture when it is shown, without redrawing anything: `dx` to the right and `dy`
+  down, in whole pixels, negative the other way. What a shift uncovers shows colour `0`, or, with
+  `wrap`, the pixels pushed off the other side; `dy` never wraps.
+
+
+  Called anywhere but `_scanline`, it shifts the **whole frame**, and stays from frame to frame
+  until `gfx.shift(0, 0)`: a screenshake is a shift set every frame from a fading amplitude.
+
+
+  Called inside `_scanline(y)`, it shifts **line `y` and the lines below it** for this frame, until
+  another call changes it: a wave is a shift of a sine of `y`.
+params:
+  dx: Pixels to the right; negative to the left.
+  dy: Pixels down; negative up. `0` when left out.
+  wrap: "`true` to bring back on the other side what the sideways shift pushes off the screen. `false`
+    when left out."
+returns: null
+examples:
+  - |-
+    -- a screenshake that restarts every second
+    function _draw()
+      gfx.clear(1)
+      gfx.fill_rect(140, 70, 40, 40, 4)
+      local left = 60 - sys.frame() % 60
+      local amount = left // 12
+      gfx.shift(math.random(-amount, amount), math.random(-amount, amount))
+    end
+  - |-
+    -- a heat haze on the lower third
+    function _draw()
+      gfx.clear(12)
+      gfx.fill_rect(0, 120, 320, 60, 3)
+    end
+
+    function _scanline(y)
+      if y >= 120 then
+        gfx.shift(math.sin((y + sys.frame()) / 6) * 3, 0, true)
+      end
+    end
+notes:
+  - kind: note
+    text: "A shift is whole pixels: a fraction is rounded to the nearest one."
+seeAlso:
+  - gfx.blank
+  - gfx.set_color
+  - gfx.camera
+since: "2.0"

@@ -1,0 +1,9 @@
+name: width
+description: Screen width in pixels. Always 320, but read it rather than hard-coding it.
+returns: "320."
+examples:
+  - local middle = gfx.width() // 2
+notes: []
+seeAlso:
+  - gfx.height
+since: "2.0"

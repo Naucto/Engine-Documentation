@@ -1,0 +1,24 @@
+name: fmod
+signature: math.fmod(x, y)
+summary: The remainder of x divided by y, with the sign of x.
+description: 'The remainder of the division of `x` by `y`, rounded towards zero, so it takes the sign of `x`. The `%` operator rounds down instead and takes the sign of `y`, which is what wrapping a position around the screen wants.'
+params:
+  - name: x
+    type: number
+    description: The number divided.
+    required: true
+  - name: "y"
+    type: number
+    description: The number it is divided by.
+    required: true
+returns: The remainder.
+returnType: number
+examples:
+  - |-
+    print(math.fmod(-7, 3))   --> -1
+    print(-7 % 3)             --> 2
+seeAlso:
+  - math.modf
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.fmod

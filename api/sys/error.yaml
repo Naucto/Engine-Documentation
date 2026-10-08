@@ -1,0 +1,16 @@
+name: error
+description: Writes an error line to the console, in the error colour. It reports a problem; it does
+  not stop the game.
+params:
+  ...: One or more values to write.
+returns: null
+examples:
+  - |-
+    local n = 3
+    local level = nil
+    if not level then sys.error("level " .. n .. " is missing") end
+notes: []
+seeAlso:
+  - sys.log
+  - sys.warn
+since: "2.0"

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 168" role="img" aria-label="The host owns the ball, the score and its own pad; the joiner owns its pad and reads the rest; points travel as events and the host writes the winner">
+  <title>The host owns the ball, the score and its own pad; the joiner owns its pad and reads the rest; points travel as events and the host writes the winner</title>
+  <g class="d-box">
+    <rect x="8.5" y="16.5" width="248" height="136"/>
+    <rect x="304.5" y="16.5" width="248" height="136"/>
+  </g>
+  <g class="d-stroke">
+    <line x1="8.5" y1="44.5" x2="256.5" y2="44.5"/>
+    <line x1="304.5" y1="44.5" x2="552.5" y2="44.5"/>
+    <line x1="256.5" y1="56.5" x2="296.5" y2="56.5"/>
+    <line x1="256.5" y1="72.5" x2="296.5" y2="72.5"/>
+    <line x1="256.5" y1="104.5" x2="296.5" y2="104.5"/>
+    <line x1="256.5" y1="120.5" x2="296.5" y2="120.5"/>
+    <line x1="256.5" y1="136.5" x2="296.5" y2="136.5"/>
+  </g>
+  <g class="d-head">
+    <polygon points="296,52.5 304,56.5 296,60.5"/>
+    <polygon points="296,68.5 304,72.5 296,76.5"/>
+    <polygon points="296,100.5 304,104.5 296,108.5"/>
+    <polygon points="296,116.5 304,120.5 296,124.5"/>
+    <polygon points="296,132.5 304,136.5 296,140.5"/>
+  </g>
+  <g class="d-label">
+    <text x="16" y="36">Host machine</text>
+    <text x="312" y="36">Joiner machine</text>
+    <text x="16" y="60" class="d-mono">net.host{max_players = 2}</text>
+    <text x="312" y="60" class="d-mono">net.join()</text>
+    <text x="408" y="60" class="d-quiet">join code</text>
+    <text x="16" y="76" class="d-quiet">owns</text>
+    <text x="80" y="76" class="d-mono d-gold">ball, score, playing</text>
+    <text x="312" y="76" class="d-quiet">reads</text>
+    <text x="376" y="76" class="d-mono">ball, score</text>
+    <text x="16" y="92" class="d-quiet">owns</text>
+    <text x="80" y="92" class="d-mono d-gold">pads.left</text>
+    <text x="312" y="92" class="d-quiet">owns</text>
+    <text x="376" y="92" class="d-mono d-gold">pads.right</text>
+    <text x="16" y="108">simulates the ball</text>
+    <text x="312" y="108">draws the ball it reads</text>
+    <text x="16" y="124" class="d-mono">net.emit("point")</text>
+    <text x="312" y="124" class="d-mono">net.on("event:point")</text>
+    <text x="16" y="140" class="d-quiet">writes</text>
+    <text x="80" y="140" class="d-mono d-gold">winner</text>
+    <text x="312" y="140">sees winner, shows over</text>
+  </g>
+</svg>

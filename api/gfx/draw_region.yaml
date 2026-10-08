@@ -1,0 +1,31 @@
+name: draw_region
+picture: ../img/frames/gfx-draw-region.png
+caption: The moon of a new game as one 16 × 16 region of the sheet, at its own size on the left and
+  stretched to 32 × 32 by dw and dh on the right.
+description: Copy any rectangle of pixels out of the sheet, rather than whole 8 × 8 sprites. Give
+  `dw`/`dh` to stretch it; leave them out and it lands at its own size. Reads the first sheet only.
+  A region past the sheet's edge repeats the edge pixels.
+params:
+  sx: Left edge in sheet pixels.
+  sy: Top edge in sheet pixels.
+  sw: Width in sheet pixels.
+  sh: Height in sheet pixels.
+  dx: Left edge on screen.
+  dy: Top edge on screen.
+  dw: Destination width; defaults to `sw`.
+  dh: Destination height; defaults to `sh`.
+  flip_h: Mirror horizontally.
+  flip_v: Mirror vertically.
+  transparent: Which colour the region keeps clear. Left out, index `0`; an index keys that colour out
+    instead; `nil` draws every colour.
+returns: null
+examples:
+  - |-
+    -- the moon of a new game, sprites 1, 2, 17 and 18, as one 16 × 16 rectangle of the sheet
+    gfx.draw_region(8, 0, 16, 16, 152, 82)
+    -- the same at double size
+    gfx.draw_region(8, 0, 16, 16, 20, 12, 32, 32)
+notes: []
+seeAlso:
+  - gfx.draw_sprite
+since: "2.0"

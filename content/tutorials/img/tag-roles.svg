@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 184" role="img" aria-label="Every player writes its own position and can taunt; only the host checks the overlap and writes who is it, which everyone listens for">
+  <title>Every player writes its own position and can taunt; only the host checks the overlap and writes who is it, which everyone listens for</title>
+  <g class="d-stroke">
+    <line x1="8.5" y1="28.5" x2="264.5" y2="28.5"/>
+    <line x1="296.5" y1="28.5" x2="552.5" y2="28.5"/>
+    <line x1="296.5" y1="120.5" x2="120.5" y2="120.5"/>
+  </g>
+  <g class="d-head">
+    <polygon points="120,116.5 112,120.5 120,124.5"/>
+  </g>
+  <g class="d-label">
+    <text x="8" y="20">Every player</text>
+    <text x="304" y="20">Host only</text>
+    <text x="8" y="52">writes own</text>
+    <text x="104" y="52" class="d-mono">players.&lt;id&gt;.x/y</text>
+    <text x="8" y="76" class="d-mono">net.emit("taunt")</text>
+    <text x="24" y="92" class="d-quiet">reaches every other player</text>
+    <text x="200" y="112" text-anchor="middle" class="d-quiet">replicated to everyone</text>
+    <text x="8" y="124" class="d-mono">net.on("it")</text>
+    <text x="24" y="140">announces who is it</text>
+    <text x="8" y="164">draws all, ring around it</text>
+    <text x="304" y="52">provisions on</text>
+    <text x="424" y="52" class="d-mono">peer.joined</text>
+    <text x="304" y="68">removes on</text>
+    <text x="424" y="68" class="d-mono">peer.left</text>
+    <text x="304" y="100">checks overlap with "it"</text>
+    <text x="304" y="124">tag: writes</text>
+    <text x="408" y="124" class="d-mono d-gold">net.state.it</text>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+namespace: os
+title: Operating system
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#6.9
+order:
+  - time
+  - date
+  - clock
+  - difftime

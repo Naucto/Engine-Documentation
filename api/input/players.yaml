@@ -1,0 +1,15 @@
+name: players
+description: How many players have a controller. The keyboard and the first gamepad are one player
+  together; a second gamepad is player 2, and so on. A second keyboard layout (J, L, I, K…) plays as
+  player 2 without counting here.
+returns: Player count, at least 1.
+examples:
+  - |-
+    for p = 1, input.players() do
+      if input.pressed("a", p) then print("player " .. p .. " fires") end
+    end
+notes: []
+seeAlso:
+  - input.held
+  - net.id
+since: "2.0"

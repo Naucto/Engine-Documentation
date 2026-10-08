@@ -1,0 +1,26 @@
+name: random
+signature: math.random([m, n])
+summary: A random number, a float below 1 or a whole number in a range.
+description: 'With no argument, a float from `0` up to but not including `1`. With `m` and `n`, a whole number from `m` to `n`, both included; with `m` alone, from `1` to `m`. The sequence starts somewhere new every run; [[math.randomseed]] makes it repeat.'
+params:
+  - name: m
+    type: number
+    description: The upper bound alone, or the lower bound when `n` follows.
+    optional: true
+  - name: "n"
+    type: number
+    description: The upper bound, included.
+    optional: true
+returns: The random number.
+returnType: number
+examples:
+  - |-
+    local die = math.random(6)                 -- 1 to 6
+    local x = math.random(0, 319)              -- a column of the screen
+    local crit = math.random() < 0.1           -- true one time in ten
+    assert(die >= 1 and die <= 6 and x <= 319 and type(crit) == "boolean")
+seeAlso:
+  - math.randomseed
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.random

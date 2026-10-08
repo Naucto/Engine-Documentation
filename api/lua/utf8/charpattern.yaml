@@ -1,0 +1,14 @@
+name: charpattern
+signature: utf8.charpattern
+summary: A pattern that matches exactly one UTF-8 character.
+description: 'A Lua pattern that matches one UTF-8 character, whatever its number of bytes, for [[string.gmatch]] and its kin.'
+examples:
+  - |-
+    local letters = {}
+    for ch in string.gmatch("née", utf8.charpattern) do letters[#letters + 1] = ch end
+    print(#letters, letters[2])   --> 3 é
+seeAlso:
+  - utf8.codes
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-utf8.charpattern

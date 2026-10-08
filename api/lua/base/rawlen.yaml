@@ -1,0 +1,21 @@
+name: rawlen
+signature: rawlen(v)
+summary: The length of a table or a string, without the __len metamethod.
+description: 'Returns what `#v` returns when no `__len` metamethod is involved: the length of a string in bytes, or the border of a table''s list part.'
+params:
+  - name: v
+    type: table|string
+    description: The table or the string.
+    required: true
+returns: Its length.
+returnType: number
+examples:
+  - |-
+    local queue = setmetatable({ "a", "b" }, { __len = function() return 99 end })
+    print(#queue)            --> 99
+    print(rawlen(queue))     --> 2
+aliases: []
+seeAlso:
+  - rawget
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-rawlen

@@ -1,0 +1,24 @@
+name: get
+description: "Read the sprite number of a tile. Coordinates are tiles, not pixels: divide a position
+  by `8` and floor it (the call floors them too). Outside the map the answer is `0`, the same as an
+  empty tile, so guard the bounds where sprite `0` carries a flag. A map the game does not have
+  answers `0` as well, with a warning in the console."
+params:
+  tx: Tile column in the map grid.
+  ty: Tile row in the map grid.
+  m: Which map, counted from `1` in the order of the MAP tab's strip. Defaults to the first.
+returns: Sprite index stored at that map cell.
+examples:
+  - |-
+    local player = { x = 37, y = 50 }
+    local tile_x = math.floor(player.x / 8)
+    local tile_y = math.floor((player.y + 8) / 8)
+    local tile_sprite = map.get(tile_x, tile_y)  -- the sprite under the player's feet
+notes:
+  - kind: note
+    text: "A new game's map is 128 × 32 tiles and can be another size: read `map.width()` and
+      `map.height()` rather than assuming one."
+seeAlso:
+  - map.set
+  - map.flag
+since: "1.0"

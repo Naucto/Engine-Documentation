@@ -1,0 +1,23 @@
+name: time
+signature: os.time([t])
+summary: The current time in seconds, or the time of a given date.
+description: 'With no argument, the seconds since 1 January 1970, read from the player''s machine: a seed for [[math.randomseed]] that changes every run, or the day of a daily challenge. With a table of `year`, `month`, `day` and optionally `hour`, `min`, `sec`, the seconds of that date. For time inside the game, [[sys.time]] counts steps and never jumps.'
+params:
+  - name: t
+    type: table
+    description: A date, with fields `year`, `month`, `day`, `hour`, `min`, `sec`; left out, now.
+    optional: true
+returns: Seconds since 1970.
+returnType: number
+examples:
+  - |-
+    math.randomseed(os.time())
+    local day = os.time({ year = 2026, month = 1, day = 2, hour = 12 })
+    local before = os.time({ year = 2026, month = 1, day = 1, hour = 12 })
+    print(day - before)   --> 86400
+seeAlso:
+  - os.date
+  - sys.time
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-os.time

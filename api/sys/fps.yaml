@@ -1,0 +1,11 @@
+name: fps
+description: Frames per second actually being shown, averaged over the last sixty frames, so a
+  fraction like `59.8`; it is `0` on the very first frames. The editor shows the same number beside
+  the screen.
+returns: Measured frames per second.
+examples:
+  - gfx.print(math.floor(sys.fps()) .. " FPS", 2, 2, 5)
+notes: []
+seeAlso:
+  - sys.frame
+since: "2.0"

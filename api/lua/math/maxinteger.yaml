@@ -1,0 +1,15 @@
+name: maxinteger
+signature: math.maxinteger
+summary: The largest integer, 2147483647.
+description: 'The largest integer the console holds. **Integers are 32 bits here, not the 64 of standard Lua**: past `2147483647` an integer wraps round to `-2147483648` without an error. A counter that may grow that far, such as a score multiplied up, is kept as a float, `0.0` to start, which stays exact up to `2^53`.'
+examples:
+  - |-
+    print(math.maxinteger)          --> 2147483647
+    print(math.maxinteger + 1)      --> -2147483648
+    print(math.maxinteger + 1.0)    --> 2147483648
+seeAlso:
+  - math.mininteger
+  - math.type
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.maxinteger

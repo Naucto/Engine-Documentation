@@ -1,0 +1,25 @@
+name: codes
+signature: utf8.codes(s)
+summary: Every character of a UTF-8 string, for a for loop.
+description: 'Walks `s` one character at a time, however many bytes each takes, giving its byte position and its code point.'
+params:
+  - name: s
+    type: string
+    description: The string to walk.
+    required: true
+returns: An iterator, one position and code point per turn.
+returnType: function
+examples:
+  - |-
+    for pos, code in utf8.codes("aé!") do
+      print(pos, utf8.char(code))
+    end
+    --> 1 a
+    --> 2 é
+    --> 4 !
+seeAlso:
+  - utf8.codepoint
+  - utf8.charpattern
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-utf8.codes

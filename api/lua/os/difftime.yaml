@@ -1,0 +1,25 @@
+name: difftime
+signature: os.difftime(t2, t1)
+summary: The seconds from one time to another.
+description: 'Returns `t2 - t1`, two times from [[os.time]], in seconds.'
+params:
+  - name: t2
+    type: number
+    description: The later time.
+    required: true
+  - name: t1
+    type: number
+    description: The earlier time.
+    required: true
+returns: The difference in seconds.
+returnType: number
+examples:
+  - |-
+    local saved = os.time({ year = 2026, month = 10, day = 1, hour = 0 })
+    local now = os.time({ year = 2026, month = 10, day = 3, hour = 0 })
+    print(os.difftime(now, saved) / 86400, "days away")   --> 2 days away
+seeAlso:
+  - os.time
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-os.difftime

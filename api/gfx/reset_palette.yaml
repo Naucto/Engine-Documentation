@@ -1,0 +1,38 @@
+name: reset_palette
+description: "Called anywhere but `_scanline`, put the game's own palette back: every `set_color`
+  and `screen_col` of the **frame** is undone. Called inside `_scanline(y)`, put line `y` and the
+  lines below it back to the frame palette as it was when this pass began. Neither touches `set_col`
+  or the shift. The game stopping does the first on its own."
+returns: null
+examples:
+  - >-
+    -- a fade to black over a second, from the game's own colours; then the palette back
+
+    local left = 60
+
+
+    function _draw()
+      gfx.clear(0)
+      map.draw(0, 0)
+      left = left - 1
+      gfx.reset_palette()  -- the game's colours, to read and dim from
+      if left > 0 then
+        local k = left / 60
+        for i = 1, 15 do
+          local hex = gfx.get_color(i)
+          local r, g, b = tonumber(hex:sub(2, 3), 16), tonumber(hex:sub(4, 5), 16), tonumber(hex:sub(6, 7), 16)
+          gfx.set_color(i, r * k, g * k, b * k)
+        end
+      end
+    end
+  - |-
+    -- a tinted band: the frame palette above and below, a warmer colour 0 in between
+    function _scanline(y)
+      if y == 60 then gfx.set_color(0, "#402010") end
+      if y == 120 then gfx.reset_palette() end
+    end
+notes: []
+seeAlso:
+  - gfx.set_color
+  - gfx.screen_col
+since: "2.0"

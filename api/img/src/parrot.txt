@@ -1,0 +1,9 @@
+parrot.png is a 320x180 cover crop of:
+
+  Portrait of a Macaw.jpg
+  Author:  Bjørn Christian Tørrissen (http://bjornfree.com/galleries.html)
+  Licence: CC BY 3.0 (https://creativecommons.org/licenses/by/3.0)
+  Source:  https://commons.wikimedia.org/wiki/File:Portrait_of_a_Macaw.jpg
+
+Blue-and-yellow macaw (Ara ararauna). The crop was made from the 960 px rendition served by
+Wikimedia Commons; tools/photo-demo.ts turns it into e2e/docs/lua/gfx-photo.lua.

@@ -1,0 +1,22 @@
+name: key_pressed
+description: "True for every step a keyboard key is held, despite the name: the edge is
+  [[input.key_down]]. Keys are named by the browser's `event.key` value, so the exact string
+  matters: with Shift held the A key is `\"A\"`, and the letters follow the keyboard's layout. Every
+  key is released when the game loses focus."
+params:
+  key: Key name from the browser keyboard event.
+returns: True while held.
+examples:
+  - |-
+    local speed = 2
+    if input.key_pressed("Shift") then speed = 4 end
+notes:
+  - kind: warning
+    text: "`key_pressed` means held: it stays `true` for as long as the key is down, so a jump or a menu
+      choice read with it repeats every step. Read the press with [[input.key_down]]."
+  - kind: tip
+    text: "Prefer actions over raw keys: they work with a gamepad and can be rebound."
+seeAlso:
+  - input.key_down
+  - input.held
+since: "1.0"

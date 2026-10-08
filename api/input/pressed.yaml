@@ -1,0 +1,20 @@
+name: pressed
+description: "True only on the step an action went down: what you want for a jump or a menu choice,
+  so holding the button does not repeat it."
+params:
+  action: One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.
+  player: Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first gamepad
+    are player 1 together, the second keyboard layout and the second gamepad player 2. A number past
+    `4` answers `false`.
+returns: True on the press step.
+examples:
+  - |-
+    local player = { vy = 0, on_ground = true }
+    if input.pressed("a") and player.on_ground then
+      player.vy = -6
+    end
+notes: []
+seeAlso:
+  - input.held
+  - input.released
+since: "2.0"

@@ -1,0 +1,24 @@
+name: play_sfx
+description: "Play the sound effect kept at that number in the SOUND tab's bank. Any number will do
+  and an empty one is silent. It plays at priority 1, above the music: it takes the first free voice
+  of the five, and when none is free it takes one from the music, oldest first, so music keeps
+  playing on the others."
+params:
+  slot: The number the sound editor shows on the slot.
+  channel: Force a voice `0` to `4` instead of letting the mixer choose; a number outside is clamped.
+    The whole pattern then plays on that one voice, one note at a time.
+  pitch_offset: Semitones to transpose by.
+  volume: Multiplies the volume of the pattern's notes, `1` by default; the result is kept within `0`
+    to `1`.
+returns: null
+examples:
+  - |-
+    if input.pressed("a") then sound.play_sfx(0) end
+    -- same jump, a fifth higher
+    sound.play_sfx(0, nil, 7)
+notes: []
+seeAlso:
+  - sound.play_note
+  - sound.stop
+  - sound.set_volume
+since: "2.0"

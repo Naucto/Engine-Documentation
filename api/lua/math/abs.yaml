@@ -1,0 +1,20 @@
+name: abs
+signature: math.abs(x)
+summary: The distance of x from zero.
+description: 'Returns `x` without its sign: how far apart two things are along one axis, whichever is first.'
+params:
+  - name: x
+    type: number
+    description: The number.
+    required: true
+returns: '`x` when it is positive, `-x` otherwise.'
+returnType: number
+examples:
+  - |-
+    local player_x, enemy_x = 40, 64
+    if math.abs(player_x - enemy_x) < 32 then print("close") end   --> close
+seeAlso:
+  - math.max
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-math.abs

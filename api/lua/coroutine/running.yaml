@@ -1,0 +1,18 @@
+name: running
+signature: coroutine.running()
+summary: The running coroutine, and whether it is the main one.
+description: 'Returns the coroutine that is running and `true` when it is the main one, the one `_update` and `_draw` run in.'
+params: []
+returns: The running coroutine, then `true` when it is the main one.
+returnType: thread
+examples:
+  - |-
+    local _, is_main = coroutine.running()
+    print(is_main)   --> true
+    local inside = coroutine.wrap(function() return select(2, coroutine.running()) end)
+    print(inside())  --> false
+seeAlso:
+  - coroutine.isyieldable
+aliases: []
+standard: true
+manual: https://www.lua.org/manual/5.3/manual.html#pdf-coroutine.running
