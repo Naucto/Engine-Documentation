@@ -102,7 +102,7 @@ A **remix** is a copy of a published game that someone else makes their own, wit
 
 ## Work session
 
-The **work session** is everyone who has the game open in the editor right now, editing the same document. The GAME tab lists them under IN THIS WORK SESSION, their avatars sit in the header, and the host of the work session has a Kick button. It is not a netplay session: a game is edited together whether or not it is played together. See [Editors](/learn/editors/index).
+The **work session** is everyone who has the game open in the editor right now, editing the same document. The GAME tab lists them under In session, their avatars sit in the header, and the host of the work session has a Kick button. It is not a netplay session: a game is edited together whether or not it is played together. See [Editors](/learn/editors/index).
 
 ## Session (netplay)
 
