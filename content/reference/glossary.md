@@ -168,7 +168,7 @@ A **scanline** is one of those lines. If the game defines `_scanline(y)`, the be
 
 ## Action
 
-An **action** is one of the nine inputs a game reads, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, rather than a key: [[input.held]] and [[input.pressed]] take its name, and the player's keyboard, gamepad or touch controls are mapped to it. `a` is <kbd>X</kbd> or <kbd>Space</kbd> by default, and the key <kbd>A</kbd> is `left`. See [input](/learn/api/input).
+An **action** is something a player does that the game gives a name to, `jump` or `left`, rather than a key: [[input.held]] and [[input.pressed]] take its name, and the keys and gamepad controls that press it are set in the GAME tab. A new game has nine, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`; there `a` is <kbd>X</kbd> or <kbd>Space</kbd>, and the key <kbd>A</kbd> is `left`. See [input](/learn/api/input).
 
 ## Table, global and local
 

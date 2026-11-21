@@ -16,7 +16,7 @@ A Naucto game is made in one window with six tabs down its left edge. This page 
 
 In the order of the rail:
 
-- **[GAME](/learn/editors/game)**: the game's card (cover, name, summary, tags), its publishing status, who is in the work session, export and delete.
+- **[GAME](/learn/editors/game)**: the game's card (cover, name, summary, tags), its inputs, its publishing status, who is in the work session, export and delete.
 - **[CODE](/learn/editors/code)**: the Lua files, the running game beside them, the console and the reference.
 - **[ART](/learn/editors/art)**: the sprite sheets, their flags and the palette.
 - **[MAP](/learn/editors/map)**: the tile map, painted with the sprites.

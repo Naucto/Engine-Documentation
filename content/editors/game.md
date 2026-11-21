@@ -3,12 +3,12 @@ title: GAME
 slug: editors/game
 section: editors
 order: 1
-description: The GAME tab is the game's card and its publishing panel, and the header beside it holds the versions, the sharing and the publishing of the game.
+description: The GAME tab is the game's card, its inputs and its publishing panel, and the header beside it holds the versions, the sharing and the publishing of the game.
 ---
 
 # GAME
 
-The GAME tab is what the game is, who it is for and where it goes: its card on the hub, its publishing status, the people in the work session. The header above every tab belongs here too, with the **versions**, SHARE and PUBLISH.
+The GAME tab is what the game is, who it is for and where it goes: its card on the hub, its inputs, its publishing status, the people in the work session. The header above every tab belongs here too, with the **versions**, SHARE and PUBLISH.
 
 ![The GAME tab](img/game.png "The GAME tab: the card on the left, the PUBLISHING panel on the right.")
 
@@ -25,13 +25,23 @@ The name is 25 characters at most, the summary 50, the description 300 and there
 > [!IMPORTANT]
 > A game needs a name and one line of summary before it can be published. The panel says so with a band until both are there.
 
-### Controls
+### Inputs
 
-The console has nine actions, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, and the code reads them by those names with [[input.held]], [[input.pressed]] and [[input.released]]. An action is not a key: `a`, `b`, `x` and `y` are the four buttons of a gamepad, and on the keyboard they are <kbd>X</kbd> or <kbd>Space</kbd>, <kbd>C</kbd> or <kbd>Shift</kbd>, <kbd>V</kbd> and <kbd>B</kbd> by default, while the key <kbd>A</kbd> is `left`. The whole table of default keys is in [input](/learn/api/input#actions).
+A game defines **its own actions**: what a player does, each under the name the code reads it by with [[input.held]], [[input.pressed]] and [[input.released]]. An action also has a label and a short description, which are for the players, and the inputs that press it: keyboard keys of player 1 or player 2, and gamepad controls. What an input can be, and how a touch screen plays them, is in [input](/learn/api/input#actions).
 
-The Controls block is one row per action with a field for **the word your game gives it**, 25 characters at most: `Jump` beside `a`, `Walk` beside `left`. Leave empty the actions the game does not read.
+The Inputs block lists the actions of the game: the label, the name in the code under it, and the inputs, a line per device, where two keys on a line are alternatives. An action is not a key: in a new game `a` is <kbd>X</kbd> or <kbd>Space</kbd>, and the key <kbd>A</kbd> is `left`.
 
-The names are part of the game document, so they are saved and published with it and need no code. Two places show them: the **How to play** panel on the game's page, which lists only the actions you named, and Settings › Controls, where the label column reads them beside each binding while that game is on screen. A game that names nothing gets the console's own words instead.
+**Start from** replaces every action of the game with a preset's, after asking:
+
+- **Classic**, what a new game has: `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, for two players.
+- **Platformer**: `move_left`, `move_right`, `jump`, `dash`, `crouch`, `interact` and `pause`.
+- **Top-down**: `move_left`, `move_right`, `move_up`, `move_down`, `primary`, `secondary` and `pause`.
+- **Two players**: `left`, `right`, `up`, `down`, `action` and `pause`, each with keys of its own for either player.
+
+> [!WARNING]
+> Code that reads an action the game no longer has **keeps running and answers `false`**. After a preset, bring the calls to the new names: `input.held("a")` becomes `input.held("jump")`.
+
+The actions are part of the game document, so they are saved and published with it, and **every player gets the inputs set here**: nobody rebinds a game. The How to play panel on the game's page lists them, each with its label, its description and what presses it.
 
 ## PUBLISHING
 

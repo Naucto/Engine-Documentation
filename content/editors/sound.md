@@ -124,7 +124,7 @@ function _update()
 end
 ```
 
-`"a"` there is the **action**, not the key A: by default it is <kbd>X</kbd> or <kbd>Space</kbd> on the keyboard, and the first button of a gamepad (see [input](/learn/api/input#actions)).
+`"a"` there is the **action**, not the key A: in a new game it is <kbd>X</kbd> or <kbd>Space</kbd> on the keyboard, and the A button of a gamepad (see [input](/learn/api/input#actions)).
 
 A sound effect takes the first free voice of the five. When none is free it takes one from the music, oldest first, so the music keeps playing on the others.
 

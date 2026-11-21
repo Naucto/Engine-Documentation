@@ -10,6 +10,8 @@ description: Seven guided builds, from a ten-minute coin hunt to a host-refereed
 
 Seven guided builds, from a ten-minute coin hunt to a host-refereed online game. Every step gives the whole of the functions it adds, so a page can be followed to the letter in a new game; **Copy to new game** installs the finished game in a fresh project when you would rather read it or compare your version against it.
 
+The games read **the actions every new game has**, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`. In a game whose actions were changed in the GAME tab, read its own names instead.
+
 Before any of them, do [Getting started](/learn/getting-started) and read [the game loop](/learn/concepts/game-loop). Every tutorial assumes you can run a game and know what `_init`, `_update` and `_draw` are for.
 
 ## Start here: your first game

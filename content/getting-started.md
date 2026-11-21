@@ -60,7 +60,7 @@ The numbers put the sprite in the middle of the screen: the screen is 320 × 180
 
 `function _update() … end` is a function, a block of code with a name; `if … then … end` runs what is between `then` and `end` only when the test before it is true.
 
-`_update` runs sixty times a second and moves the player; `_draw` clears the screen and draws sprite `0` where the player is. [[input.held]] asks for an **action**, not a key: "left" answers to the left arrow, to A or Q, to a gamepad and to the touch controls alike.
+`_update` runs sixty times a second and moves the player; `_draw` clears the screen and draws sprite `0` where the player is. [[input.held]] asks for an **action**, not a key: in a new game "left" answers to the left arrow, to A or Q, to a gamepad and to the on-screen pad alike. The actions of a game, and what presses each, are listed in the GAME tab.
 
 ## Step 3: Play
 

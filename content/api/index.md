@@ -55,7 +55,7 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 
 | Function | What it does |
 | --- | --- |
-| [[input.held]] | True while an action (left right up down a b x y pause) is held |
+| [[input.held]] | True while an action of the game is held |
 | [[input.pressed]] | True on the step an action was pressed |
 | [[input.released]] | True on the step an action was released |
 | [[input.key_pressed]] | True while a keyboard key (event.key name) is held |
