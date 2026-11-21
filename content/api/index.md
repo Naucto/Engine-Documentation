@@ -101,7 +101,8 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 | Function | What it does |
 | --- | --- |
 | [[net.host]] | Open the host dialog; callback() once the session exists |
-| [[net.join]] | Open the join dialog |
+| [[net.join]] | Join the session the game was opened on, or open the join dialog; callback() once joined |
+| [[net.invite]] | The session the game was opened on, which net.join() enters; nil without one |
 | [[net.leave]] | Leave the current session |
 | [[net.id]] | Your player id in the session |
 | [[net.on]] | React to net.state changes or events |

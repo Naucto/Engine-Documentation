@@ -1,0 +1,49 @@
+name: invite
+description: >-
+  The session the game was opened on, when it was opened on one. A player who takes the hub's Join,
+  a friend's open slot or an invitation lands on the game's page with that session waiting, and
+  [[net.join]] then enters it without a dialog. This function is how the game knows, so that it can
+  join from `_init` instead of showing its menu.
+
+
+  It needs no session and never raises. The table is a copy made at each call, with four keys:
+
+
+  | Key | Type | Meaning |
+
+  |----|----|----|
+
+  | `title` | string | The session's title, as its host named it. |
+
+  | `host` | string | The host's name. |
+
+  | `players` | number | How many players are in, the host included. |
+
+  | `max_players` | number | The session's capacity, the host included. |
+
+
+  The answer is `nil` when the game was opened on its own, when the player is not signed in, once
+  the session has ended, and from the moment the game is in a session. Restarting the game brings
+  it back: the invite holds until the player leaves that session or the session refuses them.
+returns: A table describing the session `net.join` will enter, or `nil` when there is none.
+examples:
+  - |-
+    local state = "menu"
+
+    function _init()
+      local invite = net.invite()
+      if invite then
+        print("joining " .. invite.title .. ", hosted by " .. invite.host)
+        net.join(function()
+          state = "playing"
+        end)
+      end
+    end
+notes:
+  - kind: note
+    text: A full session still answers a table, with `players` equal to `max_players`. Joining it
+      fails, the player is told, and the join dialog opens as described under [[net.join]].
+seeAlso:
+  - net.join
+  - net.host
+since: "2.0"

@@ -4,7 +4,7 @@ description: >-
 
 
   Both arguments are optional, and `net.host(callback)` is also accepted. The `config` table
-  supports two keys; any other key is ignored:
+  supports three keys; any other key is ignored:
 
 
   | Key | Type | Meaning |
@@ -17,6 +17,11 @@ description: >-
   belongs to the game. |
 
   | `title` | string | Default session title offered in the dialog. The player can edit it. |
+
+  | `listed` | boolean | `true` puts the session in the public list as soon as it is created, so
+  anyone can find it and join. Left out, the session is reached by its join code alone. Either way
+  the host can change it with the switch of the dialog, and a host whose account only lets friends
+  or code holders in keeps that limit. |
 
 
   The callback fires only when the session is actually created. If the player cancels the dialog,
@@ -34,7 +39,7 @@ returns: null
 examples:
   - |-
     local state = "menu"
-    net.host({ max_players = 4, title = "Tag arena" }, function()
+    net.host({ max_players = 4, title = "Tag arena", listed = true }, function()
       state = "playing"
       print("session created, my id is " .. net.id())
     end)

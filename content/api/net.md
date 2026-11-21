@@ -11,10 +11,10 @@ namespace: net
 
 Host or join a session, share a state every player reads, and send events between them. **One player is the host** and orders every change. The concepts are on the [multiplayer](/learn/concepts/multiplayer) page; the permissions on the [permissions](/learn/tutorials/permissions) tutorial.
 
-Sessions are created through the platform's own dialogs: [[net.host]] and [[net.join]] open them for the player. The platform handles the session title, visibility (public or invite code), invite codes and session browsing; your game only decides the player capacity, an optional default title, and when to host, join or leave. Players connect peer to peer with an automatic relay fallback, and your code never has to care which one is in use.
+Sessions are created through the platform's own dialogs: [[net.host]] and [[net.join]] open them for the player. The platform handles the session title, visibility (public or invite code), invite codes and session browsing; your game only decides the player capacity, an optional default title, whether the session starts listed, and when to host, join or leave. A player who opened the game on a session skips the join dialog: [[net.invite]] says which session, and `net.join` enters it. Players connect peer to peer with an automatic relay fallback, and your code never has to care which one is in use.
 
 > [!NOTE]
-> [[net.host]] and [[net.join]] work outside a session (inside one they raise `net: already in a session`), [[net.leave]] at any time, and [[net.lock]] and [[net.queue]] make local objects that work without a session. Everything else, [[net.on]] included, needs an active session and raises `net: no active session` otherwise: register your listeners inside the host or join callback, not in `_init`.
+> [[net.host]] and [[net.join]] work outside a session (inside one they raise `net: already in a session`), [[net.leave]] and [[net.invite]] at any time, and [[net.lock]] and [[net.queue]] make local objects that work without a session. Everything else, [[net.on]] included, needs an active session and raises `net: no active session` otherwise: register your listeners inside the host or join callback, not in `_init`.
 
 Every example on this page that says "inside the callback" runs where the comment sits in this code:
 
@@ -50,6 +50,8 @@ What a guest may read or write is set **per path** in the [NET tab](/learn/edito
 {{api:net.host}}
 
 {{api:net.join}}
+
+{{api:net.invite}}
 
 {{api:net.leave}}
 

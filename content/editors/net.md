@@ -43,7 +43,7 @@ PLAYERS is `Players · n / max`, where the maximum is what the game asked for in
 
 ![The TEST RIG](img/net-rig.png "The TEST RIG outside a session: Spawn a second client, the line that asks you to host first, the Latency and Loss sliders at zero, and Force a relay.")
 
-**Spawn a second client** opens a second copy of the game as a small screen inside the panel, on this machine, so you can test netplay alone. It needs a session first: run the game and call `net.host()`. The second copy starts at `_init` like any run, so it joins the way a player would, through your game's own menu: click its screen to give it the keyboard, then press the key your menu uses to join. The panel says `Waiting for this client to call net.join()` until then, and `Joined as a second player` after. Close the second client takes it away.
+**Spawn a second client** opens a second copy of the game as a small screen inside the panel, on this machine, so you can test netplay alone. It needs a session first: run the game and call `net.host()`. The second copy is opened on your session, as an invited player's is, and starts at `_init` like any run. A game that joins from `_init` when [[net.invite]] answers is in at once; any other joins the way a player would, through its own menu: click its screen to give it the keyboard, then press the key your menu uses to join. The panel says `Waiting for this client to call net.join()` until then, and `Joined as a second player` after. Close the second client takes it away.
 
 Since the rig is on NET and the console column is on CODE, **pop the viewer out** before you come here, or your own game pauses while you are on this tab and the host with it; and turn Auto off, since an edit reruns the game and a rerun ends the session.
 

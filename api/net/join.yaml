@@ -4,6 +4,13 @@ description: >-
   enter an invite code or browse public sessions.
 
 
+  When the game was opened on a session, the one [[net.invite]] describes, the call **joins that
+  session at once**, with no dialog. This holds for a game that never reads `net.invite`: the join
+  it offers from its own menu enters the session the player came for. If that session has ended, is
+  full or is not open to the player, the player is told why and the join dialog opens in its place.
+  The call asks again, through the dialog, once the player has left that session or was refused.
+
+
   As with [[net.host]], the callback fires only on success: if the player cancels the dialog,
   nothing happens. Like [[net.host]], it raises `net: already in a session; call net.leave() first`
   when a session is already active, and silently ignores a repeat call made while a dialog is still
@@ -20,6 +27,7 @@ examples:
     end)
 notes: []
 seeAlso:
+  - net.invite
   - net.host
   - net.leave
 since: "1.0"
