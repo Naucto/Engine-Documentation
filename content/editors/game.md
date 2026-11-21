@@ -116,7 +116,7 @@ A control it has no place for is named beside the count, as in `RB is not on the
 
 The actions are part of the game document. Two people plugging inputs into one action **both keep theirs**, and the actions are saved and published with the game.
 
-Every player gets the inputs set here: nobody rebinds a game. The How to play panel on the game's page lists them, each with its label, its description and what presses it.
+**Every player gets the inputs set here**: nobody rebinds a game. How to play, under the screen on the game's page, lists them in a table: a row per action with its label and its description, then its keys and its gamepad controls. A game with keys for a second player gets a column per player, and a touch device is shown the control of the on-screen pad instead.
 
 ## Publishing
 

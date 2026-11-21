@@ -32,6 +32,8 @@ An action takes as many inputs as its author plugs into it, of two kinds. A **ke
 
 The keyboard and the first gamepad are player 1 together; a second gamepad is player 2, and so on up to four. **The keys given to player 2 play as player 2**, whether or not a gamepad is plugged in.
 
+Which player a gamepad drives is the player's to change, not the game's: in Controls, the badge of a pad opens Plays as, and choosing a seat another pad holds swaps the two. The choice holds for every game until the page is reloaded.
+
 A game holds 32 actions at most. A name is made of lower-case letters, digits and underscores, starts with a letter, runs to 24 characters and is used once in the game.
 
 ### On a touch screen
@@ -40,9 +42,9 @@ A phone or a tablet has neither keys nor a gamepad, so the console draws a gamep
 
 The pad **draws only the controls an action is plugged into**, so a game that reads two directions and one button shows two arrows and one button. LB, RB and Select have no place on it: an action plugged into nothing else cannot be played by touch.
 
-Its size and opacity belong to the player, not to the game. They are in Settings › Controls, beside the gamepad the device has connected:
+Its size and opacity belong to the player, not to the game. They are in Settings › Controls, under the gamepads the device has connected, and the gear under a game's screen opens the same panel without leaving the game:
 
-![Settings › Controls](../editors/img/settings-controls.png "Settings › Controls: the connected gamepad, and the size and opacity of the on-screen pad.")
+![Settings › Controls](../editors/img/settings-controls.png "Settings › Controls: a card per connected gamepad, lit by what is held on it, then the on-screen pad with its size and opacity.")
 
 A jump reads the press, not the hold, or the player flies while the key is down:
 
