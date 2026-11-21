@@ -265,7 +265,7 @@ end
 
 Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, use the NET tab's TEST RIG, which spawns a second client on your machine. Three things to know before you press its button:
 
-- On the NET tab your own game is paused unless the VIEWER is popped out. Pop it out first, from the button at the top of the CODE tab's console column, and host from the floating viewer.
+- On the NET tab your own game is paused unless the Game preview is popped out. Pop it out first, from the button at the top of the CODE tab's console column, and host from the floating card.
 - Turn **Auto** off, in the same column: an edit reruns the game, and a rerun ends the session.
 - **Spawn a second client** opens a second copy of the game as a small screen inside the TEST RIG panel, not a window. Click inside that screen to give it the keyboard: it starts at `_init` like any run and has to reach `net.join()` through its own menu, so press `j` there. The panel says `Waiting for this client to call net.join()` until it does, and the join lands straight in your session, no code needed.
 

@@ -68,7 +68,7 @@ The globals go, the palette and the camera come back to what the editors show, t
 
 ![The console column](img/code-console.png "The console column before the first run: an idle screen under its Play mark, the transport under it with Play, Restart, Step, the Auto switch, the Controls gear and Fullscreen, and the Console saying the machine has nothing to say yet.")
 
-The column at the right of CODE holds the **running game** at its own 320 × 180, scaled to the column. Opening the editor does not launch it; the Play mark over the idle screen does, and so does the transport under it: Play or Pause, Restart, Step (one `_update` and one `_draw`, pausing a running game first), then the Auto switch, the Controls gear and Fullscreen. Click the screen to give it the keyboard.
+The column at the right of CODE, headed Game preview, holds the **running game** at its own 320 × 180, scaled to the column. Opening the editor does not launch it; the Play mark over the idle screen does, and so does the transport under it: Play or Pause, Restart, Step (one `_update` and one `_draw`, pausing a running game first), then the Auto switch, the Controls gear and Fullscreen. Click the screen to give it the keyboard.
 
 The **gear** opens Controls over the running game, the same panel as Settings › Controls: a card per connected gamepad, drawn with whatever is held on it lit in its player's colour, then the size and opacity of the on-screen pad. The badge of a card, `P1` to `P4`, opens Plays as, where choosing another player seats the pad there; a pad that held that seat takes the one left. With no pad the panel says so, and pressing any button on one makes it appear.
 

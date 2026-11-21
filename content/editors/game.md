@@ -24,6 +24,8 @@ The cover is the game's picture everywhere it is listed, at **320 × 180**. Grab
 
 Record captures the running game as it is drawn: 320 × 180, no sound, **25 seconds at most**. Stop ends it early, and what was captured so far is the clip. While it records, the sidebar's screen is framed in red with the count, and the block shows the same picture with the time left.
 
+![The clip while it records](img/game-clip.png "A clip two seconds in: REC and the count on the sidebar's screen, the same picture in the Clip block with Stop and the time left.")
+
 The clip then plays in a loop in the block, with its length. Record again replaces it and Delete removes it, after asking. On the hub it plays over the cover of a disk that is reached.
 
 > [!IMPORTANT]
@@ -39,6 +41,8 @@ The name is 25 characters at most, the summary 50, the description 300 and there
 ## Disk
 
 A game stands on the hub as a disk, with its cover as the label. The Disk tab shows that disk at full size with the game's name under it, and everything that changes it beside it. **Nothing is applied**: a pick is the disk's style from then on, in every list.
+
+![The Disk tab](img/game-disk.png "The Disk tab: the game's disk at full size, the game palette with the colour picked, and the eight finishes, each on this game's disk.")
 
 ### Game palette
 
@@ -69,6 +73,8 @@ A game defines **its own actions**: what a player does, each under the name the 
 One table, a row per action: its label, its name in the code under it, and how many inputs it has. The chip beside Actions counts them against the **32** a game may hold, and the Inputs tab carries the same count.
 
 A row opens onto its inputs, one per line: the key or the control, the device, and for a key the player whose keyboard it is. An action is not a key: in a new game `a` is <kbd>X</kbd> or <kbd>Space</kbd>, and the key <kbd>A</kbd> is `left`.
+
+![The Inputs tab](img/game-inputs.png "The Inputs tab with Left open: four keys, three of player 1 and one of player 2, then the D-pad and the left stick of a gamepad.")
 
 ### Plug an input
 
@@ -118,6 +124,8 @@ The actions are part of the game document. Two people plugging inputs into one a
 
 **Every player gets the inputs set here**: nobody rebinds a game. How to play, under the screen on the game's page, lists them in a table: a row per action with its label and its description, then its keys and its gamepad controls. A game with keys for a second player gets a column per player, and a touch device is shown the control of the on-screen pad instead.
 
+![How to play](img/how-to-play.png "How to play on the page of a game that keeps the Classic preset: an action a row, the keys of each player, then the gamepad controls.")
+
 ## Publishing
 
 The sidebar on the right. Its head carries Export and Delete; under it stand **the running game**, then the game's status, who is here, and where it comes from.
@@ -126,7 +134,7 @@ The sidebar on the right. Its head carries Export and Delete; under it stand **t
 
 The screen is the editor's one running game, the same one the [console column](/learn/editors/code#the-console-column) of CODE shows, with the same transport under it. Coming here from another tab **does not restart it**, and it is this screen that Grab frame and Record take from.
 
-While the screen floats in the viewer, the sidebar says so and offers Bring it back.
+While the screen floats in its card, the sidebar says so and offers Bring it back.
 
 ### Status
 
