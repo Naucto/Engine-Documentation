@@ -1,11 +1,12 @@
 name: play_music
-description: "Play a music of the SOUND tab, replacing the one playing. A number that holds no
-  music plays nothing and raises no error. A music loops from its
-  start unless the code says otherwise: `loop` here, or [[sound.set_music]] for that music."
+description: "Play a music of the SOUND tab, replacing the one playing, at the music's own tempo.
+  A number that holds no music plays nothing and raises no error. A music loops unless the code
+  says otherwise, `loop` here or [[sound.set_music]] for that music: at the loop's end, as the
+  timeline of the SOUND tab marks it, it goes back to the loop's start."
 params:
-  song: Music number, as the `#` field of the SOUND tab shows it; left out, `0`. An empty number plays
-    nothing.
-  loop: "Whether the music restarts when it reaches its end. Left out, it loops, unless
+  song: Music number, as the music menu of the SOUND tab's timeline shows it; left out, `0`. An empty
+    number plays nothing.
+  loop: "Whether the music goes back to the loop's start when it reaches the loop's end. Left out, it loops, unless
     [[sound.set_music]] said otherwise for this music. Lua truth applies: only `false` means no, so
     `0` loops; a `nil` is the same as leaving it out."
   fade_in: Seconds to fade the music up over. Defaults to `0`, which starts at full volume.

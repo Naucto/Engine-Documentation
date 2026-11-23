@@ -1,14 +1,14 @@
 name: play_sfx
-description: "Play the sound effect kept at that number in the SOUND tab's bank. Any number will do
-  and an empty one is silent. It plays at priority 1, above the music: it takes the first free voice
+description: "Play the sound effect at that number in the SFX window of the SOUND tab. Any number
+  will do and an empty one is silent. It plays at its own tempo, whatever music is playing. It plays at priority 1, above the music: it takes the first free voice
   of the five, and when none is free it takes one from the music, oldest first, so music keeps
   playing on the others."
 params:
-  slot: The number the sound editor shows on the slot.
+  slot: The number the SFX menu of the SOUND tab shows.
   channel: Force a voice `0` to `4` instead of letting the mixer choose; a number outside is clamped.
-    The whole pattern then plays on that one voice, one note at a time.
+    The whole sound effect then plays on that one voice, one note at a time.
   pitch_offset: Semitones to transpose by.
-  volume: Multiplies the volume of the pattern's notes, `1` by default; the result is kept within `0`
+  volume: Multiplies the volume of the sound effect's notes, `1` by default; the result is kept within `0`
     to `1`.
 returns: null
 examples:

@@ -1,6 +1,6 @@
 -- What SOUND decided
-SFX_ZAP    = 0   -- the SFX slot that holds the zap
-MUSIC_MAIN = 0   -- the music, as the # field shows it
+SFX_ZAP    = 0   -- the sound effect, as the SFX menu shows it
+MUSIC_MAIN = 0   -- the music, as the Timeline menu shows it
 
 -- Game loop
 
@@ -27,19 +27,17 @@ end
 function _draw()
   gfx.clear(0)
 
-  local place, step = sound.music_pos()
-  if place == nil then
+  local bar, beat = sound.music_pos()
+  if bar == nil then
     gfx.print("NO MUSIC", 10, 30, 3)
     return
   end
 
-  -- Four steps to a beat, and the step counts from 0: 0 to 3 is the first beat.
-  local beat = step // 4
   for i = 0, 3 do
     local colour = 15                    -- dark blue
     if i == beat then colour = 4 end     -- yellow on the beat
     gfx.fill_rect(10 + i * 20, 50, 16, 16, colour)
   end
 
-  gfx.print("PLACE " .. place .. "  STEP " .. step, 10, 30, 5)
+  gfx.print("BAR " .. bar .. "  BEAT " .. beat, 10, 30, 5)
 end

@@ -74,15 +74,15 @@ The functions live in six tables, `gfx`, `map`, `input`, `sound`, `sys` and `net
 | [[sound.play_sfx]] | Play a numbered SFX slot |
 | [[sound.play_note]] | Play a note now; pitch is MIDI or "C4" |
 | [[sound.stop_note]] | Release a voice |
-| [[sound.play_music]] | Start a music; loops from its start unless told otherwise |
+| [[sound.play_music]] | Start a music; loops unless told otherwise |
 | [[sound.stop_music]] | Stop the music |
 | [[sound.stop]] | Stop everything |
 | [[sound.set_volume]] | Mixer levels 0..1 |
-| [[sound.music_pos]] | Place in the music's chain and the step now sounding, 0-based; nil when nothing plays |
+| [[sound.music_pos]] | Bar and beat of the music now sounding, 0-based; nil when nothing plays |
 | [[sound.is_playing]] | Whether a voice is sounding |
 | [[sound.set_instrument]] | Change an instrument for this run |
-| [[sound.set_pattern]] | Change the tempo or length of a pattern for this run |
-| [[sound.set_music]] | Change whether a music loops for this run |
+| [[sound.set_pattern]] | Change the length of a pattern for this run |
+| [[sound.set_music]] | Change the tempo of a music or whether it loops, for this run |
 
 ## sys · Time and console
 
