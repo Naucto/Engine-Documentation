@@ -9,13 +9,15 @@ namespace: sound
 
 # sound · Sound effects, notes and music
 
-The SOUND tab writes instruments and patterns; the game plays them. A sound effect is a pattern kept in a numbered slot of the SFX bank; a music is a numbered grid of patterns; a note is one pitch on one instrument, played from code. `set_volume` balances the three.
+The SOUND tab writes instruments, patterns, musics and sound effects; the game plays them. A music is a numbered timeline of patterns, with its own tempo; a sound effect is a short phrase of its own at a number of the SFX window; a note is one pitch on one instrument, played from code. `set_volume` balances the three.
 
 ## The audio model
 
-The synth has **five voices, numbered `0` to `4`**, and everything sounding is on one of them. Musics and sound effect slots are numbered from `0` with no last one, and an instrument is named by the name the SOUND tab shows.
+The synth has **five voices, numbered `0` to `4`**, and everything sounding is on one of them. Musics and sound effects are numbered from `0` with no last one, and an instrument is named by the name the SOUND tab shows.
 
 Music plays at priority 0, sound effects and notes at priority 1, above it. A new sound takes the first free voice; when none is free it takes a voice from the music first, oldest first. Forcing a `channel` puts the whole sound on that one voice.
+
+A music split into tracks in the SOUND tab gives each track as many voices as its patterns play notes at once, and may keep some for the sound effects. While it plays, a track's notes stay on its voices, and a sound effect plays on the voices kept for it and never takes a note from the music. A music with one track and none kept plays as above.
 
 {{svg:img/voices.svg}}
 
@@ -26,7 +28,7 @@ Music plays at priority 0, sound effects and notes at priority 1, above it. A ne
 
 {{api:sound.play_sfx}}
 
-![SFX SLOTS in the SOUND tab](../editors/img/sound-sfx.png "SFX SLOTS: the numbered slots, counted from 00; slots 00 and 01 hold a pattern each, 02 is drawn as current because it holds the pattern in front of you, and 03 onwards are free. sound.play_sfx(1) plays the pattern kept in slot 01.")
+![The SFX window of the SOUND tab](../editors/img/sound-sfx.png "The SFX window: the SFX menu says which number is in front of you; sound.play_sfx(1) plays the sound effect at number 01.")
 
 ## Notes
 
@@ -38,11 +40,11 @@ A note plays on one of the five voices; name a channel to stop it or to keep two
 
 ## Music
 
-A music loops from its start unless the code says otherwise: `loop` on [[sound.play_music]], or [[sound.set_music]] for that music.
+A music loops unless the code says otherwise, `loop` on [[sound.play_music]] or [[sound.set_music]] for that music: at the loop's end it goes back to the loop's start, as the timeline marks them.
 
 {{api:sound.play_music}}
 
-![MUSIC in the SOUND tab](../editors/img/sound-music.png "MUSIC: the # field picks the music, 0 here, and the grid holds the pattern numbers sound.play_music(0) plays left to right, then top to bottom.")
+![The timeline of the SOUND tab](../editors/img/sound-timeline.png "The timeline: the music menu picks the music, 00 here, and its blocks are the patterns sound.play_music(0) plays, bar after bar.")
 
 {{api:sound.stop_music}}
 
@@ -58,7 +60,7 @@ A music loops from its start unless the code says otherwise: `loop` on [[sound.p
 
 ## Changing sounds from code
 
-The SOUND tab decides what an instrument, a pattern and a music are; a game may bend them while it runs. These three functions **change the sound for this run only**: the saved game is never written, and the next run starts from the tab's settings again, the way [[map.set]] changes a tile without touching the map. An instrument change lands from the next note on, a tempo or length change at the music's next step, a loop change at the music's next end. A sound effect already playing keeps the pattern it copied when it was triggered, so a tempo or length change reaches it from its next trigger.
+The SOUND tab decides what an instrument, a pattern and a music are; a game may bend them while it runs. These three functions **change the sound for this run only**: the saved game is never written, and the next run starts from the tab's settings again, the way [[map.set]] changes a tile without touching the map. An instrument change lands from the next note on, a tempo or length change at the music's next beat, a loop change at the loop's next end. Sound effects have their own tempo and length, which none of these change.
 
 {{api:sound.set_instrument}}
 

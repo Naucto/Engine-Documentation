@@ -40,11 +40,11 @@ A **flag** is one of the eight bits, `0` to `7`, every sprite carries. The FLAGS
 
 ## Pattern
 
-A **pattern** is one page of the piano roll, numbered from `00` with no last one, with a tempo and a length of its own. Every number is already a pattern, most of them empty. A sound effect is a pattern kept in an SFX slot; a music is a chain of them. See [SOUND](/learn/editors/sound).
+A **pattern** is a short phrase of notes written on the piano roll, numbered from `00` with no last one. Its length follows its notes, a bar at a time. A music lays patterns out on its timeline. See [SOUND](/learn/editors/sound).
 
 ## Step and frame
 
-On the piano roll a **step** is one column of the grid, a quarter of a beat: a pattern has 16 to 64 of them in the SOUND tab (code accepts 1 to 64), and the default snap places a note on one.
+On the piano roll a **step** is one column of the grid, a quarter of a beat: a pattern or a sound effect has up to 128 of them, and the default snap places a note on one.
 
 The game loop has a step too: 1/60 s of game time, one `_update` followed by one `_draw`, which is what the Step button of the transport runs once. A **frame** is one picture shown on the screen. The two usually go together, but a browser that fell behind runs several steps before showing one picture, so a step can run without its frame ever being seen. [[sys.frame]] counts steps. See [Game loop](/learn/concepts/game-loop).
 
@@ -58,15 +58,15 @@ The **delta** is the time one step stands for, which [[sys.dt]] returns. In Nauc
 
 ## BPM
 
-**BPM**, beats per minute, is the tempo of a pattern: how many beats go by in a minute, from 40 to 240, 124 by default. Each pattern keeps its own, at four steps to the beat. See [SOUND](/learn/editors/sound).
+**BPM**, beats per minute, is a tempo: how many beats go by in a minute, from 40 to 240. A music has its own, which holds for all its patterns; a pattern keeps one for when it plays alone, and a sound effect one of its own. See [SOUND](/learn/editors/sound).
 
-## SFX slot
+## Sound effect
 
-An **SFX slot** is a numbered entry of the SFX SLOTS bank in SOUND, counted from `00`, holding one pattern. [[sound.play_sfx]] takes that number. A free row always waits at the end of the bank, so there is no last slot. See [SOUND](/learn/editors/sound).
+A **sound effect**, or SFX, is a short phrase with its own name, tempo, length and notes, at a number of the SFX window in SOUND, counted from `00`, with no last one. [[sound.play_sfx]] takes that number. Removing one empties its number and moves no other. See [SOUND](/learn/editors/sound).
 
 ## Music
 
-A **music** is a chain of patterns, numbered from `0` with no last one. Its grid is played left to right, then top to bottom, and stops at the first empty box that has more after it. [[sound.play_music]] starts one by number, looping by default. See [SOUND](/learn/editors/sound).
+A **music** is a timeline of patterns, laid out bar after bar, with a tempo of its own, numbered from `0` with no last one. [[sound.play_music]] starts one by number; it loops by default, from the loop's end back to the loop's start. See [SOUND](/learn/editors/sound).
 
 ## Instrument
 

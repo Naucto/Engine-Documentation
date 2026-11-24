@@ -1,34 +1,28 @@
 name: set_pattern
 description: >-
-  Change the tempo or the length of a pattern **for this run only**: the SOUND tab and the saved
-  game keep theirs. On the music it takes effect at once, even while the pattern plays: the next
-  step comes at the new tempo, and a pattern past its new end goes on to the next one. A sound
-  effect already playing keeps the pattern it copied when it was triggered, tempo included: the
-  change reaches it from its next trigger. Calling it again adds to what it set before.
+  Change the length of a pattern **for this run only**: the SOUND tab and the saved game keep
+  theirs. On the music it takes effect at once, even while the pattern plays: every block of the
+  pattern lasts the new length, and notes past it are not played. The blocks after it stay where
+  the SOUND tab put them, so a shorter pattern leaves a silence and a longer one plays over the
+  next block. Calling it again adds to what it set before. The tempo belongs to the music: set it
+  with [[sound.set_music]]; a `bpm` given here warns once and changes nothing.
 
 
   | Field | What it is | Range |
 
   | --- | --- | --- |
 
-  | `bpm` | Beats a minute | `40` to `240` |
-
-  | `steps` | Length, in steps; notes past it are not played | `1` to `64` |
+  | `steps` | Length, in steps, four to a beat | `1` to `128` |
 params:
-  n: The pattern's number, as the PATTERN field of the SOUND tab shows it. A number no pattern has
+  n: The pattern's number, as the pattern menu of the SOUND tab shows it. A number no pattern has
     warns once and changes nothing.
-  fields: "`bpm`, `steps`, or both; the other keeps its value."
+  fields: "`steps`."
 returns: null
 examples:
   - |-
-    -- the music speeds up when the timer goes under ten seconds
-    local left = 60
-    function _update()
-      local before = left
-      left = left - sys.dt()
-      if before >= 10 and left < 10 then
-        sound.set_pattern(0, { bpm = 180 })
-      end
+    -- the last lap plays only the first bar of pattern 3
+    function last_lap()
+      sound.set_pattern(3, { steps = 16 })
     end
 notes: []
 seeAlso:

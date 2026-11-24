@@ -433,4 +433,4 @@ end
 - Rematch: on the "over" screen, let the host reset the score and ball instead of leaving.
 - Faster rallies: increase `ball.dx` slightly on each paddle bounce.
 - Spin: adjust `ball.dy` based on where the ball hits the paddle.
-- Sound: play a jingle with [[sound.play_sfx]] in `score_point` and in the `"event:point"` listener, once the game has an SFX slot; [Make it sound](/learn/tutorials/sound) makes one.
+- Sound: play a jingle with [[sound.play_sfx]] in `score_point` and in the `"event:point"` listener, once the game has a sound effect; [Make it sound](/learn/tutorials/sound) makes one.

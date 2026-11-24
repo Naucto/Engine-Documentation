@@ -1,27 +1,40 @@
 name: set_music
 description: >-
-  Set whether a music restarts when it reaches its end, **for this run only**. A music loops from
-  its start unless the code says otherwise, and this is one way of saying so. On the music playing
-  it takes effect at once, so a loop can be let out at its next end; on any other it is what
-  [[sound.play_music]] does for that music when it is not given a `loop` of its own. Lua truth
-  applies: only `false` means no; a `nil` is the same as leaving it out, and the music loops.
+  Change the tempo of a music, or whether it loops, **for this run only**: the SOUND tab and the
+  saved game keep theirs. On the music playing it takes effect at once: the next beat comes at the
+  new tempo, and a loop can be let out at the loop's next end. On any other music it is what
+  [[sound.play_music]] plays it with. A music loops unless the code says otherwise, and `loop` is
+  one way of saying so. Lua truth applies: only `false` means no; a `nil` is the same as leaving it
+  out, and the music loops. Calling it again adds to what it set before.
 
 
-  | Field | What it is |
+  | Field | What it is | Range |
 
-  | --- | --- |
+  | --- | --- | --- |
 
-  | `loop` | `true` to start over at the end, `false` to stop there |
+  | `bpm` | Beats a minute, for the whole music | `40` to `240` |
+
+  | `loop` | `true` to go back to the loop's start at its end, `false` to stop at the end | |
 params:
-  n: Music number, as the `#` field of the SOUND tab shows it. An empty number warns once and changes
+  n: Music number, as the music menu of the SOUND tab's timeline shows it. An empty number warns once and changes
     nothing.
-  fields: "`loop`, `true` or `false`."
+  fields: "`bpm`, `loop`, or both; the other keeps its value."
 returns: null
 examples:
   - |-
     -- the music plays out to its end, then the ending shows
     function game_over()
       sound.set_music(0, { loop = false })
+    end
+  - |-
+    -- the music speeds up when the timer goes under ten seconds
+    local left = 60
+    function _update()
+      local before = left
+      left = left - sys.dt()
+      if before >= 10 and left < 10 then
+        sound.set_music(0, { bpm = 180 })
+      end
     end
 notes: []
 seeAlso:
