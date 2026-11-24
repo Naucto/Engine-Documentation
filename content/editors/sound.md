@@ -149,15 +149,27 @@ A **music** is a row of patterns laid out on a timeline, bar after bar, that the
 
 ![The timeline](img/sound-timeline.png "The Timeline window: the pattern list on the left, the ruler with the loop marks, and the blocks of music 00.")
 
-The list on the left holds every pattern. Drag one onto the track and it becomes a **block** where you drop it. A block shows its pattern's number and a small picture of its notes, and lasts as long as the pattern does.
+The list on the left holds every pattern. Drag one onto a track and it becomes a **block** where you drop it. A block shows its pattern's number and a small picture of its notes, and lasts as long as the pattern does.
 
-- Drag a block to move it; drag it off the track to remove it. A block placed over others replaces them.
+- Drag a block to move it, along its track or onto another; drag it off the tracks to remove it. A block placed over others on its track replaces them.
 - Drag the right edge of a block to repeat its pattern.
 - Click a block to choose it, <kbd>Shift</kbd> + click to choose several. Choosing a block also shows its pattern in Patterns, and a double-click brings Patterns to the front.
 - <kbd>Enter</kbd> puts the pattern chosen in the list at the playhead.
 - <kbd>Ctrl/⌘</kbd>+<kbd>D</kbd> duplicates the chosen blocks right after them; <kbd>Ctrl/⌘</kbd>+<kbd>C</kbd> and <kbd>Ctrl/⌘</kbd>+<kbd>V</kbd> copy them and paste them at the playhead; <kbd>Delete</kbd> removes them; <kbd>Esc</kbd> chooses none.
 
 The ruler counts bars from `1`. Clicking it moves the playhead; the grey line is the end of the music. The grid snaps blocks to a whole bar, or to 1/2, 1/4 or 1/8 of one; one press cycles. The zoom goes from 50 % to 225 %.
+
+### Tracks and voices
+
+A music starts with one track. **+ Track** adds another, and every track is a row of blocks of its own: drums on one, bass on another, chords on a third. A pattern lengthened with END pushes the blocks after it on its own track only.
+
+Each track plays on **voices of its own**, as many as its patterns play notes at once: a melody takes one, a low note held under a tune two, a chord of three notes three. An instrument with ARP walks a chord on one voice, so it counts once. The count shows at the head of the row, and the notes of one track never cut those of another.
+
+The five voices go to the **SFX** first, as many as their field keeps, then one to each track, then to the tracks that ask for more, in order. A track that gets fewer than it asks for says so in pink, `1 of 2 voices`, and so do its blocks: a note of theirs is cut when they play. Keep fewer voices for the SFX, take a track out, or play fewer notes at once to free one.
+
+While the music plays, [[sound.play_sfx]] sounds on the voices kept for the SFX and never cuts a note of the music. With none kept, a sound effect takes the oldest note of the music, as it does in a music with one track.
+
+**M** silences a track and **S** plays it alone, for you only: neither changes the game, and both start over when you pick another music. A track is renamed with a double-click on its name, and its row's actions remove it with its blocks.
 
 **BPM** in the Timeline window is the music's own tempo. It holds for the whole music, whatever tempo its patterns have when they play alone.
 
@@ -181,7 +193,7 @@ end
 
 `"a"` there is the **action**, not the key A: in a new game it is <kbd>X</kbd> or <kbd>Space</kbd> on the keyboard, and the A button of a gamepad (see [input](/learn/api/input#actions)).
 
-A sound effect takes the first free voice of the five. When none is free it takes one from the music, oldest first, so the music keeps playing on the others.
+A sound effect takes the first free voice of the five. When none is free it takes one from the music, oldest first, so the music keeps playing on the others. While a music that gives the sound effects voices of their own plays, a sound effect uses those and leaves the music alone (see [Tracks and voices](#tracks-and-voices)).
 
 ## Working together
 

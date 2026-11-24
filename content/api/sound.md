@@ -17,6 +17,8 @@ The synth has **five voices, numbered `0` to `4`**, and everything sounding is o
 
 Music plays at priority 0, sound effects and notes at priority 1, above it. A new sound takes the first free voice; when none is free it takes a voice from the music first, oldest first. Forcing a `channel` puts the whole sound on that one voice.
 
+A music split into tracks in the SOUND tab gives each track as many voices as its patterns play notes at once, and may keep some for the sound effects. While it plays, a track's notes stay on its voices, and a sound effect plays on the voices kept for it and never takes a note from the music. A music with one track and none kept plays as above.
+
 {{svg:img/voices.svg}}
 
 > [!IMPORTANT]

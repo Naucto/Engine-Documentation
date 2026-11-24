@@ -2,7 +2,8 @@ name: play_sfx
 description: "Play the sound effect at that number in the SFX window of the SOUND tab. Any number
   will do and an empty one is silent. It plays at its own tempo, whatever music is playing. It plays at priority 1, above the music: it takes the first free voice
   of the five, and when none is free it takes one from the music, oldest first, so music keeps
-  playing on the others."
+  playing on the others. While a music that keeps voices for the sound effects plays, it plays on
+  those and leaves the music alone."
 params:
   slot: The number the SFX menu of the SOUND tab shows.
   channel: Force a voice `0` to `4` instead of letting the mixer choose; a number outside is clamped.
