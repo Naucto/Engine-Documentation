@@ -14,15 +14,15 @@ By default [[net.state]] trusts every client: any peer can write any key, and ga
 
 ## The two flags
 
-Every `net.state` path has two client permissions, set in the NET tab's SHARED STATE table and enforced by the host at runtime. They are the two chips of the **PERMS** column, `R` then `W`; their tooltips say "Clients can read this path" and "Clients can write this path".
+Every `net.state` path has two client permissions, set in the NET tab's RULES table and enforced by the host at runtime. They are its **Read** and **Write** columns, whose boxes say "Clients can read this path" and "Clients can write this path".
 
-- W off: only the host may write the path. A client's write is applied optimistically and then rolled back when the host's rejection arrives, so a [[net.on]] change listener sees the value flip and flip back.
-- R off: the host keeps the path private. It is never sent to clients, neither in the join snapshot nor in live updates.
+- Write off: only the host may write the path. A client's write is applied optimistically and then rolled back when the host's rejection arrives, so a [[net.on]] change listener sees the value flip and flip back.
+- Read off: the host keeps the path private. It is never sent to clients, neither in the join snapshot nor in live updates.
 
 Three things to keep in mind:
 
 - Allow by default. A path you never configure is fully open. You opt into restrictions; you never have to grant permissions just to keep a game working.
-- Inheritance. A path inherits the flags of its nearest configured ancestor, so locking `players` locks `players.3.x` too; configure at the granularity you actually own.
+- Inheritance. A path takes the rule of its nearest ancestor that has one, so locking `players` locks `players.3.x` too; configure at the granularity you actually own. A path you declare starts that way, its Rule column saying `from players`, and gets a rule of its own only when you tick Read or Write on it. Inherit again on its row drops that rule.
 - The host is the authority. There is no separate server to restrict, and "client" always means a joined peer. The host itself is never restricted.
 
 ## Make the winner host-authoritative
@@ -89,13 +89,13 @@ end
 
 ### Lock the key
 
-In the NET tab, click **Declare a path** and enter `winner` (the button is only there while nothing is declared and no session runs; after that the `+` on the `<root>` row, Add child node, does the same). Switch off its `W` and leave `R` on: everyone still needs to see who won. You can do this before running anything; the flags live in the game, not in the session. Run and host, and the game plays exactly as before, because only the host writes `winner` now.
+In the NET tab, click **+ Path** in the head of the RULES table and enter `winner`. It is `open by default`, since no rule reaches it. Untick its Write and leave Read on: everyone still needs to see who won, and the path now has a rule of its own, marked `OWN`. You can do this before running anything; the rules live in the game, not in the session. Run and host, and the game plays exactly as before, because only the host writes `winner` now.
 
-![The SHARED STATE table with winner declared and its W flag off](img/net-shared-state-declared.png "SHARED STATE with winner declared before any run, its W off and R on: the Value and Owner columns only fill in once a session is running.")
+![The RULES table with winner declared and its Write off](img/net-shared-state-declared.png "RULES with winner declared before any run, its own rule reading but not writing: the Value and Owner columns only join the table once a session is running.")
 
 ### See the rule bite
 
-Temporarily add `net.state.winner = net.id()` to a client path (say, on a key press) and press it from a joined client; the TEST RIG's second client is one, so its screen is where to press. On every other screen nothing happens: the host rejects the write and it never reaches them. On the cheater's own screen the write is applied for a moment, so `update_playing` sees `net.state.winner`, switches to `"over"` and prints "You win!"; then the rejection snaps `winner` back to `nil`, and a `net.on("winner", ...)` listener sees it flip and flip back. The permission rolls back the **value**, not the game's own state machine: the cheater's game stays on its "over" screen, alone.
+Temporarily add `net.state.winner = net.id()` to a client path (say, on a key press) and press it from a joined client; the second client of the DEBUG drawer is one, so its screen is where to press. On every other screen nothing happens: the host rejects the write and it never reaches them. On the cheater's own screen the write is applied for a moment, so `update_playing` sees `net.state.winner`, switches to `"over"` and prints "You win!"; then the rejection snaps `winner` back to `nil`, and a `net.on("winner", ...)` listener sees it flip and flip back. The permission rolls back the **value**, not the game's own state machine: the cheater's game stays on its "over" screen, alone.
 
 > [!NOTE]
 > A client's writes leave in batches: the writes of one step leave together, cut into a new batch at each [[net.emit]] and at each call on a lock or a queue. The host refuses a batch as a whole, so a forbidden write never lands partially, and neither do the allowed writes that left with it. In practice clients only write their own open keys, so this rarely comes up.
@@ -121,6 +121,6 @@ A good rule of thumb: the host owns anything global or authoritative, such as th
 Note the distinction: in Coin Rush each player's score lives inside its own id-keyed branch (`net.state.players[net.id()].score`) and is written by that client, so it stays open; it is the winner derived from those scores that is global and belongs to the host. Lock the authoritative fact, not the per-player data that feeds it.
 
 > [!WARNING]
-> Keep `coins` writable: a lock obeys the write permission of the path it lives at, and Coin Rush clients acquire `coins[i].lock` themselves, so with `W` off on `coins` every `try_collect` fails.
+> Keep `coins` writable: a lock obeys the write permission of the path it lives at, and Coin Rush clients acquire `coins[i].lock` themselves, so with Write off on `coins` every `try_collect` fails.
 
 A client that cannot write a path cannot acquire a lock under it: the callback of the acquire never runs, and `net.on("error")` fires with `"forbidden"` for that path. A game that tracks pending claims the way Coin Rush does should clear `claiming[i]` in that handler, or the coin stays claimed on the refused screen forever. Spawned pickups belong to the host only when the host also does the picking up.

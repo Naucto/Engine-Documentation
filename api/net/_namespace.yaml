@@ -3,6 +3,7 @@ title: Networking
 order:
   - host
   - join
+  - invite
   - leave
   - id
   - on

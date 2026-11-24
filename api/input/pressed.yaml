@@ -2,9 +2,10 @@ name: pressed
 description: "True only on the step an action went down: what you want for a jump or a menu choice,
   so holding the button does not repeat it."
 params:
-  action: One of `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`.
+  action: The name of one of the game's actions, as the GAME tab lists it. A new game has `"left"`,
+    `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"` and `"pause"`.
   player: Player `1` to `4`; left out, `0` or negative, player `1`. The keyboard and the first gamepad
-    are player 1 together, the second keyboard layout and the second gamepad player 2. A number past
+    are player 1 together, the keys given to player 2 and the second gamepad player 2. A number past
     `4` answers `false`.
 returns: True on the press step.
 examples:

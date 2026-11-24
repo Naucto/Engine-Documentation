@@ -3,55 +3,154 @@ title: GAME
 slug: editors/game
 section: editors
 order: 1
-description: The GAME tab is the game's card and its publishing panel, and the header beside it holds the versions, the sharing and the publishing of the game.
+description: The GAME tab is the game's details, its disk and its inputs, beside a Publishing sidebar that holds the running game; the header above it holds the versions, the sharing and the publishing.
 ---
 
 # GAME
 
-The GAME tab is what the game is, who it is for and where it goes: its card on the hub, its publishing status, the people in the work session. The header above every tab belongs here too, with the **versions**, SHARE and PUBLISH.
+The GAME tab is what the game is, what it looks like on a shelf and what plays it. Its workspace has three tabs, **Details, Disk and Inputs**, and the Publishing sidebar beside them holds the running game. The header above every tab belongs here too, with the versions, SHARE and PUBLISH.
 
-![The GAME tab](img/game.png "The GAME tab: the card on the left, the PUBLISHING panel on the right.")
+![The GAME tab](img/game.png "The GAME tab: Details on the left, the Publishing sidebar and the running game on the right.")
 
-## The game card
+## Details
 
-### Icon
+The cover and the clip are two blocks of one shape, and both are taken from **the game running in the sidebar**. The words the game is listed under stand beside them.
 
-The cover is the game's picture on the hub, at **320×180**. Grab frame takes the frame that is on screen right now, so the game has to be running; Upload takes an image file, and you can also drop one anywhere on the cover.
+### Cover
+
+The cover is the game's picture everywhere it is listed, at **320 × 180**. Grab frame takes the frame that is on screen in the sidebar right now, so the game has to have run; Upload takes an image file, and you can also drop one on the cover.
+
+### Clip
+
+Record captures the running game as it is drawn: 320 × 180, no sound, **25 seconds at most**. Stop ends it early, and what was captured so far is the clip. While it records, the sidebar's screen is framed in red with the count, and the block shows the same picture with the time left.
+
+![The clip while it records](img/game-clip.png "A clip two seconds in: REC and the count on the sidebar's screen, the same picture in the Clip block with Stop and the time left.")
+
+The clip then plays in a loop in the block, with its length. Record again replaces it and Delete removes it, after asking. On the hub it plays over the cover of a disk that is reached.
+
+> [!IMPORTANT]
+> Only a running game can be recorded. Pausing it, or an error that halts it, **ends the recording there**; a game that is idle, paused or halted says so under the block instead of recording.
 
 ### Name, Summary, Description, Tags
 
-The name is 25 characters at most, the summary 50, the description 300 and there are up to 10 tags, typed one at a time with <kbd>Enter</kbd>. The summary is the line under the game on its hub card and what search shows for it: **say what it is, not how it was made**. The description is the long version, and Markdown is fine.
+The name is 25 characters at most, the summary 50, the description 300 and there are up to 10 tags, typed one at a time with <kbd>Enter</kbd>. The summary is the line under the game on the hub and what search shows for it: **say what it is, not how it was made**. The description is the long version, and Markdown is fine.
 
 > [!IMPORTANT]
-> A game needs a name and one line of summary before it can be published. The panel says so with a band until both are there.
+> A game needs a name and one line of summary before it can be published.
 
-### Controls
+## Disk
 
-The console has nine actions, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, and the code reads them by those names with [[input.held]], [[input.pressed]] and [[input.released]]. An action is not a key: `a`, `b`, `x` and `y` are the four buttons of a gamepad, and on the keyboard they are <kbd>X</kbd> or <kbd>Space</kbd>, <kbd>C</kbd> or <kbd>Shift</kbd>, <kbd>V</kbd> and <kbd>B</kbd> by default, while the key <kbd>A</kbd> is `left`. The whole table of default keys is in [input](/learn/api/input#actions).
+A game stands on the hub as a disk, with its cover as the label. The Disk tab shows that disk at full size with the game's name under it, and everything that changes it beside it. **Nothing is applied**: a pick is the disk's style from then on, in every list.
 
-The Controls block is one row per action with a field for **the word your game gives it**, 25 characters at most: `Jump` beside `a`, `Walk` beside `left`. Leave empty the actions the game does not read.
+![The Disk tab](img/game-disk.png "The Disk tab: the game's disk at full size, the game palette with the colour picked, and the eight finishes, each on this game's disk.")
 
-The names are part of the game document, so they are saved and published with it and need no code. Two places show them: the **How to play** panel on the game's page, which lists only the actions you named, and Settings › Controls, where the label column reads them beside each binding while that game is on screen. A game that names nothing gets the console's own words instead.
+### Game palette
 
-## PUBLISHING
+The strip offers the sixteen colours of **the game's own palette**, the one the ART tab edits, and the one picked is the plastic the disk is moulded in.
 
-The panel on the right. Its head carries two actions, Export and Delete; the sections under them are the game's status, who is here, and where it comes from.
+The disk keeps the colour, not the slot. Repaint that slot in ART and the disk still wears what was picked, shown at the end of the strip as `Not in the palette any more`.
+
+### Finish
+
+Eight finishes, each on a tile that shows **this game's disk wearing it**: Solid, Stripes, Checker, Dots, Gradient, Gold, Silver and Holo. A pattern is printed in a shade of the body colour.
+
+Gold, Silver and Holo are metals with a colour of their own. The palette dims while the disk wears one, and the colour picked is kept for the day it goes back to plastic.
+
+### Gradient
+
+Gradient opens two more rows. **Runs to** picks the colour the body fades into, from the same palette. Direction picks the way it runs: across, down, either diagonal, or out from the centre.
+
+### Back to automatic
+
+A game whose author picked nothing wears a plain disk in a colour drawn from the game itself, the same every time. Back to automatic **returns to that disk**.
+
+## Inputs
+
+A game defines **its own actions**: what a player does, each under the name the code reads it by with [[input.held]], [[input.pressed]] and [[input.released]]. An action also has a label and a short description, which are for the players, and the inputs plugged into it: keyboard keys of player 1 or player 2, and gamepad controls. What an input can be, and how a touch screen plays them, is in [input](/learn/api/input#actions).
+
+### The actions
+
+One table, a row per action: its label, its name in the code under it, and how many inputs it has. The chip beside Actions counts them against the **32** a game may hold, and the Inputs tab carries the same count.
+
+A row opens onto its inputs, one per line: the key or the control, the device, and for a key the player whose keyboard it is. An action is not a key: in a new game `a` is <kbd>X</kbd> or <kbd>Space</kbd>, and the key <kbd>A</kbd> is `left`.
+
+![The Inputs tab](img/game-inputs.png "The Inputs tab with Left open: four keys, three of player 1 and one of player 2, then the D-pad and the left stick of a gamepad.")
+
+### Plug an input
+
+Open an action, press Plug an input, then **press the key or the gamepad button**. <kbd>Esc</kbd> backs out, which is why it is the one key that cannot be plugged this way. The cross at the end of a line unplugs it.
+
+A key lands on player 1. The `P1` button on its line hands it to player 2, and back.
+
+When another action already holds the input, the tab asks before plugging it: **Move it here** takes it from the other action, Keep on both leaves it on the two, Cancel plugs nothing.
+
+### Add, edit and remove
+
+Add action and the pencil on a row open the same dialog, with three fields:
+
+- **Label**, what players read, 25 characters at most.
+- **Name in code**, what the code reads the action by: 24 characters at most, a lowercase letter then lowercase letters, digits and `_`, and no other action's name. The dialog says which of these a name breaks.
+- **Description**, a line for the How to play panel, 60 characters at most.
+
+Remove is in the dialog and on the row, as the trash. Both ask first.
+
+> [!WARNING]
+> Code that reads an action the game no longer has **keeps running and answers `false`**. Renaming an action does not rewrite the code: bring the calls to the new name yourself.
+
+### Order
+
+Drag a row to move its action, or hold <kbd>Alt</kbd> and press <kbd>↑</kbd> or <kbd>↓</kbd> on it. The order is **the one players see** in the How to play panel.
+
+### Presets
+
+Presets lists four sets of actions to start from. Picking one **replaces every action of the game**, after asking:
+
+- **Classic**, what a new game has: `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, for two players.
+- **Platformer**: `move_left`, `move_right`, `jump`, `dash`, `crouch`, `interact` and `pause`.
+- **Top-down**: `move_left`, `move_right`, `move_up`, `move_down`, `primary`, `secondary` and `pause`.
+- **Two players**: `left`, `right`, `up`, `down`, `action` and `pause`, each with keys of its own for either player.
+
+After a preset, bring the calls to the new names: `input.held("a")` becomes `input.held("jump")`.
+
+### Touch pad
+
+Touch pad shows the on-screen pad **as a phone will draw it**. Nothing is set here: the pad is a gamepad, and it draws only the controls some action is plugged into, out of the nine it has a place for.
+
+A control it has no place for is named beside the count, as in `RB is not on the pad`: an action reached only through it cannot be played on a phone.
+
+### Shared, saved, the same for everyone
+
+The actions are part of the game document. Two people plugging inputs into one action **both keep theirs**, and the actions are saved and published with the game.
+
+**Every player gets the inputs set here**: nobody rebinds a game. How to play, under the screen on the game's page, lists them in a table: a row per action with its label and its description, then its keys and its gamepad controls. A game with keys for a second player gets a column per player, and a touch device is shown the control of the on-screen pad instead.
+
+![How to play](img/how-to-play.png "How to play on the page of a game that keeps the Classic preset: an action a row, the keys of each player, then the gamepad controls.")
+
+## Publishing
+
+The sidebar on the right. Its head carries Export and Delete; under it stand **the running game**, then the game's status, who is here, and where it comes from.
+
+### The running game
+
+The screen is the editor's one running game, the same one the [console column](/learn/editors/code#the-console-column) of CODE shows, with the same transport under it. Coming here from another tab **does not restart it**, and it is this screen that Grab frame and Record take from.
+
+While the screen floats in its card, the sidebar says so and offers Bring it back.
 
 ### Status
 
-In progress, Completed or Archived. It is **a note for you and your collaborators, and nothing more**: publishing, not this, is what puts the game on the hub. Under it, the date the game was published, or `never`.
+In progress, Completed or Archived. It is **a note for you and your collaborators, and nothing more**: publishing, not this, is what puts the game on the hub.
 
 ### Monetization
 
 None, Ads or Paid, with a Price field for Paid. Paid games are not charged yet; this only marks the intent, so the hub can show it. The section appears only where the deployment sells games at all.
 
-### IN THIS WORK SESSION
+### In session
 
-Everyone connected to the game right now, with `you` on your own row. The host of the work session, whoever opened the game first, or the person who took over when they left, has a **Kick** button on every other row. Under the list, `invite by name…` searches for a person and adds them as a collaborator, the same thing the SHARE dialog does.
+Everyone connected to the game right now, counted in the chip, with `You` on your own row. The host of the work session, whoever opened the game first, or the person who took over when they left, has a **Kick** button on every other row. Under the list, `Invite by name` searches for a person and adds them as a collaborator, the same thing the SHARE dialog does.
 
 ### Lineage
 
-Where the game comes from: Forked from, with the parent and its creator, and how many people have remixed this one. A game nobody can remix yet says so: **Nobody can remix it until it is published.**
+Where the game comes from: Forked from, with the parent and its creator, and Remixes, **how many games were made from this one**.
 
 ### Export and Delete
 
@@ -83,7 +182,7 @@ Under that, the same Game size gauge. Over 1 MB the notice says by how much and 
 
 ![The Publish dialog](img/game-publish.png "Publish, before the first release: what a release allows, the size gauge, Not yet and Publish.")
 
-The button in the header is greyed, with the reason on hover, while the game is over the ceiling or has no name or summary.
+The button in the header is greyed, **with the reason on hover**, while the game is over the ceiling or has no name or summary.
 
 ## Share
 

@@ -3,13 +3,13 @@ title: Time and console
 slug: api/sys
 section: api
 order: 6
-description: The sys functions give the game its clock, the fixed step, the frame count and the measured frame rate, and write to the console under the viewer.
+description: The sys functions give the game its clock, the fixed step, the frame count and the measured frame rate, and write to the console under the Game preview.
 namespace: sys
 ---
 
 # sys · Time, frames and the console
 
-What the game cannot get from drawing or input: the clock, and a way to say something. Everything printed lands in the **console** under the viewer in the editor, never on the screen.
+What the game cannot get from drawing or input: the clock, and a way to say something. Everything printed lands in the **console** under the Game preview in the editor, never on the screen.
 
 ## Time
 
@@ -27,7 +27,7 @@ The game runs `_update` at a fixed 60 steps per second (see the [game loop](/lea
 
 `print` is the same function as `log`. `warn` and `error` only colour the line: neither stops the game. Lua's own global `error(...)`, like any bug, does stop it, and its message shows here too.
 
-![The console column of the editor, with a print, a warning and an error line under the running game](../../api/img/sys-console.png "The console under the viewer after one print, one warn and one error: the print's three values are joined with tabs, the other two were each built into one string with `..`, and only the colour and the mark at the left tell the three apart.")
+![The console column of the editor, with a print, a warning and an error line under the running game](../../api/img/sys-console.png "The console under the Game preview after one print, one warn and one error: the print's three values are joined with tabs, the other two were each built into one string with `..`, and only the colour and the mark at the left tell the three apart.")
 
 {{api:sys.log}}
 

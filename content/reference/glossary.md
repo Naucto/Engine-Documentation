@@ -102,7 +102,7 @@ A **remix** is a copy of a published game that someone else makes their own, wit
 
 ## Work session
 
-The **work session** is everyone who has the game open in the editor right now, editing the same document. The GAME tab lists them under IN THIS WORK SESSION, their avatars sit in the header, and the host of the work session has a Kick button. It is not a netplay session: a game is edited together whether or not it is played together. See [Editors](/learn/editors/index).
+The **work session** is everyone who has the game open in the editor right now, editing the same document. The GAME tab lists them under In session, their avatars sit in the header, and the host of the work session has a Kick button. It is not a netplay session: a game is edited together whether or not it is played together. See [Editors](/learn/editors/index).
 
 ## Session (netplay)
 
@@ -118,7 +118,7 @@ A **peer** is one player's copy of the game in a session, the host included, kno
 
 ## Relay
 
-A **relay** is a server in the middle that passes traffic between two peers that cannot reach each other directly. The platform falls back to one on its own, the Route line of NET says `relayed` when it does, and Force a relay in the TEST RIG asks for one on purpose, to measure what it costs. See [NET](/learn/editors/net).
+A **relay** is a server in the middle that passes traffic between two peers that cannot reach each other directly. The platform falls back to one on its own, the Route line of NET says `relayed` when it does, and Force a relay in its DEBUG drawer asks for one on purpose, to measure what it costs. See [NET](/learn/editors/net).
 
 ## Snapshot
 
@@ -168,7 +168,7 @@ A **scanline** is one of those lines. If the game defines `_scanline(y)`, the be
 
 ## Action
 
-An **action** is one of the nine inputs a game reads, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`, rather than a key: [[input.held]] and [[input.pressed]] take its name, and the player's keyboard, gamepad or touch controls are mapped to it. `a` is <kbd>X</kbd> or <kbd>Space</kbd> by default, and the key <kbd>A</kbd> is `left`. See [input](/learn/api/input).
+An **action** is something a player does that the game gives a name to, `jump` or `left`, rather than a key: [[input.held]] and [[input.pressed]] take its name, and the keys and gamepad controls that press it are set in the GAME tab. A new game has nine, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`; there `a` is <kbd>X</kbd> or <kbd>Space</kbd>, and the key <kbd>A</kbd> is `left`. See [input](/learn/api/input).
 
 ## Table, global and local
 

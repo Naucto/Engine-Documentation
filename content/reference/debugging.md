@@ -60,7 +60,11 @@ Check these first:
 
 ## Input does not work
 
-The action functions [[input.held]] and [[input.pressed]] take an action name: `"left"`, `"right"`, `"up"`, `"down"`, `"a"`, `"b"`, `"x"`, `"y"`, `"pause"`. They answer to the arrows, WASD and ZQSD, a gamepad and the touch controls, which is why the tutorials use them. An action is not a key, and `"a"` is not the key A, which is `left`. The default keys for player 1:
+The action functions [[input.held]] and [[input.pressed]] take the name of one of **the game's own actions**, the ones the GAME tab lists under Inputs. They answer to the keyboard, a gamepad and the on-screen pad, which is why the tutorials use them.
+
+A name the game does not have answers `false` and says nothing. After a preset was applied, or an action renamed or removed, check that the code still reads names the list has.
+
+An action is not a key: in a new game `"a"` is not the key A, which is `left`. The keys of a new game, for player 1:
 
 | Action | Keys |
 | --- | --- |
@@ -71,7 +75,7 @@ The action functions [[input.held]] and [[input.pressed]] take an action name: `
 | `y` | <kbd>B</kbd> |
 | `pause` | <kbd>Esc</kbd> or <kbd>Enter</kbd> |
 
-The player can change them in Settings › Controls; the whole table, with player 2 and the gamepad, is in [input](/learn/api/input#actions). And the screen has to have the keyboard: click it once before pressing a key.
+The whole table, with player 2 and the gamepad, is in [input](/learn/api/input#actions). And the screen has to have the keyboard: click it once before pressing a key.
 
 [[input.key_pressed]] takes the browser's `event.key` name, which is **case-sensitive**: `"ArrowLeft"`, not `"arrowleft"`; `" "` for the space bar, not `"space"`; `"a"` for the key as typed. `"A"` matches only when the key produces an upper-case letter, with Shift held or Caps Lock on.
 

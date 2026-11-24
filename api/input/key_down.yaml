@@ -8,7 +8,7 @@ examples:
   - if input.key_down("r") then print("restart") end
 notes:
   - kind: tip
-    text: "Prefer actions over raw keys: they work with a gamepad and can be rebound."
+    text: "Prefer actions over raw keys: a gamepad and the on-screen pad press them too, and their keys are set in the GAME tab, not in the code."
 seeAlso:
   - input.key_pressed
   - input.pressed

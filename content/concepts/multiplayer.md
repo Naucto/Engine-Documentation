@@ -16,7 +16,7 @@ Two words are used throughout: a player is a person, and a **peer** is one machi
 
 A multiplayer game runs inside a **session**. One player creates it with [[net.host]] and becomes the host; the others enter with [[net.join]]. The platform takes care of the whole matchmaking surface, session titles, visibility, invite codes, browsing, through its own dialogs. Your game decides only the capacity and when to call `net.host`, `net.join` and [[net.leave]].
 
-`net.host` takes a table with two keys: `max_players`, the capacity including the host, `2` when left out, and an optional `title`. Players cannot raise the capacity from the dialog.
+`net.host` takes a table with three keys: `max_players`, the capacity including the host, `2` when left out, an optional `title`, and `listed = true` for a session that is in the public list from the start. Players cannot raise the capacity from the dialog.
 
 The host is the session's referee. All shared writes, lock grants and queue operations are **ordered by the host**, which is what keeps every peer's view consistent. Give global responsibilities to the host: physics for shared objects, scoring, spawning.
 
@@ -79,9 +79,9 @@ From then on, each step, a player writes only its own keys: `net.state.players[n
 
 ## Enforcing it: permissions
 
-Convention is enough for a cooperative game, but you can make it a rule. The **NET** tab gives every `net.state` path two flags, enforced by the host at runtime. With W off, only the host may write the path: a write from another peer is rejected and rolled back, so a player cannot set its own `score` or declare itself the `winner`. With R off, the host keeps the path private and never sends it to the other peers, in the snapshot or live updates, which is what a shuffled deck wants.
+Convention is enough for a cooperative game, but you can make it a rule. The **NET** tab gives every `net.state` path two flags, Read and Write, enforced by the host at runtime, and you set them before anything runs. With Write off, only the host may write the path: a write from another peer is rejected and rolled back, so a player cannot set its own `score` or declare itself the `winner`. With Read off, the host keeps the path private and never sends it to the other peers, in the snapshot or live updates, which is what a shuffled deck wants.
 
-Flags inherit from the nearest configured ancestor, and paths you never configure stay open. The host is always the authority. The only way a game learns that a write was refused is `net.on("error", function(path, reason) … end)`, where `reason` is `"forbidden"` for a permission and `"conflict"` for a write that raced another. A lock acquire, a queue push or a queue pop that the permissions refuse fires the same `"error"` with `"forbidden"`. See [Permissions](/learn/tutorials/permissions) for a worked example.
+A path takes the rule of its nearest ancestor that has one, and a path no rule reaches stays open. Declaring a path in the NET tab does not give it a rule: it follows its parent until you tick Read or Write on it. The host is always the authority. The only way a game learns that a write was refused is `net.on("error", function(path, reason) … end)`, where `reason` is `"forbidden"` for a permission and `"conflict"` for a write that raced another. A lock acquire, a queue push or a queue pop that the permissions refuse fires the same `"error"` with `"forbidden"`. See [Permissions](/learn/tutorials/permissions) for a worked example.
 
 ## Session lifecycle
 
@@ -93,16 +93,40 @@ Points that deserve care:
 
 - `net.host` and `net.join` raise an error only if called while a session is already active; a repeat call made while a dialog is still open is silently ignored. Either way, do not call them every step: switch state first.
 - The callback is the only signal: if the player cancels the dialog, nothing fires and your game stays in `"waiting"`. Give that state a way back to `"menu"`, a key the player can press, or switch to `"waiting"` only inside the callback, so a cancelled dialog leaves the game where it was.
-- Outside a session, `net.lock()`, `net.queue()` and `net.leave()` work, and every other `net` function raises `net: no active session`. Gate your network code behind your `"playing"` state.
+- Outside a session, `net.lock()`, `net.queue()`, `net.leave()` and `net.invite()` work, and every other `net` function raises `net: no active session`. Gate your network code behind your `"playing"` state.
 - `peer.joined` and `peer.left` fire on the host only: that is where a newcomer's branch is created and a leaver's state cleaned up, as above.
 - An error inside a `net` callback (`net.on`, a lock's `acquire`, a queue's `pop`, the host or join callback) does **not** halt the game: it is only printed to the Console as `Error: …`. Read the Console while testing.
 - Re-running or reloading the game tears the session down.
 
+## Opened on a session
+
+A player does not always arrive through your menu. The hub's Join, a friend's open slot and an invitation all open the game's page **on a session**: the page names it above the screen, and [[net.invite]] hands it to the game as a table with its `title`, its `host`, `players` and `max_players`, or `nil` when the game was opened on its own.
+
+Check it in `_init`, and join at once instead of showing the menu. `net.join` then enters that session without its dialog:
+
+``` lua
+local state = "menu"
+
+local function on_connected()
+  state = "playing"
+end
+
+function _init()
+  if net.invite() then
+    net.join(on_connected)
+  end
+end
+```
+
+A game that never reads `net.invite` is served too: the join its own menu offers enters the session the player came for. A session that has ended, is full or is not open to the player says so, and the usual join dialog opens in its place.
+
+The invite lasts as long as the visit. A restart finds it again, so the game goes back in; once the player has left the session, `net.invite()` is `nil` and `net.join` asks which session, as it always did.
+
 ## Testing alone
 
-The NET tab is also the test bench. Once your game has called `net.host`, **Spawn a second client** in its TEST RIG panel opens a second copy of the game as a small screen inside that panel, on this machine, playing under an id of its own. That copy starts at `_init` like any run, so it has to reach `net.join()` through your game's own menu: click its screen to give it the keyboard, then press the key your menu uses to join. The panel says `Waiting for this client to call net.join()` until then.
+The NET tab is also the test bench. Once your game has called `net.host`, **Spawn a second client** in the DEBUG drawer of its SESSION column opens a second copy of the game as a small screen inside that drawer, on this machine, playing under an id of its own. That copy is opened on your session, as an invited player's is, and starts at `_init` like any run. A game that joins from `_init` when `net.invite()` answers is in at once; any other has to reach `net.join()` through its own menu: click its screen to give it the keyboard, then press the key your menu uses to join. The drawer says `Waiting for this client to call net.join()` until then.
 
-Latency and Loss sliders degrade that client's outgoing traffic; the R and W columns show the permissions of every declared path, and Route says whether the session is direct or relayed. Force a relay refuses the direct path for the next session, to measure what a relayed game costs.
+Latency and Loss sliders degrade that client's outgoing traffic, and Route says whether the session is direct or relayed; the RULES table shows, beside the Read and Write of every path, what the session holds there and who owns it. Force a relay refuses the direct path for the next session, to measure what a relayed game costs.
 
 Two things to do first, because you leave the CODE tab to use the rig:
 

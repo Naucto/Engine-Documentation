@@ -244,7 +244,7 @@ end
 ```
 
 > [!NOTE]
-> The code reads keys by name with [[input.key_pressed]], and `a` / `d` / `w` are QWERTY positions. On another layout the arrow keys and <kbd>Space</kbd> still work; [[input.held]] with `"left"` / `"right"` / `"up"` would follow the player's own bindings instead.
+> The code reads keys by name with [[input.key_pressed]], and `a` / `d` / `w` are QWERTY positions. On another layout the arrow keys and <kbd>Space</kbd> still work; [[input.held]] with `"left"` / `"right"` / `"up"` reads the game's actions instead, which a gamepad and the on-screen pad press too.
 
 ### A first loop
 

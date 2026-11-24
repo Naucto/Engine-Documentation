@@ -15,7 +15,7 @@ notes:
     text: "`key_pressed` means held: it stays `true` for as long as the key is down, so a jump or a menu
       choice read with it repeats every step. Read the press with [[input.key_down]]."
   - kind: tip
-    text: "Prefer actions over raw keys: they work with a gamepad and can be rebound."
+    text: "Prefer actions over raw keys: a gamepad and the on-screen pad press them too, and their keys are set in the GAME tab, not in the code."
 seeAlso:
   - input.key_down
   - input.held

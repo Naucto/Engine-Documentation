@@ -10,6 +10,8 @@ description: Seven guided builds, from a ten-minute coin hunt to a host-refereed
 
 Seven guided builds, from a ten-minute coin hunt to a host-refereed online game. Every step gives the whole of the functions it adds, so a page can be followed to the letter in a new game; **Copy to new game** installs the finished game in a fresh project when you would rather read it or compare your version against it.
 
+The games read **the actions every new game has**, `left`, `right`, `up`, `down`, `a`, `b`, `x`, `y` and `pause`. In a game whose actions were changed in the GAME tab, read its own names instead.
+
 Before any of them, do [Getting started](/learn/getting-started) and read [the game loop](/learn/concepts/game-loop). Every tutorial assumes you can run a game and know what `_init`, `_update` and `_draw` are for.
 
 ## Start here: your first game
@@ -33,4 +35,4 @@ The four netplay tutorials build on one another, so do them in order. Read the [
 3. [Build a Tag Arena](/learn/tutorials/tag): reacting to a shared key with [[net.on]], players joining mid-game, cleaning up after the ones who leave.
 4. [Permissions & authority](/learn/tutorials/permissions): the NET tab's read and write flags, and what to lock so a client cannot declare itself the winner.
 
-To test a netplay game alone, the NET tab's **TEST RIG** spawns a second client on your machine, playing under an id of its own; Pong's [Testing with two clients](/learn/tutorials/pong#testing-with-two-clients) sets it up. A third player needs a second browser logged in to another account, or friends.
+To test a netplay game alone, the NET tab's **DEBUG** drawer spawns a second client on your machine, playing under an id of its own; Pong's [Testing with two clients](/learn/tutorials/pong#testing-with-two-clients) sets it up. A third player needs a second browser logged in to another account, or friends.

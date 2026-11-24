@@ -112,7 +112,7 @@ function _init()
 end
 ```
 
-`_update` reads the four directions with [[input.held]] into a step `dx, dy`, then applies each axis only if the player can stand there. Testing the two axes **separately** is what lets the player slide along a wall instead of sticking to it:
+`_update` reads the four directions with [[input.held]] into a step `dx, dy`, then applies each axis only if the player can stand there. `left`, `right`, `up` and `down` are actions every new game has, listed with their keys in the GAME tab. Testing the two axes **separately** is what lets the player slide along a wall instead of sticking to it:
 
 ``` lua
 function _update()
