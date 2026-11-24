@@ -273,7 +273,7 @@ end
 ```
 
 > [!TRY]
-> Run two or three clients (the TEST RIG, set up as in Pong's [Testing with two clients](/learn/tutorials/pong#testing-with-two-clients), gives you the second): every square moves, and every screen agrees on who wears the ring. The host's screen has the border; the others print "Player … is it -- run!" in their console.
+> Run two or three clients (the second client of NET's DEBUG drawer, set up as in Pong's [Testing with two clients](/learn/tutorials/pong#testing-with-two-clients), gives you the second): every square moves, and every screen agrees on who wears the ring. The host's screen has the border; the others print "Player … is it -- run!" in their console.
 
 ![Three squares in the arena, one ringed in red, and a red border around the screen](../../api/img/frames/tut-tag.png "Step 2 on the chaser's screen: three players, the red ring on the one who is it, and the red border that says it is you.")
 
@@ -357,7 +357,7 @@ The `"event:taunt"` listener from Step 2 prints who taunted you (the `from` argu
 
 ## Step 5: Play with three or four
 
-Like Coin Rush, Tag keys players by [[net.id]], and the NET tab's TEST RIG joins under an id of its own, so host plus rig is a **two-player game** on one machine. For three or four, use other browsers logged in as other accounts, or friends.
+Like Coin Rush, Tag keys players by [[net.id]], and the second client of the NET tab's DEBUG drawer joins under an id of its own, so host plus rig is a **two-player game** on one machine. For three or four, use other browsers logged in as other accounts, or friends.
 
 1. Host, then switch on **Listed in browse**, which appears once START HOSTING has been pressed (it is off by default). The session then appears under PUBLIC in the others' Join a session dialog; without it they need the JOIN CODE.
 2. Let one player join after the game has been running: they appear instantly with the right positions and the right "it", the state snapshot doing its job.

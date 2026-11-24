@@ -35,4 +35,4 @@ The four netplay tutorials build on one another, so do them in order. Read the [
 3. [Build a Tag Arena](/learn/tutorials/tag): reacting to a shared key with [[net.on]], players joining mid-game, cleaning up after the ones who leave.
 4. [Permissions & authority](/learn/tutorials/permissions): the NET tab's read and write flags, and what to lock so a client cannot declare itself the winner.
 
-To test a netplay game alone, the NET tab's **TEST RIG** spawns a second client on your machine, playing under an id of its own; Pong's [Testing with two clients](/learn/tutorials/pong#testing-with-two-clients) sets it up. A third player needs a second browser logged in to another account, or friends.
+To test a netplay game alone, the NET tab's **DEBUG** drawer spawns a second client on your machine, playing under an id of its own; Pong's [Testing with two clients](/learn/tutorials/pong#testing-with-two-clients) sets it up. A third player needs a second browser logged in to another account, or friends.

@@ -287,7 +287,7 @@ end
 
 ### One id per player
 
-This game keys everything by [[net.id]], so every client needs an id of its own. The NET tab's TEST RIG gives its second client one: it runs on your account, but the host's `peer.joined` sees a new id, provisions a second entry, and each screen steers **its own square**. Set it up as in Pong ([Testing with two clients](/learn/tutorials/pong#testing-with-two-clients)): VIEWER popped out, Auto off, then click the rig's screen and press `j` there. To go past two players, add a second browser logged in to another account, or friends.
+This game keys everything by [[net.id]], so every client needs an id of its own. The NET tab's DEBUG drawer gives its second client one: it runs on your account, but the host's `peer.joined` sees a new id, provisions a second entry, and each screen steers **its own square**. Set it up as in Pong ([Testing with two clients](/learn/tutorials/pong#testing-with-two-clients)): VIEWER popped out, Auto off, then click the rig's screen and press `j` there. To go past two players, add a second browser logged in to another account, or friends.
 
 > [!TRY]
 > Host plus one or two joiners: every screen should show every square moving live, each with a white ring around its own. Join a third player after moving around a bit: the newcomer sees everyone in the right place. That is the state snapshot at work.

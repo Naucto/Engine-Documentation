@@ -79,9 +79,9 @@ From then on, each step, a player writes only its own keys: `net.state.players[n
 
 ## Enforcing it: permissions
 
-Convention is enough for a cooperative game, but you can make it a rule. The **NET** tab gives every `net.state` path two flags, enforced by the host at runtime. With W off, only the host may write the path: a write from another peer is rejected and rolled back, so a player cannot set its own `score` or declare itself the `winner`. With R off, the host keeps the path private and never sends it to the other peers, in the snapshot or live updates, which is what a shuffled deck wants.
+Convention is enough for a cooperative game, but you can make it a rule. The **NET** tab gives every `net.state` path two flags, Read and Write, enforced by the host at runtime, and you set them before anything runs. With Write off, only the host may write the path: a write from another peer is rejected and rolled back, so a player cannot set its own `score` or declare itself the `winner`. With Read off, the host keeps the path private and never sends it to the other peers, in the snapshot or live updates, which is what a shuffled deck wants.
 
-Flags inherit from the nearest configured ancestor, and paths you never configure stay open. The host is always the authority. The only way a game learns that a write was refused is `net.on("error", function(path, reason) … end)`, where `reason` is `"forbidden"` for a permission and `"conflict"` for a write that raced another. A lock acquire, a queue push or a queue pop that the permissions refuse fires the same `"error"` with `"forbidden"`. See [Permissions](/learn/tutorials/permissions) for a worked example.
+A path takes the rule of its nearest ancestor that has one, and a path no rule reaches stays open. Declaring a path in the NET tab does not give it a rule: it follows its parent until you tick Read or Write on it. The host is always the authority. The only way a game learns that a write was refused is `net.on("error", function(path, reason) … end)`, where `reason` is `"forbidden"` for a permission and `"conflict"` for a write that raced another. A lock acquire, a queue push or a queue pop that the permissions refuse fires the same `"error"` with `"forbidden"`. See [Permissions](/learn/tutorials/permissions) for a worked example.
 
 ## Session lifecycle
 
@@ -124,9 +124,9 @@ The invite lasts as long as the visit. A restart finds it again, so the game goe
 
 ## Testing alone
 
-The NET tab is also the test bench. Once your game has called `net.host`, **Spawn a second client** in its TEST RIG panel opens a second copy of the game as a small screen inside that panel, on this machine, playing under an id of its own. That copy is opened on your session, as an invited player's is, and starts at `_init` like any run. A game that joins from `_init` when `net.invite()` answers is in at once; any other has to reach `net.join()` through its own menu: click its screen to give it the keyboard, then press the key your menu uses to join. The panel says `Waiting for this client to call net.join()` until then.
+The NET tab is also the test bench. Once your game has called `net.host`, **Spawn a second client** in the DEBUG drawer of its SESSION column opens a second copy of the game as a small screen inside that drawer, on this machine, playing under an id of its own. That copy is opened on your session, as an invited player's is, and starts at `_init` like any run. A game that joins from `_init` when `net.invite()` answers is in at once; any other has to reach `net.join()` through its own menu: click its screen to give it the keyboard, then press the key your menu uses to join. The drawer says `Waiting for this client to call net.join()` until then.
 
-Latency and Loss sliders degrade that client's outgoing traffic; the R and W columns show the permissions of every declared path, and Route says whether the session is direct or relayed. Force a relay refuses the direct path for the next session, to measure what a relayed game costs.
+Latency and Loss sliders degrade that client's outgoing traffic, and Route says whether the session is direct or relayed; the RULES table shows, beside the Read and Write of every path, what the session holds there and who owns it. Force a relay refuses the direct path for the next session, to measure what a relayed game costs.
 
 Two things to do first, because you leave the CODE tab to use the rig:
 

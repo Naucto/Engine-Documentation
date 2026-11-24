@@ -118,7 +118,7 @@ A **peer** is one player's copy of the game in a session, the host included, kno
 
 ## Relay
 
-A **relay** is a server in the middle that passes traffic between two peers that cannot reach each other directly. The platform falls back to one on its own, the Route line of NET says `relayed` when it does, and Force a relay in the TEST RIG asks for one on purpose, to measure what it costs. See [NET](/learn/editors/net).
+A **relay** is a server in the middle that passes traffic between two peers that cannot reach each other directly. The platform falls back to one on its own, the Route line of NET says `relayed` when it does, and Force a relay in its DEBUG drawer asks for one on purpose, to measure what it costs. See [NET](/learn/editors/net).
 
 ## Snapshot
 

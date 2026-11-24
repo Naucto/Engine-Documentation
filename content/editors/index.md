@@ -21,7 +21,7 @@ In the order of the rail:
 - **[ART](/learn/editors/art)**: the sprite sheets, their flags and the palette.
 - **[MAP](/learn/editors/map)**: the tile map, painted with the sprites.
 - **[SOUND](/learn/editors/sound)**: instruments, patterns on a piano roll, sound effects and musics.
-- **[NET](/learn/editors/net)**: the shared state of a multiplayer game, the session and a test rig.
+- **[NET](/learn/editors/net)**: the rules of a multiplayer game's shared state, the session and a test rig.
 
 ## The common layout
 

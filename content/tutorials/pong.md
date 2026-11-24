@@ -202,7 +202,7 @@ function reset_ball(direction)
 end
 ```
 
-Nothing is drawn yet, so the place to see this step is the **NET** tab: once hosted, its SHARED STATE panel lists `pads`, `score`, `playing` and `ball`, every one of them owned by the host.
+Nothing is drawn yet, so the place to see this step is the **NET** tab: once hosted, its RULES table lists `pads`, `score`, `playing` and `ball`, every one of them owned by the host.
 
 ## Step 4: Your paddle, their paddle
 
@@ -263,11 +263,11 @@ end
 
 ### Testing with two clients
 
-Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, use the NET tab's TEST RIG, which spawns a second client on your machine. Three things to know before you press its button:
+Hosting shows a JOIN CODE; the other player pastes it under HAVE A CODE? in the Join a session dialog. Alone, open the NET tab's DEBUG drawer, which spawns a second client on your machine. Three things to know before you press its button:
 
 - On the NET tab your own game is paused unless the Game preview is popped out. Pop it out first, from the button at the top of the CODE tab's console column, and host from the floating card.
 - Turn **Auto** off, in the same column: an edit reruns the game, and a rerun ends the session.
-- **Spawn a second client** opens a second copy of the game as a small screen inside the TEST RIG panel, not a window. Click inside that screen to give it the keyboard: it starts at `_init` like any run and has to reach `net.join()` through its own menu, so press `j` there. The panel says `Waiting for this client to call net.join()` until it does, and the join lands straight in your session, no code needed.
+- **Spawn a second client** opens a second copy of the game as a small screen inside the DEBUG drawer, not a window. Click inside that screen to give it the keyboard: it starts at `_init` like any run and has to reach `net.join()` through its own menu, so press `j` there. The drawer says `Waiting for this client to call net.join()` until it does, and the join lands straight in your session, no code needed.
 
 That client runs on your account but plays under an id of its own; Pong never looks at ids anyway, only at `side`.
 
